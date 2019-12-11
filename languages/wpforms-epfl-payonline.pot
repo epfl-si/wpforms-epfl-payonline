@@ -1,0 +1,237 @@
+# Copyright (C) 2019 EPFL IDEV-FSD
+# This file is distributed under the same license as the WPForms EPFL Payonline plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: WPForms EPFL Payonline 0.0.1\n"
+"Report-Msgid-Bugs-To: https://github.com/wp-cli/i18n-command/issues\n"
+"Last-Translator: Nicolas Borboën <ponsfrilus@gmail.com>\n"
+"Language-Team: EPFL IDEV-FSD <https://github.com/epfl-idevelop/wpforms-epfl-payonline>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2019-12-11T17:07:57+01:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.4.0\n"
+"X-Domain: wpforms-epfl-payonline\n"
+
+#. Plugin Name of the plugin
+msgid "WPForms EPFL Payonline"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://github.com/epfl-idevelop/"
+msgstr ""
+
+#. Description of the plugin
+msgid "EPFL Payonline integration with WPForms."
+msgstr ""
+
+#. Author of the plugin
+msgid "EPFL IDEV-FSD"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://search.epfl.ch/browseunit.do?unit=13030"
+msgstr ""
+
+#: class-epfl-payonline.php:59
+#: class-epfl-payonline.php:60
+msgid "Plugin Additional Links"
+msgstr ""
+
+#: class-epfl-payonline.php:59
+msgid "Payonline"
+msgstr ""
+
+#: class-epfl-payonline.php:60
+msgid "Help Payonline"
+msgstr ""
+
+#: class-epfl-payonline.php:172
+#: class-epfl-payonline.php:874
+msgid "Payment failed: recipient emails do not match"
+msgstr ""
+
+#: class-epfl-payonline.php:175
+msgid "Payment failed: payonline returned 0"
+msgstr ""
+
+#: class-epfl-payonline.php:182
+msgid "EPFL Payonline Return Error"
+msgstr ""
+
+#: class-epfl-payonline.php:327
+msgid "EPFL Payonline"
+msgstr ""
+
+#. translators: %s - Addons page URL in admin area.
+#: class-epfl-payonline.php:363
+msgid "This addon allows to use <a href=\"%s\">EPFL Payonline</a> with the <a href=\"%s\">WPForms plugin</a>. Please read <a href=\"%s\">Payonline Help</a>."
+msgstr ""
+
+#: class-epfl-payonline.php:380
+msgid "Enable EPFL Payonline payments"
+msgstr ""
+
+#: class-epfl-payonline.php:391
+msgid "EPFL Payonline instance ID"
+msgstr ""
+
+#: class-epfl-payonline.php:394
+msgid "You must create a payment instance (entity that identifies your conference in the Payonline service) by using the \"New Instance\" link in the main menu on <a href=\"https://payonline.epfl.ch\" target=\"_blank\">payonline.epfl.ch</a>"
+msgstr ""
+
+#: class-epfl-payonline.php:402
+msgid "EPFL Payonline Email Address"
+msgstr ""
+
+#: class-epfl-payonline.php:405
+msgid "Enter your EPFL Payonline address for the payment to be sent"
+msgstr ""
+
+#: class-epfl-payonline.php:413
+msgid "Mode"
+msgstr ""
+
+#: class-epfl-payonline.php:418
+msgid "Production"
+msgstr ""
+
+#: class-epfl-payonline.php:419
+msgid "Test / Sandbox"
+msgstr ""
+
+#: class-epfl-payonline.php:421
+msgid "Select Production to receive real payments or select Test to use the EPFL Payonline developer sandbox (id_inst=1234567890)"
+msgstr ""
+
+#: class-epfl-payonline.php:429
+msgid "Payment Type"
+msgstr ""
+
+#: class-epfl-payonline.php:434
+msgid "Products and Services"
+msgstr ""
+
+#: class-epfl-payonline.php:435
+msgid "Donation"
+msgstr ""
+
+#: class-epfl-payonline.php:437
+msgid "Select the type of payment you are receiving."
+msgstr ""
+
+#: class-epfl-payonline.php:445
+msgid "Cancel URL"
+msgstr ""
+
+#: class-epfl-payonline.php:448
+msgid "Enter the URL to send users to if they do not complete the EPFL Payonline checkout"
+msgstr ""
+
+#: class-epfl-payonline.php:456
+msgid "Shipping"
+msgstr ""
+
+#: class-epfl-payonline.php:461
+msgid "Don't ask for an address"
+msgstr ""
+
+#: class-epfl-payonline.php:462
+msgid "Ask for an address, but do not require"
+msgstr ""
+
+#: class-epfl-payonline.php:463
+msgid "Ask for an address and require it"
+msgstr ""
+
+#: class-epfl-payonline.php:472
+msgid "Don't ask buyer to include a note with payment"
+msgstr ""
+
+#: class-epfl-payonline.php:487
+msgid "Process"
+msgstr ""
+
+#: class-epfl-payonline.php:488
+msgid "Don't process"
+msgstr ""
+
+#: class-epfl-payonline.php:490
+msgid "this charge if"
+msgstr ""
+
+#: class-epfl-payonline.php:491
+msgid "EPFL Payonline Standard payment"
+msgstr ""
+
+#. translators: %s - Addons page URL in admin area.
+#: class-epfl-payonline.php:500
+msgid "Install the <a href=\"%s\">Conditional Logic addon</a> to enable conditional logic for EPFL Payonline payments."
+msgstr ""
+
+#: class-epfl-payonline.php:566
+msgid "EPFL Payonline Payment stopped by conditional logic"
+msgstr ""
+
+#: class-epfl-payonline.php:584
+msgid "EPFL Payonline Payment stopped, missing payment fields"
+msgstr ""
+
+#: class-epfl-payonline.php:590
+msgid "EPFL Payonline Payment stopped, invalid/empty amount"
+msgstr ""
+
+#: class-epfl-payonline.php:855
+#: class-epfl-payonline.php:889
+msgid "EPFL Payonline IPN Error"
+msgstr ""
+
+#: class-epfl-payonline.php:878
+msgid "Payment failed: currency formats do not match"
+msgstr ""
+
+#: class-epfl-payonline.php:882
+msgid "Payment failed: payment amounts do not match"
+msgstr ""
+
+#. translators: %s - Paypal payment transaction ID.
+#: class-epfl-payonline.php:918
+msgid "Payment refunded: EPFLPayonline refund transaction ID: %s"
+msgstr ""
+
+#: class-epfl-payonline.php:929
+msgid "Payment made via eCheck and will clear automatically in 5-8 days"
+msgstr ""
+
+#: class-epfl-payonline.php:932
+msgid "Payment requires a confirmed customer address and must be accepted manually through EPFLPayonline"
+msgstr ""
+
+#: class-epfl-payonline.php:935
+msgid "Payment must be accepted manually through EPFLPayonline due to international account regulations"
+msgstr ""
+
+#: class-epfl-payonline.php:938
+msgid "Payment received in non-shop currency and must be accepted manually through EPFLPayonline"
+msgstr ""
+
+#: class-epfl-payonline.php:942
+msgid "Payment is being reviewed by EPFL Payonline staff as high-risk or in possible violation of government regulations"
+msgstr ""
+
+#: class-epfl-payonline.php:945
+msgid "Payment was sent to non-confirmed or non-registered email address."
+msgstr ""
+
+#: class-epfl-payonline.php:948
+msgid "EPFL Payonline account must be upgraded before this payment can be accepted"
+msgstr ""
+
+#: class-epfl-payonline.php:951
+msgid "EPFL Payonline account is not verified. Verify account in order to accept this payment"
+msgstr ""
+
+#: class-epfl-payonline.php:954
+msgid "Payment is pending for unknown reasons. Contact EPFL Payonline support for assistance"
+msgstr ""
