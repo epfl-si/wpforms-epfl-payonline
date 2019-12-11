@@ -13,7 +13,7 @@ such as Stripe, Paypal or EPFL Payonline.
 
   1. Install [WPForms](https://wpforms.com/)
   2. Activate the Elite or Pro version
-  3. Download and install [WPForms EPFL Payonline](https://github.com/epfl-idevelop/wpforms-epfl-payonline)
+  3. Download and install [WPForms EPFL Payonline](https://github.com/epfl-idevelop/wpforms-epfl-payonline/releases/latest)
   4. Activate it.
 
 WPForms EPFL Payonline is now ready to be used as payment gateway.
