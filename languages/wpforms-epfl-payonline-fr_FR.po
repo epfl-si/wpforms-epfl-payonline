@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WPForms EPFL Payonline 0.0.4\n"
 "Report-Msgid-Bugs-To: https://github.com/wp-cli/i18n-command/issues\n"
-"POT-Creation-Date: 2019-12-13T15:43:29+01:00\n"
+"POT-Creation-Date: 2019-12-13T16:34:51+01:00\n"
 "PO-Revision-Date: 2019-12-11 18:32+0100\n"
 "Last-Translator: nborboen <nicolas.borboen@epfl.ch>\n"
 "Language-Team: French\n"
@@ -70,8 +70,17 @@ msgid ""
 "This addon allows to use <a href=\"%s\">EPFL Payonline</a> with the <a href="
 "\"%s\">WPForms plugin</a>. Please read <a href=\"%s\">Payonline Help</a>."
 msgstr ""
-"Ce module active l'utilisation d'<a href=\"%s\">EPFL Payonline</a> avec le <a href="
-"\"%s\">plugin WPForms</a>. Merci de lire <a href=\"%s\">l'aide Payonline</a>."
+"Ce module active l'utilisation d'<a href=\"%s\">EPFL Payonline</a> avec le "
+"<a href=\"%s\">plugin WPForms</a>. Merci de lire <a href=\"%s\">l'aide "
+"Payonline</a>."
+
+#: class-epfl-payonline.php:486
+msgid "https://payonline.epfl.ch?lang=en"
+msgstr "https://payonline.epfl.ch?lang=fr"
+
+#: class-epfl-payonline.php:488
+msgid "https://wiki.epfl.ch/payonline-help"
+msgstr "https://wiki.epfl.ch/payonline-aide"
 
 #: class-epfl-payonline.php:496
 msgid "Enable EPFL Payonline payments"
@@ -88,10 +97,10 @@ msgid ""
 "menu on <a href=\"https://payonline.epfl.ch\" target=\"_blank\">payonline."
 "epfl.ch</a>"
 msgstr ""
-"Vous devez préalablement créer une instance (entrée qui identifie votre conférence "
-"sur Payonline) en utilisant le lien \"Nouvelle Instance\" dans le menu "
-"du site <a href=\"https://payonline.epfl.ch\" target=\"_blank\">payonline."
-"epfl.ch</a>"
+"Vous devez préalablement créer une instance (entrée qui identifie votre "
+"conférence sur Payonline) en utilisant le lien \"Nouvelle Instance\" dans le "
+"menu du site <a href=\"https://payonline.epfl.ch\" target=\"_blank"
+"\">payonline.epfl.ch</a>"
 
 #: class-epfl-payonline.php:518
 msgid "EPFL Payonline Email Address"
@@ -193,7 +202,6 @@ msgid ""
 msgstr ""
 "Installer le <a href=\"%s\">module Conditional Logic</a> pour activer la "
 "logique conditionnelle pour les paiements EPFL Payonline."
-
 
 #: class-epfl-payonline.php:636 class-epfl-payonline.php:637
 msgid "Plugin Additional Links"

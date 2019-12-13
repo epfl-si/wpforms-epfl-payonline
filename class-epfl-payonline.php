@@ -483,9 +483,9 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 						),
 					)
 				),
-				esc_url( 'https://payonline.epfl.ch' ),
+				esc_url( __( 'https://payonline.epfl.ch?lang=en', 'wpforms-epfl-payonline' ) ),
 				esc_url( 'https://wpforms.com/' ),
-				esc_url( 'https://wiki.epfl.ch/payonline-aide' )
+				esc_url( __( 'https://wiki.epfl.ch/payonline-help', 'wpforms-epfl-payonline' ) )
 			) .
 			'</p><br /><hr><br />';
 		wpforms_panel_field(
