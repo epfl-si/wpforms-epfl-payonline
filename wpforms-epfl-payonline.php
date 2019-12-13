@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: WPForms EPFL Payonline
- * Plugin URI:  https://github.com/epfl-idevelop/
+ * Plugin URI:  https://github.com/epfl-idevelop/wpforms-epfl-payonline
  * Description: EPFL Payonline integration with WPForms.
  * Author:      EPFL IDEV-FSD
  * Author URI:  https://search.epfl.ch/browseunit.do?unit=13030
- * Version:     0.0.4
+ * Version:     0.0.5
  * Text Domain: wpforms-epfl-payonline
  * Domain Path: languages
  * License:     GPL-2.0+
@@ -36,7 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin version.
-define( 'WPFORMS_EPFL_PAYONLINE_VERSION', '0.0.4' );
+define( 'WPFORMS_EPFL_PAYONLINE_VERSION', '0.0.5' );
 // Plugin name.
 define( 'WPFORMS_EPFL_PAYONLINE_NAME', 'WPForms EPFL Payonline' );
 
