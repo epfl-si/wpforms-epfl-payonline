@@ -39,6 +39,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'WPFORMS_EPFL_PAYONLINE_VERSION', '0.0.5' );
 // Plugin name.
 define( 'WPFORMS_EPFL_PAYONLINE_NAME', 'WPForms EPFL Payonline' );
+// Latest WP version tested with this plugin
+define( 'WP_LATEST_VERSION_WPFORMS_EPFL_PAYONLINE', '5.3.1' );
 
 /**
  * Load the payment class.
