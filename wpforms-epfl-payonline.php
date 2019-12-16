@@ -41,6 +41,8 @@ define( 'WPFORMS_EPFL_PAYONLINE_VERSION', '0.0.5' );
 define( 'WPFORMS_EPFL_PAYONLINE_NAME', 'WPForms EPFL Payonline' );
 // Latest WP version tested with this plugin
 define( 'WP_LATEST_VERSION_WPFORMS_EPFL_PAYONLINE', '5.3.1' );
+// Minimal WP version required for this plugin
+define( 'WP_MIN_VERSION_WPFORMS_EPFL_PAYONLINE', '5.0' );
 
 /**
  * Load the payment class.

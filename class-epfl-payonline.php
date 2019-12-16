@@ -14,6 +14,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	public function init() {
 
 		$this->wp_tested_version  = WP_LATEST_VERSION_WPFORMS_EPFL_PAYONLINE;
+		$this->wp_min_version     = WP_MIN_VERSION_WPFORMS_EPFL_PAYONLINE;
 		$this->version            = WPFORMS_EPFL_PAYONLINE_VERSION;
 		$this->plugin_name        = WPFORMS_EPFL_PAYONLINE_NAME;
 		$this->name               = 'EPFL Payonline';
@@ -651,14 +652,14 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		return (array) $plugin_meta;
 	}
 
-	function wpforms_epfl_payonline_push_update( $transient ){
+	function wpforms_epfl_payonline_push_update( $transient ) {
 		if ( empty($transient->checked ) ) {
 			return $transient;
 		}
-	 
+
 		// trying to get from cache first, to disable cache comment 10,20,21,22,24
 		if ( false == $remote = get_transient( 'upgrade_wpforms_epfl_payonline' ) ) {
-	 
+
 			// info.json is the file with the actual plugin information on your server
 			$remote = wp_remote_get( 'https://api.github.com/repos/epfl-idevelop/wpforms-epfl-payonline/releases/latest', array(
 				'timeout' => 10,
@@ -670,15 +671,15 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			if ( !is_wp_error( $remote ) && isset( $remote['response']['code'] ) && $remote['response']['code'] == 200 && !empty( $remote['body'] ) ) {
 				set_transient( 'upgrade_wpforms_epfl_payonline', $remote, 60 ); // 43200 ? 12 hours cache
 			}
-	 
+
 		}
-	 
-		if( $remote ) {
-	 
+
+		if ( $remote ) {
+
 			$remote = json_decode($remote['body']);
 			$latest_version = ltrim($remote->tag_name, 'v');
 
-			if( $remote && version_compare( $this->version, $latest_version, '<' ) && version_compare($this->wp_tested_version, get_bloginfo('version'), '<' ) ) {
+			if ( $remote && version_compare( $this->version, $latest_version, '<' ) && version_compare($this->wp_min_version, get_bloginfo('version'), '<' ) ) {
 				$res = new stdClass();
 				$res->slug = $this->slug;
 				$res->plugin =  dirname( plugin_basename( __FILE__ )) . '/wpforms-epfl-payonline.php';
@@ -686,7 +687,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 				$res->tested = $this->wp_tested_version;
 				$res->package = 'https://github.com/epfl-idevelop/wpforms-epfl-payonline/releases/latest/download/wpforms-epfl-payonline.zip';
 				$transient->response[$res->plugin] = $res;
-				error_log(var_export($res, true));
+				// error_log(var_export($res, true));
 				// $transient->checked[$res->plugin] = $latest_version;
 			}
 		}
@@ -705,19 +706,19 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	 * $action 'plugin_information'
 	 * $args stdClass Object ( [slug] => woocommerce [is_ssl] => [fields] => Array ( [banners] => 1 [reviews] => 1 [downloaded] => [active_installs] => 1 ) [per_page] => 24 [locale] => en_US )
 	 */	
-	function wpforms_epfl_payonline_plugin_info( $res, $action, $args ){
-	 
+	function wpforms_epfl_payonline_plugin_info( $res, $action, $args ) {
+
 		// do nothing if this is not about getting plugin information
-		if( $action !== 'plugin_information' )
+		if ( $action !== 'plugin_information' )
 			return false;
-	 
+
 		// do nothing if it is not our plugin	
-		if( $this->slug !== $args->slug )
+		if ( $this->slug !== $args->slug )
 			return $res;
-	 
+
 		// trying to get from cache first, to disable cache comment 18,28,29,30,32
-		if( false == $remote = get_transient( 'upgrade_wpforms_epfl_payonline' ) ) {
-	 
+		if ( false == $remote = get_transient( 'upgrade_wpforms_epfl_payonline' ) ) {
+
 			// info.json is the file with the actual plugin information on your server
 			$remote = wp_remote_get( 'https://api.github.com/repos/epfl-idevelop/wpforms-epfl-payonline/releases/latest', array(
 				'timeout' => 10,
@@ -725,25 +726,24 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 					'Accept' => 'application/json'
 				) )
 			);
-	 
+
 			if ( !is_wp_error( $remote ) && isset( $remote['response']['code'] ) && $remote['response']['code'] == 200 && !empty( $remote['body'] ) ) {
 				set_transient( 'upgrade_wpforms_epfl_payonline', $remote, 60 ); // 43200 = 12 hours cache
 			}
-	 
+
 		}
-	 
-		if( $remote ) {
-	 
+
+		if ( $remote ) {
+
 			$remote = json_decode( $remote['body'] );
-			error_log( var_export($remote, true)) ;
+			// error_log( var_export($remote, true)) ;
 			$latest_version = ltrim( $remote->tag_name, 'v' );
 			$res = new stdClass();
 			$res->name = $this->plugin_name;
 			$res->slug = $this->slug;
 			$res->version = $latest_version;
 			$res->tested = $this->wp_tested_version;
-			$res->requires = '5.4.1';
-
+			$res->requires = $this->wp_min_version;
 			$res->author = '<a href="https://search.epfl.ch/browseunit.do?unit=13030">EPFL IDEV-FSD</a>'; // I decided to write it directly in the plugin
 			$res->author_profile = 'https://profiles.wordpress.org/ponsfrilus/'; // WordPress.org profile
 			$res->download_link = $remote->zipball_url;
@@ -755,16 +755,15 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 				'changelog' => 'See <a href="https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/CHANGELOG.md">GitHub CHANGELOG</a>', // changelog tab
 				// you can add your custom sections (tabs) here 
 			);
-	 
+
 			// in case you want the screenshots tab, use the following HTML format for its content:
 			// <ol><li><a href="IMG_URL" target="_blank" rel="noopener noreferrer"><img src="IMG_URL" alt="CAPTION" /></a><p>CAPTION</p></li></ol>
-			if( !empty( $remote->sections->screenshots ) ) {
+			if ( !empty( $remote->sections->screenshots ) ) {
 				$res->sections['screenshots'] = $remote->sections->screenshots;
 			}
-	 
 			$res->banners = array(
-				'low' => 'https://YOUR_WEBSITE/banner-772x250.jpg',
-				'high' => 'https://YOUR_WEBSITE/banner-1544x500.jpg'
+				'low' => plugin_dir_url( __FILE__ ) . 'assets/banners/banner-772x250.png',
+				'high' => plugin_dir_url( __FILE__ ) . 'assets/banners/banner-1544x500.png',
 			);
 			return $res;
 		}
