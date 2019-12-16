@@ -33,6 +33,27 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		
 		// Add additional link to the plugin row
 		add_filter( 'plugin_row_meta', array( $this, 'add_links_to_plugin_row') , 10, 4 );
+		
+		if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
+			require_once plugin_dir_path( __FILE__ ) . 'updater.php';
+			$config = array(
+				'slug' => 'wpforms-epfl-payonline.php', // this is the slug of your plugin
+				'proper_folder_name' => WPFORMS_EPFL_PAYONLINE_NAME, // this is the name of the folder your plugin lives in
+				'api_url' => 'https://api.github.com/repos/epfl-idevelop/wpforms-epfl-payonline', // the GitHub API url of your GitHub repo
+				'raw_url' => 'https://raw.github.com/epfl-idevelop/wpforms-epfl-payonline/master', // the GitHub raw url of your GitHub repo
+				'github_url' => 'https://github.com/epfl-idevelop/wpforms-epfl-payonline', // the GitHub url of your GitHub repo
+				
+				// https://github.com/epfl-idevelop/wpforms-epfl-payonline/releases/download/v0.0.5/wpforms-epfl-payonline-0.0.5.zip
+				// If you'd like to link directly to a download of your latest release asset you can link to /owner/name/releases/latest/download/asset-name.zip.
+				'zip_url' => 'https://github.com/epfl-idevelop/wpforms-epfl-payonline/zipball/master', // the zip url of the GitHub repo
+				'sslverify' => true, // whether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
+				'requires' => '5.0', // which version of WordPress does your plugin require?
+				'tested' => '5.3', // which version of WordPress is your plugin tested up to?
+				'readme' => 'README.md', // which file to use as the readme for the version number
+				'access_token' => '', // Access private repositories by authorizing under Appearance > GitHub Updates when this example plugin is installed
+			);
+			new WP_GitHub_Updater($config);
+		}
 	}
 
 	/**
