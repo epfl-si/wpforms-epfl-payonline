@@ -16,7 +16,7 @@ _DISCLAIMER: This addon is only useful in the [EPFL] ecosystem. Therefore, any a
 
   1. Install [WPForms].
   2. Activate the [Elite] or [Pro] version.
-  3. Download and install [WPForms EPFL Payonline] [latest release].
+  3. Download and install [WPForms EPFL Payonline] [latest release] ([Download latest]).
   4. Activate it.
 
 WPForms EPFL Payonline is now ready to be configured.
@@ -56,6 +56,7 @@ Please raise an [issue] with verbatim comments and steps to reproduce.
 [EPFL Payonline]: https://payonline.epfl.ch
 [WPForms EPFL Payonline]: https://github.com/epfl-idevelop/wpforms-epfl-payonline
 [latest release]: https://github.com/epfl-idevelop/wpforms-epfl-payonline/releases/latest
+[Download latest]: https://github.com/epfl-idevelop/wpforms-epfl-payonline/releases/latest/download/wpforms-epfl-payonline.zip
 [issue]: https://github.com/epfl-idevelop/wpforms-epfl-payonline/issues
 [WPForms]: https://wpforms.com/
 [Elite]: https://wpforms.com/checkout?edd_action=add_to_cart&download_id=290232&discount=SAVE50
