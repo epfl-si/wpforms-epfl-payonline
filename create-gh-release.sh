@@ -56,10 +56,14 @@ function create_tag () {
   # GET /repos/:owner/:repo/releases/tags/:tag
   # echo $GH_RELEASE_CHECK_URL
   RELEASE_ID=$(curl -s $GH_RELEASE_CHECK_URL | jq -r .id)
+
   if [[ ! -z "$RELEASE_ID" ]]
   then
-    echo "... release ID: $RELEASE_ID already exists!"
-    return
+    if [ "$RELEASE_ID" != null ]
+    then
+      echo "... release ID: $RELEASE_ID already exists!"
+      return
+    fi
   else 
     echo "... no release found"
     echo -e "\ncreating release..."
@@ -78,7 +82,7 @@ RELEASE_JSON="{\
   echo $RELEASE
   RELEASE_ID=$( echo $RELEASE | jq -r .id)
   RELEASE_ERRORS=$( echo $RELEASE | jq -r .errors)
-  if [ "$RELEASE_ERRORS" ]
+  if [ "$RELEASE_ERRORS" != null ]
   then
     echo "Failed to create GitHub release. Exiting with errors: $RELEASE_ERRORS"
     exit 1
@@ -105,11 +109,14 @@ function add_release_file () {
   echo "ASSET ID: $ASSET_ID"
   if [[ ! -z "$ASSET_ID" ]]
   then
-    echo "... asset ID $ASSET_ID: already exists for this release!"
-    echo "... DELETING asset ID $ASSET_ID!"
-    ASSET_DELETE=$(curl -s -X DELETE "https://api.github.com/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases/assets/$ASSET_ID?access_token=$GH_ACCESS_TOKEN")
-    # echo $ASSET_DELETE
-    # return
+    if [ "$ASSET_ID" != null ]
+    then
+      echo "... asset ID $ASSET_ID: already exists for this release!"
+      echo "... DELETING asset ID $ASSET_ID!"
+      ASSET_DELETE=$(curl -s -X DELETE "https://api.github.com/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases/assets/$ASSET_ID?access_token=$GH_ACCESS_TOKEN")
+      # echo $ASSET_DELETE
+      # return
+    fi
   else 
     echo "... no asset found"
     echo -e "\ncreating asset..."
