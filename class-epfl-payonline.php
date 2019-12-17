@@ -34,16 +34,16 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		add_filter( 'wpforms_entry_details_payment_transaction', array( $this, 'filter_entry_details_payment_transaction' ), 10, 3 );
 		
 		// Add additional link to the plugin row
-		add_filter( 'plugin_row_meta', array( $this, 'add_links_to_plugin_row') , 10, 4 );
-		
+		add_filter( 'plugin_row_meta', array( $this, 'add_links_to_plugin_row'), 10, 4 );
+
 		// Plugin updater
 		// https://rudrastyh.com/wordpress/self-hosted-plugin-update.html
-		add_filter( 'site_transient_update_plugins', array( $this, 'wpforms_epfl_payonline_push_update' ) );
+		add_filter( 'site_transient_update_plugins', array( $this, 'wpforms_epfl_payonline_push_update' ), 20, 1 );
 		add_action( 'upgrader_process_complete',  array( $this, 'wpforms_epfl_payonline_after_update' ), 10, 2 );
-		
+
 		// Plugin details
 		add_filter('plugins_api', array( $this, 'wpforms_epfl_payonline_plugin_info' ), 20, 3);
-		
+
 	}
 
 	/**
@@ -643,10 +643,20 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	 */
 	function add_links_to_plugin_row( $plugin_meta, $plugin_file, $plugin_data, $status ) {
 		if ( $this->plugin_name == $plugin_data['Name'] ) {
+			if ($plugin_meta[2] === '<a href="' . $plugin_data['PluginURI'] .'">Visit plugin site</a>') {
+				// Kick the "Visit plugin site" link and add the "View details" wich is normally reserved for WP hosted plugin
+				$plugin_meta[2] = sprintf( '<a href="%s" class="thickbox" aria-label="%s" data-title="%s">%s</a>',
+														esc_url( network_admin_url( 'plugin-install.php?tab=plugin-information&plugin=' . $this->slug . '&TB_iframe=true&width=600&height=550' ) ),
+														esc_attr( sprintf( __( 'More information about %s' ), $this->name ) ),
+														esc_attr( $this->name ),
+														__( 'View details' )
+												);
+			}
 			$row_meta = array(
 				'payonline'      => '<a href="' . esc_url( 'https://payonline.epfl.ch' ) . '" target="_blank" aria-label="' . esc_attr__( 'Plugin Additional Links', 'wpforms-epfl-payonline' ) . '">' . esc_html__( 'Payonline', 'wpforms-epfl-payonline' ) . '</a>',
 				'help-payonline' => '<a href="' . esc_url( 'https://wiki.epfl.ch/payonline-help' ) . '" target="_blank" aria-label="' . esc_attr__( 'Plugin Additional Links', 'wpforms-epfl-payonline' ) . '">' . esc_html__( 'Help Payonline', 'wpforms-epfl-payonline' ) . '</a>'
 			);
+
 			return array_merge( $plugin_meta, $row_meta );
 		}
 		return (array) $plugin_meta;
@@ -790,8 +800,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	}
 
 	private function getChangelog() {
-		$changelog_path = plugin_dir_path( __FILE__ ) . '/CHANGELOG.md';
-		$changelog_content = file_get_contents($changelog_path, true);
+		$changelog_content = file_get_contents('https://raw.githubusercontent.com/epfl-idevelop/wpforms-epfl-payonline/master/CHANGELOG.md', true);
 		require_once(plugin_dir_path( __FILE__ ) .'/lib/Parsedown.php');
 		$Parsedown = new Parsedown();
 		$changelog_content = $Parsedown->text($changelog_content); # prints: <p>Hello <em>Parsedown</em>!</p>
