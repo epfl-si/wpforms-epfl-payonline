@@ -750,9 +750,9 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			$res->trunk = $remote->html_url;
 			$res->last_updated = $remote->published_at;
 			$res->sections = array(
-				'description' => "DESCRIPTION", // description tab
-				'installation' => "INSTALLATION", // installation tab
-				'changelog' => 'See <a href="https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/CHANGELOG.md">GitHub CHANGELOG</a>', // changelog tab
+				'description' => $this->getReadMe(), // description tab
+				'installation' => $this->getInstall(), // installation tab
+				'changelog' => $this->getChangelog(), // changelog tab
 				// you can add your custom sections (tabs) here 
 			);
 
@@ -770,6 +770,33 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		return false;
 	}
 
+	// http://localhost:8089/wp-admin/plugin-install.php?tab=plugin-information&plugin=epfl_payonline&section=changelog&TB_iframe=true&width=600&height=800
+	private function getReadMe() {
+		$readme_path = plugin_dir_path( __FILE__ ) . '/README.md';
+		$readme_content = file_get_contents($readme_path, true);
+		require_once(plugin_dir_path( __FILE__ ) .'/lib/Parsedown.php');
+		$Parsedown = new Parsedown();
+		$readme_content = $Parsedown->text($readme_content); # prints: <p>Hello <em>Parsedown</em>!</p>
+		return 'See README.md on <a href="https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/README.md">GitHub</a>.<br><div class="epfl_payonline_readme">' . $readme_content . '</div>';
+	}
+
+	private function getInstall() {
+		$install_path = plugin_dir_path( __FILE__ ) . '/INSTALL.md';
+		$install_content = file_get_contents($install_path, true);
+		require_once(plugin_dir_path( __FILE__ ) .'/lib/Parsedown.php');
+		$Parsedown = new Parsedown();
+		$install_content = $Parsedown->text($install_content); # prints: <p>Hello <em>Parsedown</em>!</p>
+		return 'See INSTALL.md on <a href="https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/INSTALL.md">GitHub</a>.<br><div class="epfl_payonline_install">' . $install_content . '</div>';
+	}
+
+	private function getChangelog() {
+		$changelog_path = plugin_dir_path( __FILE__ ) . '/CHANGELOG.md';
+		$changelog_content = file_get_contents($changelog_path, true);
+		require_once(plugin_dir_path( __FILE__ ) .'/lib/Parsedown.php');
+		$Parsedown = new Parsedown();
+		$changelog_content = $Parsedown->text($changelog_content); # prints: <p>Hello <em>Parsedown</em>!</p>
+		return 'See CHANGELOG.md on <a href="https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/CHANGELOG.md">GitHub</a>.<br><div class="epfl_payonline_changelog">' . $changelog_content . '</div>';
+	}
 }
 
 new WPForms_EPFL_Payonline();
