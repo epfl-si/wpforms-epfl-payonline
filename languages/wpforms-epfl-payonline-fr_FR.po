@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WPForms EPFL Payonline 0.0.4\n"
 "Report-Msgid-Bugs-To: https://github.com/wp-cli/i18n-command/issues\n"
-"POT-Creation-Date: 2019-12-17T16:08:23+01:00\n"
+"POT-Creation-Date: 2019-12-18T14:31:42+01:00\n"
 "PO-Revision-Date: 2019-12-11 18:32+0100\n"
 "Last-Translator: nborboen <nicolas.borboen@epfl.ch>\n"
 "Language-Team: French\n"
@@ -176,15 +176,15 @@ msgstr ""
 "Installer le <a href=\"%s\">module Conditional Logic</a> pour activer la "
 "logique conditionnelle pour les paiements EPFL Payonline."
 
-#: class-epfl-payonline.php:647 class-epfl-payonline.php:648
+#: class-epfl-payonline.php:656 class-epfl-payonline.php:657
 msgid "Plugin Additional Links"
 msgstr "Liens additionnels du plugin"
 
-#: class-epfl-payonline.php:647
+#: class-epfl-payonline.php:656
 msgid "Payonline"
 msgstr "Payonline"
 
-#: class-epfl-payonline.php:648
+#: class-epfl-payonline.php:657
 msgid "Help Payonline"
 msgstr "Aide Payonline"
 
