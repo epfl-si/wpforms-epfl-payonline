@@ -22,7 +22,7 @@ together:
 
   - The **EPFL Payonline instance ID** have to be set for any forms that need 
     to use EPFL Payonline.
-    ![file](doc/img/WPForms-Payonline-Instance-ID-Highlighted.png)
+    ![file](https://github.com/epfl-idevelop/wpforms-epfl-payonline/raw/master/doc/img/WPForms-Payonline-Instance-ID-Highlighted.png)
 
 WPForms EPFL Payonline is now ready to be used as payment gateway.
 
