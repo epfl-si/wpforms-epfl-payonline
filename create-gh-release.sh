@@ -27,7 +27,8 @@ GH_API=https://api.github.com
 GH_ACCESS_TOKEN=$WPEP_GH_TOKEN
 # https://github.com/epfl-idevelop/wpforms-epfl-payonline
 REPO_HTTP_URL=$GH_URL$REPO_GH_PATH
-GH_RELEASE_URL=$GH_API/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases?access_token=$GH_ACCESS_TOKEN
+GH_RELEASE_URL=$GH_URL/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases
+GH_API_RELEASE_URL=$GH_API/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases?access_token=$GH_ACCESS_TOKEN
 # GET /repos/:owner/:repo/releases/tags/:tag
 GH_RELEASE_CHECK_URL=$GH_API/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases/tags/v${VERSION}?access_token=$GH_ACCESS_TOKEN
 AUTH="Authorization: token $GH_ACCESS_TOKEN"
@@ -49,7 +50,7 @@ function printInfo() {
 
 # https://gist.github.com/stefanbuck/ce788fee19ab6eb0b4447a85fc99f447
 function validate_token () {
-  curl -o /dev/null -sH "$AUTH" $GH_RELEASE_URL || { echo "Error: Invalid repo, token or network issue!";  exit 1; }
+  curl -o /dev/null -sH "$AUTH" $GH_API_RELEASE_URL || { echo "Error: Invalid repo, token or network issue!";  exit 1; }
 }
 
 function create_tag () {
@@ -75,7 +76,7 @@ RELEASE_JSON="{\
 \"prerelease\":false\
 }"
 
-  RELEASE=$(curl --data ${RELEASE_JSON} -s ${GH_RELEASE_URL})
+  RELEASE=$(curl --data ${RELEASE_JSON} -s ${GH_API_RELEASE_URL})
   echo $RELEASE
   RELEASE_ID=$( echo $RELEASE | jq -r .id)
   echo $RELEASE_ID
@@ -140,6 +141,7 @@ function add_release_file () {
     echo "Asset name      : $ASSET_NAME"
     echo "Asset size      : $ASSET_SIZE"
     echo "Asset Download  : $ASSET_DWNLD_URL"
+    echo "View release    : $GH_RELEASE_URL"
   else
     echo "Failed to create GitHub asset. Exiting with error."
     exit 1
