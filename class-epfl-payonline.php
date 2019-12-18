@@ -643,7 +643,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	 */
 	function add_links_to_plugin_row( $plugin_meta, $plugin_file, $plugin_data, $status ) {
 		if ( $this->plugin_name == $plugin_data['Name'] ) {
-			if ($plugin_meta[2] === '<a href="' . $plugin_data['PluginURI'] .'">Visit plugin site</a>') {
+			if (substr_compare($plugin_meta[2], '<a href="' . $plugin_data['PluginURI'] .'">', 0, 66) == 0) {
 				// Kick the "Visit plugin site" link and add the "View details" wich is normally reserved for WP hosted plugin
 				$plugin_meta[2] = sprintf( '<a href="%s" class="thickbox" aria-label="%s" data-title="%s">%s</a>',
 														esc_url( network_admin_url( 'plugin-install.php?tab=plugin-information&plugin=' . $this->slug . '&TB_iframe=true&width=600&height=550' ) ),
