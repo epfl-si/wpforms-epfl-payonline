@@ -32,38 +32,35 @@ GH_RELEASE_URL=$GH_API/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases?access_token=$
 GH_RELEASE_CHECK_URL=$GH_API/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases/tags/v${VERSION}?access_token=$GH_ACCESS_TOKEN
 AUTH="Authorization: token $GH_ACCESS_TOKEN"
 
-# echo "Version         : $VERSION"
-# echo "Version no dots : $VERSION_NO_DOTS"
-# echo "Token           : $GH_ACCESS_TOKEN"
-# echo "Remote          : $REPO_REMOTE"
-# echo "Org             : $REPO_ORG_OR_USR"
-# echo "Repo name       : $REPO_NAME"
-# echo "URL             : $REPO_HTTP_URL"
-# echo "Proj name       : $PROJECT_NAME"
-# echo "Owner name      : $REPO_OWNER_NAME"
-# echo "Owner email     : $REPO_OWNER_EMAIL"
+function printInfo() {
+  echo "--------------------------------------------------------------------------------"
+  echo "Version         : $VERSION"
+  echo "Version no dots : $VERSION_NO_DOTS"
+  echo "Token           : $GH_ACCESS_TOKEN"
+  echo "Remote          : $REPO_REMOTE"
+  echo "Org             : $REPO_ORG_OR_USR"
+  echo "Repo name       : $REPO_NAME"
+  echo "URL             : $REPO_HTTP_URL"
+  echo "Proj name       : $PROJECT_NAME"
+  echo "Owner name      : $REPO_OWNER_NAME"
+  echo "Owner email     : $REPO_OWNER_EMAIL"
+  echo "--------------------------------------------------------------------------------"
+}
 
 # https://gist.github.com/stefanbuck/ce788fee19ab6eb0b4447a85fc99f447
 function validate_token () {
   curl -o /dev/null -sH "$AUTH" $GH_RELEASE_URL || { echo "Error: Invalid repo, token or network issue!";  exit 1; }
 }
-validate_token
 
 function create_tag () {
-  
   echo -e "\nchecking existing release..."
-  # check if release already exists
+  # check if tag already exists
   # GET /repos/:owner/:repo/releases/tags/:tag
-  # echo $GH_RELEASE_CHECK_URL
   RELEASE_ID=$(curl -s $GH_RELEASE_CHECK_URL | jq -r .id)
-
-  if [[ ! -z "$RELEASE_ID" ]]
+  if [ -n "$RELEASE_ID" -a "$RELEASE_ID" != 'null' ]
   then
-    if [ "$RELEASE_ID" != null ]
-    then
-      echo "... release ID: $RELEASE_ID already exists!"
-      return
-    fi
+    echo "... release ID: $RELEASE_ID already exists!"
+    return
   else 
     echo "... no release found"
     echo -e "\ncreating release..."
@@ -81,15 +78,17 @@ RELEASE_JSON="{\
   RELEASE=$(curl --data ${RELEASE_JSON} -s ${GH_RELEASE_URL})
   echo $RELEASE
   RELEASE_ID=$( echo $RELEASE | jq -r .id)
+  echo $RELEASE_ID
   RELEASE_ERRORS=$( echo $RELEASE | jq -r .errors)
-  if [ "$RELEASE_ERRORS" != null ]
+  echo $RELEASE_ERRORS
+  if [ -n "$RELEASE_ERRORS" -a "$RELEASE_ERRORS" != 'null' ]
   then
     echo "Failed to create GitHub release. Exiting with errors: $RELEASE_ERRORS"
     exit 1
   fi
 
   # exit script if GitHub release was not successfully created
-  if [ "$RELEASE_ID" ]
+  if [ -z "$RELEASE_ID" ]
   then
     echo "Failed to create GitHub release. Exiting with error."
     exit 1
@@ -98,7 +97,7 @@ RELEASE_JSON="{\
     echo -e "Release ID      : $RELEASE_ID"
   fi
 }
-create_tag
+
 
 function add_release_file () {
   echo -e "\nchecking existing asset..."
@@ -107,16 +106,13 @@ function add_release_file () {
   ASSET_DATA=$(curl -s "https://api.github.com/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases/$RELEASE_ID/assets?access_token=$GH_ACCESS_TOKEN")
   ASSET_ID=$(echo $ASSET_DATA | jq -r '.[0].id')
   echo "ASSET ID: $ASSET_ID"
-  if [[ ! -z "$ASSET_ID" ]]
+  if [ -n "$ASSET_ID" -a "$ASSET_ID" != 'null' ]
   then
-    if [ "$ASSET_ID" != null ]
-    then
-      echo "... asset ID $ASSET_ID: already exists for this release!"
-      echo "... DELETING asset ID $ASSET_ID!"
-      ASSET_DELETE=$(curl -s -X DELETE "https://api.github.com/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases/assets/$ASSET_ID?access_token=$GH_ACCESS_TOKEN")
-      # echo $ASSET_DELETE
-      # return
-    fi
+    echo "... asset ID $ASSET_ID: already exists for this release!"
+    echo "... DELETING asset ID $ASSET_ID!"
+    ASSET_DELETE=$(curl -s -X DELETE "https://api.github.com/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases/assets/$ASSET_ID?access_token=$GH_ACCESS_TOKEN")
+    echo $ASSET_DELETE
+    # return
   else 
     echo "... no asset found"
     echo -e "\ncreating asset..."
@@ -130,27 +126,27 @@ function add_release_file () {
   ASSET_ID=$( echo $ASSET_INFO | jq -r .id)
   ASSET_NAME=$( echo $ASSET_INFO | jq -r .name)
   ASSET_SIZE=$( echo $ASSET_INFO | jq -r .size)
-  # echo $ASSET_INFO
-  # echo $ASSET_ERRORS
-  # echo $ASSET_ID
 
-  if [ "$ASSET_ERRORS" != null ]
+  if [ -n "$ASSET_ERRORS" -a "$ASSET_ERRORS" != 'null' ]
   then
     echo "Failed to create GitHub asset. Exiting with errors: $ASSET_ERRORS"
     exit 1
   fi
 
-  if [[ -z "$ASSET_ID" ]]
+  if [ -n "$ASSET_ID" -a "$ASSET_ID" != 'null' ]
   then
-    echo "Failed to create GitHub asset. Exiting with error."
-    #exit 1
-  else
     echo -e "  ... asset created !\n"
     echo "Asset ID        : $ASSET_ID"
     echo "Asset name      : $ASSET_NAME"
     echo "Asset size      : $ASSET_SIZE"
     echo "Asset Download  : $ASSET_DWNLD_URL"
+  else
+    echo "Failed to create GitHub asset. Exiting with error."
+    exit 1
   fi
-
 }
+
+printInfo
+validate_token
+create_tag
 add_release_file
