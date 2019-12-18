@@ -102,8 +102,10 @@ commit:
 	@-git commit --dry-run --short
 	@-git add languages/*
 	@-git commit -o languages -m "[T9N] Translations updated"
-	@git commit -am "[VER] Bump to v$(VERSION)"
+	@-git add wpforms-epfl-payonline.php
+	@git commit -o wpforms-epfl-payonline.php -m "[VER] Bump to v$(VERSION)"
 	@-git push
+	@-git status
 
 .PHONY: tag
 tag:
