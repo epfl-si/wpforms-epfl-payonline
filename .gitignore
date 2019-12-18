@@ -2,6 +2,8 @@
 builds
 # Please ignore translations backup
 languages/*.*~
+# When creating backup with sed
+*.php.bak
 
 # Created by https://www.gitignore.io/api/macos,intellij,phpcodesniffer
 # Edit at https://www.gitignore.io/?templates=macos,intellij,phpcodesniffer

@@ -10,8 +10,9 @@ REPO_OWNER_NAME := $(shell git config --get user.name)
 # ponsfrilus@gmail.com
 REPO_OWNER_EMAIL := $(shell git config --get user.email)
 
-
-# .SILENT: all zip pot
+# This create the whole jam for publishing a new release on github, including 
+# a new version number, updated translation, a "Bounce version commit", a new
+# tag and a new release including the wpforms-epfl-payonline.zip as asset.
 .PHONY: release
 release: check
 	$(MAKE) version
@@ -49,11 +50,17 @@ endef
 # By default, bounce patch version
 .PHONY: version
 version: bump-version.sh
+	$(MAKE) version-patch
+
+.PHONY: version-patch
+version-patch: bump-version.sh
 	./bump-version.sh -p
 
+.PHONY: version-minor
 version-minor: bump-version.sh
 	./bump-version.sh -m
 
+.PHONY: version-major
 version-major: bump-version.sh
 	./bump-version.sh -M
 
@@ -67,23 +74,13 @@ pot: check-wp check-gettext languages/$(PROJECT_NAME).pot
 	fi
 	msgfmt --output-file=languages/$(PROJECT_NAME)-fr_FR.mo languages/$(PROJECT_NAME)-fr_FR.po
 
-.PHONY: commit
-commit:
-	@-git commit --dry-run --short
-	@git commit -am "[VER] Bump to v$(VERSION)"
-	@-git push
-
-.PHONY: tag
-tag:
-	@-git tag -a v$(VERSION) -m "Version $(VERSION)"
-	@-git push origin --tags
-
 .PHONY: zip
 zip: check-zip
 	@zip -r -FS builds/wpforms-epfl-payonline-$(VERSION).zip * \
 		--exclude *.git* \
 		--exclude *.zip \
 		--exclude *.po~ \
+		--exclude *.php.bak \
 		--exclude \*builds\* \
 		--exclude \*doc\* \
 		--exclude Makefile \
@@ -99,6 +96,17 @@ zip: check-zip
 		ln -s wpforms-epfl-payonline-$(VERSION).zip ./latest.zip; \
 	fi
 	@echo "Zip for version $(VERSION) is now available in ./builds/wpforms-epfl-payonline.zip"
+
+.PHONY: commit
+commit:
+	@-git commit --dry-run --short
+	@git commit -am "[VER] Bump to v$(VERSION)"
+	@-git push
+
+.PHONY: tag
+tag:
+	@-git tag -a v$(VERSION) -m "Version $(VERSION)"
+	@-git push origin --tags
 
 .PHONY: gh-release
 gh-release: create-gh-release.sh
