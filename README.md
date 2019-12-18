@@ -3,7 +3,9 @@
 [WPForms EPFL Payonline] is a [WPForms] addon that allows the
 use of [EPFL Payonline] as a payment gateway.
 
-_DISCLAIMER: This addon is only useful in the [EPFL] ecosystem. Therefore, any attempt to use it "as is" without any modification will most certainly fail. Consider yourself warned..._
+_DISCLAIMER: This addon is only useful in the [EPFL] ecosystem. Therefore, any 
+attempt to use it "as is" without any modification will most certainly fail. 
+Consider yourself warned..._
 
 ## Pre-requisites
 
@@ -22,7 +24,7 @@ WIP
 
 ## Contributing
 
-You probably already know the drill → [CONTRIBUTING.md]
+You probably already know the drill: [CONTRIBUTING.md]
 
 ## Help and support
 
