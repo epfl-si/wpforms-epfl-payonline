@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WPForms EPFL Payonline 0.0.4\n"
 "Report-Msgid-Bugs-To: https://github.com/wp-cli/i18n-command/issues\n"
-"POT-Creation-Date: 2019-12-18T14:31:42+01:00\n"
+"POT-Creation-Date: 2019-12-18T16:27:01+01:00\n"
 "PO-Revision-Date: 2019-12-11 18:32+0100\n"
 "Last-Translator: nborboen <nicolas.borboen@epfl.ch>\n"
 "Language-Team: French\n"
@@ -37,36 +37,36 @@ msgstr ""
 msgid "https://go.epfl.ch/nbo"
 msgstr "https://payonline.epfl.ch?lang=fr"
 
-#: class-epfl-payonline.php:101
+#: class-epfl-payonline.php:118
 msgid "EPFL Payonline Payment stopped by conditional logic"
 msgstr "Paiement EPFL Payonline arrêté à cause de la logique conditionnelle"
 
-#: class-epfl-payonline.php:119
+#: class-epfl-payonline.php:136
 msgid "EPFL Payonline Payment stopped, missing payment fields"
 msgstr "Paiement EPFL Payonline arrêté, champs de paiement manquants"
 
-#: class-epfl-payonline.php:125
+#: class-epfl-payonline.php:142
 msgid "EPFL Payonline Payment stopped, invalid/empty amount"
 msgstr "Paiement EPFL Payonline arrêté, montant non valide ou vide"
 
-#: class-epfl-payonline.php:345
+#: class-epfl-payonline.php:362
 msgid "Payment failed: recipient emails do not match"
 msgstr "Échec du paiement : les e-mails des destinataires ne correspondent pas"
 
-#: class-epfl-payonline.php:348
+#: class-epfl-payonline.php:365
 msgid "Payment failed: payonline returned 0"
 msgstr "Échec du paiement : la valeur retournée par payonline est 0"
 
-#: class-epfl-payonline.php:355
+#: class-epfl-payonline.php:372
 msgid "EPFL Payonline Return Error"
 msgstr "Échec du paiement : payonline a retourné une erreure"
 
-#: class-epfl-payonline.php:463
+#: class-epfl-payonline.php:483
 msgid "EPFL Payonline"
 msgstr "EPFL Payonline"
 
 #. translators: %s - Addons page URL in admin area.
-#: class-epfl-payonline.php:490
+#: class-epfl-payonline.php:510
 msgid ""
 "This addon allows to use <a href=\"%s\">EPFL Payonline</a> with the <a href="
 "\"%s\">WPForms plugin</a>. Please read <a href=\"%s\">Payonline Help</a>."
@@ -75,23 +75,23 @@ msgstr ""
 "<a href=\"%s\">plugin WPForms</a>. Merci de lire <a href=\"%s\">l'aide "
 "Payonline</a>."
 
-#: class-epfl-payonline.php:497
+#: class-epfl-payonline.php:517
 msgid "https://payonline.epfl.ch?lang=en"
 msgstr "https://payonline.epfl.ch?lang=fr"
 
-#: class-epfl-payonline.php:499
+#: class-epfl-payonline.php:519
 msgid "https://wiki.epfl.ch/payonline-help"
 msgstr "https://wiki.epfl.ch/payonline-aide"
 
-#: class-epfl-payonline.php:507
+#: class-epfl-payonline.php:527
 msgid "Enable EPFL Payonline payments"
 msgstr "Activer les paiements EPFL Payonline"
 
-#: class-epfl-payonline.php:518
+#: class-epfl-payonline.php:538
 msgid "EPFL Payonline instance ID"
 msgstr "ID de l'instance EPFL Payonline"
 
-#: class-epfl-payonline.php:521
+#: class-epfl-payonline.php:541
 msgid ""
 "You must create a payment instance (entity that identifies your conference "
 "in the Payonline service) by using the \"New Instance\" link in the main "
@@ -103,27 +103,27 @@ msgstr ""
 "menu du site <a href=\"https://payonline.epfl.ch\" target=\"_blank"
 "\">payonline.epfl.ch</a>"
 
-#: class-epfl-payonline.php:529
+#: class-epfl-payonline.php:549
 msgid "EPFL Payonline Email Address"
 msgstr ""
 
-#: class-epfl-payonline.php:532
+#: class-epfl-payonline.php:552
 msgid "Enter your EPFL Payonline address for the payment to be sent"
 msgstr ""
 
-#: class-epfl-payonline.php:540
+#: class-epfl-payonline.php:560
 msgid "Mode"
 msgstr "Mode"
 
-#: class-epfl-payonline.php:545
+#: class-epfl-payonline.php:565
 msgid "Production"
 msgstr "Production"
 
-#: class-epfl-payonline.php:546
+#: class-epfl-payonline.php:566
 msgid "Test / Sandbox"
 msgstr "Test / Sandbox"
 
-#: class-epfl-payonline.php:548
+#: class-epfl-payonline.php:568
 msgid ""
 "Select Production to receive real payments or select Test to use the EPFL "
 "Payonline developer sandbox (id_inst=1234567890)"
@@ -131,44 +131,44 @@ msgstr ""
 "Sélectionnez Production pour recevoir des paiements réels ou sélectionnez "
 "Test pour utiliser l'instance Payonline de test (id_inst=1234567890)"
 
-#: class-epfl-payonline.php:583
+#: class-epfl-payonline.php:603
 msgid "Shipping"
 msgstr "Livraison"
 
-#: class-epfl-payonline.php:588
+#: class-epfl-payonline.php:608
 msgid "Don't ask for an address"
 msgstr "Ne pas demander d’adresse"
 
-#: class-epfl-payonline.php:589
+#: class-epfl-payonline.php:609
 msgid "Ask for an address, but do not require"
 msgstr "Demander une adresse, mais ne pas l’exiger"
 
-#: class-epfl-payonline.php:590
+#: class-epfl-payonline.php:610
 msgid "Ask for an address and require it"
 msgstr "Demander une adresse et l’exiger"
 
-#: class-epfl-payonline.php:599
+#: class-epfl-payonline.php:619
 msgid "Don't ask buyer to include a note with payment"
 msgstr "Ne pas demander à l’acheteur d’inclure une note avec le paiement"
 
-#: class-epfl-payonline.php:614
+#: class-epfl-payonline.php:634
 msgid "Process"
 msgstr "Traiter"
 
-#: class-epfl-payonline.php:615
+#: class-epfl-payonline.php:635
 msgid "Don't process"
 msgstr "Ne pas traiter"
 
-#: class-epfl-payonline.php:617
+#: class-epfl-payonline.php:637
 msgid "this charge if"
 msgstr "ces frais si"
 
-#: class-epfl-payonline.php:618
+#: class-epfl-payonline.php:638
 msgid "EPFL Payonline Standard payment"
 msgstr "EPFL Payonline Standard payment"
 
 #. translators: %s - Addons page URL in admin area.
-#: class-epfl-payonline.php:627
+#: class-epfl-payonline.php:647
 msgid ""
 "Install the <a href=\"%s\">Conditional Logic addon</a> to enable conditional "
 "logic for EPFL Payonline payments."
@@ -176,15 +176,15 @@ msgstr ""
 "Installer le <a href=\"%s\">module Conditional Logic</a> pour activer la "
 "logique conditionnelle pour les paiements EPFL Payonline."
 
-#: class-epfl-payonline.php:656 class-epfl-payonline.php:657
+#: class-epfl-payonline.php:676 class-epfl-payonline.php:677
 msgid "Plugin Additional Links"
 msgstr "Liens additionnels du plugin"
 
-#: class-epfl-payonline.php:656
+#: class-epfl-payonline.php:676
 msgid "Payonline"
 msgstr "Payonline"
 
-#: class-epfl-payonline.php:657
+#: class-epfl-payonline.php:677
 msgid "Help Payonline"
 msgstr "Aide Payonline"
 
