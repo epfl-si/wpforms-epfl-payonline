@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the WPForms EPFL Payonline plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: WPForms EPFL Payonline 0.0.8\n"
+"Project-Id-Version: WPForms EPFL Payonline 0.0.9\n"
 "Report-Msgid-Bugs-To: https://github.com/wp-cli/i18n-command/issues\n"
 "Last-Translator: Nicolas Borboën <ponsfrilus@gmail.com>\n"
 "Language-Team: EPFL IDEV-FSD <https://github.com/epfl-idevelop/wpforms-epfl-payonline>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2019-12-17T16:08:23+01:00\n"
+"POT-Creation-Date: 2019-12-18T14:35:10+01:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: wpforms-epfl-payonline\n"
@@ -152,15 +152,15 @@ msgstr ""
 msgid "Install the <a href=\"%s\">Conditional Logic addon</a> to enable conditional logic for EPFL Payonline payments."
 msgstr ""
 
-#: class-epfl-payonline.php:647
-#: class-epfl-payonline.php:648
+#: class-epfl-payonline.php:656
+#: class-epfl-payonline.php:657
 msgid "Plugin Additional Links"
 msgstr ""
 
-#: class-epfl-payonline.php:647
+#: class-epfl-payonline.php:656
 msgid "Payonline"
 msgstr ""
 
-#: class-epfl-payonline.php:648
+#: class-epfl-payonline.php:657
 msgid "Help Payonline"
 msgstr ""
