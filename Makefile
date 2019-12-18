@@ -100,6 +100,8 @@ zip: check-zip
 .PHONY: commit
 commit:
 	@-git commit --dry-run --short
+	@-git add languages/*
+	@-git commit -o languages -m "[T9N] Translations updated"
 	@git commit -am "[VER] Bump to v$(VERSION)"
 	@-git push
 
