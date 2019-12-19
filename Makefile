@@ -99,11 +99,23 @@ zip: check-zip
 
 .PHONY: commit
 commit:
-	@-git commit --dry-run --short
+	@if [[ -z $$(git commit --dry-run --short | grep CHANGELOG.md) ]]; then \
+		read -p "Did you forget to modify the CHANGELOG? Want to abort? [Yy]: " -n 1 -r; \
+		if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+			echo -e "\nAborting....\n"; \
+			exit 1; \
+		else \
+			echo -e "\nContinuing....\n"; \
+		fi \
+	fi
 	@-git add languages/*
 	@-git commit -o languages -m "[T9N] Translations updated"
 	@-git add wpforms-epfl-payonline.php
-	@git commit -o wpforms-epfl-payonline.php -m "[VER] Bump to v$(VERSION)"
+	@-git commit -o wpforms-epfl-payonline.php -m "[VER] Bump to v$(VERSION)"
+	read -p "Would you like to git add all? [Yy]: " -n 1 -r; \
+	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+		git add . ; \
+	fi
 	@-git push
 	@-git status
 
