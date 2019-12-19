@@ -30,6 +30,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		add_filter( 'wpforms_has_payment_gateway', array( $this, 'filter_has_payment_gateway' ), 10, 1 );
 
 		// Define filters for payment details (see wpforms/pro/includes/admin/entries/class-entries-single.php)
+		add_action( 'wpforms_entry_payment_sidebar_actions', array( $this, 'action_entry_payment_sidebar' ), 10, 2 );
 		add_filter( 'wpforms_entry_details_payment_gateway', array( $this, 'filter_entry_details_payment_gateway' ), 10, 3 );
 		add_filter( 'wpforms_entry_details_payment_transaction', array( $this, 'filter_entry_details_payment_transaction' ), 10, 3 );
 		
@@ -39,13 +40,44 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		// Plugin updater
 		// https://rudrastyh.com/wordpress/self-hosted-plugin-update.html
 		add_filter( 'site_transient_update_plugins', array( $this, 'wpforms_epfl_payonline_push_update' ), 20, 1 );
-		add_action( 'upgrader_process_complete',  array( $this, 'wpforms_epfl_payonline_after_update' ), 10, 2 );
+		add_action( 'upgrader_process_complete', array( $this, 'wpforms_epfl_payonline_after_update' ), 10, 2 );
 
 		// Plugin details
 		add_filter('plugins_api', array( $this, 'wpforms_epfl_payonline_plugin_info' ), 20, 3);
 
 	}
 
+	function test($entry, $form) {
+		error_log("--------------------------------------------");
+		error_log(var_export($entry->meta, true));
+		error_log("--------------------------------------------");
+		error_log(var_export(json_decode($entry->meta), true));
+		error_log("--------------------------------------------");
+		//error_log("--------------------------------------------");
+		//error_log(var_export($form, true));
+		//error_log("--------------------------------------------");
+		//error_log(var_export($th, true));
+		$entry_meta = json_decode($entry->meta);
+
+		// echo '<p class="wpforms-entry-payment-transaction2">Postfinance transaction ID:';
+		// echo sprintf( ' <a href="https://payonline.epfl.ch/cgi-bin/payonline/dettrans?id_trans=%s" target="_blank" rel="noopener noreferrer">%s</a>', $entry_meta->payment_transaction, $entry_meta->payment_transaction );
+		// echo '</p>';
+
+		if ( ! empty($entry_meta->payment_paymode) ) {
+			$entry_meta->payment_paymode = ($entry_meta->payment_paymode == 'PostFinance Card PostFinance Card') ? 'PostFinance Card' : $entry_meta->payment_paymode;
+			$entry_meta->payment_paymode = ($entry_meta->payment_paymode == 'PAYPAL PAYPAL') ? 'PayPal' : $entry_meta->payment_paymode;
+			echo '<p class="wpforms-entry-payment-paymode">';
+			echo __('Paymode') . ': ' ;
+			echo '<strong>' . $entry_meta->payment_paymode . '</strong>';
+			echo '</p>';
+		}
+
+		if ( ! empty($entry_meta->payment_id_inst) ) {
+			echo '<p class="wpforms-entry-payment-list">';
+			echo sprintf( '<a href="https://payonline.epfl.ch/cgi-bin/payonline/listtrans?id=%s" target="_blank" rel="noopener noreferrer">%s</a>', $entry_meta->payment_id_inst, __( 'Payonline transactions list', 'wpforms-epfl-payonline' ) );
+			echo '</p>';
+		}
+	}
 	/**
 	 * Process and submit entry to provider.
 	 *
@@ -166,7 +198,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		$redirect    = 'production' === $payment_settings['mode'] ? 'https://payonline.epfl.ch/cgi-bin/commande/?' : 'https://payonline.epfl.ch/cgi-bin/commande/?';
 		$id_inst     = 'production' === $payment_settings['mode'] ? $payment_settings['id_inst'] : '1234567890';
 		$cancel_url  = ! empty( $payment_settings['cancel_url'] ) ? esc_url_raw( $payment_settings['cancel_url'] ) : home_url();
-		$transaction = 'donation' === $payment_settings['transaction'] ? '_donations' : '_cart';
+		$transaction = ! empty( $payment_settings['transaction'] ) && 'donation' === $payment_settings['transaction'] ? '_donations' : '_cart';
 
 		// Setup EPFL Payonline arguments.
 		$payonline_args = array(
@@ -303,6 +335,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			error_log( "Hit index.php?EPFLPayonline; RETURN" );
 			return;
 		}
+		error_log("PAYONLINE RETURN: --------------------------------------------------------");
 		error_log( var_export($_POST, true) );
 
 		$data = array();
@@ -318,7 +351,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			return;
 		}
 
-		// Get payment (entry).
+		// Verify that the returned hash is legit
 		if ( !$this->ssha_password_verify($data['token'], $data['id_transact']. ':' . $data['id_inst']) ) {
 			error_log( "Error: Hash can not be verified" );
 			return;
@@ -327,7 +360,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		$error          = '';
 		$payment_id     = absint( $data['invoice'] );
 		$payment        = wpforms()->entry->get( absint( $payment_id ) );
-		$payment_status = $data['result']; // result		if ( 'completed' === $payment_status || 'production' !== $payment_meta['payment_mode'] ) {
+		$payment_status = $data['result'];
 		$form_data      = wpforms()->form->get( $payment->form_id, array(
 			'content_only' => true,
 		) );
@@ -340,68 +373,59 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		
 		$payment_meta = json_decode( $payment->meta, true );
 
-			// Verify payment recipient emails match.
-			if ( empty( $form_data['payments']['epfl_payonline']['email'] ) || strtolower( $data['business'] ) !== strtolower( trim( $form_data['payments']['epfl_payonline']['email'] ) ) ) {
-				$error = esc_html__( 'Payment failed: recipient emails do not match', 'wpforms-epfl-payonline' );
-			}
-			if ( 0 == $payment_status ) {
-				$error = esc_html__( 'Payment failed: payonline returned 0', 'wpforms-epfl-payonline' );
-			}
+		// Verify payment recipient emails match.
+		if ( empty( $form_data['payments']['epfl_payonline']['email'] ) || strtolower( $data['business'] ) !== strtolower( trim( $form_data['payments']['epfl_payonline']['email'] ) ) ) {
+			$error = esc_html__( 'Payment failed: recipient emails do not match', 'wpforms-epfl-payonline' );
+		}
+		if ( 0 == $payment_status ) {
+			$error = esc_html__( 'Payment failed: payonline returned 0', 'wpforms-epfl-payonline' );
+		}
 
-			// If there was an error, log and update the payment status.
-			if ( ! empty( $error ) || 0 == $payment_status ) {
-				$payment_meta['payment_note'] = $error;
-				wpforms_log(
-					esc_html__( 'EPFL Payonline Return Error', 'wpforms-epfl-payonline' ),
-					sprintf( '%s - Payonline data: %s', $error, '<pre>' . print_r( $data, true ) . '</pre>' ),
-					array(
-						'parent'  => $payment_id,
-						'type'    => array( 'error', 'payment' ),
-						'form_id' => $payment->form_id,
-					)
-				);
-				wpforms()->entry->update( $payment_id, array(
-					'status' => 'failed',
-					'meta'   => wp_json_encode( $payment_meta ),
-				) );
+		// If there was an error, log and update the payment status.
+		if ( ! empty( $error ) || 0 == $payment_status ) {
+			$payment_meta['payment_note'] = $error;
+			wpforms_log(
+				esc_html__( 'EPFL Payonline Return Error', 'wpforms-epfl-payonline' ),
+				sprintf( '%s - Payonline data: %s', $error, '<pre>' . print_r( $data, true ) . '</pre>' ),
+				array(
+					'parent'  => $payment_id,
+					'type'    => array( 'error', 'payment' ),
+					'form_id' => $payment->form_id,
+				)
+			);
+			wpforms()->entry->update( $payment_id, array(
+				'status' => 'failed',
+				'meta'   => wp_json_encode( $payment_meta ),
+			) );
 
-				return;
-			}
+			return;
+		}
 
-			// Completed payment.
-			if ( 1 == $payment_status ) {
+		// Completed payment.
+		if ( 1 == $payment_status ) {
+			$payment_meta['payment_transaction'] = $data['PaymentID']; // PostFinance transaction ID
+			$payment_meta['payment_id_inst']     = $data['id_inst']; // PostFinance transaction ID
+			$payment_meta['payment_paymode']     = $data['paymode']; // Master Card, etc...
+			//$payment_meta['payment_note']        = '-'; // Probably not needed if the payment is completed
+			$payment_meta['payonline']           = $data; // Save the returned value by payonline
 
-				$payment_meta['payment_transaction'] = $data['PaymentID'];
-				//$payment_meta['payment_note']        = 'Yay <a href="test">test</a>';
-				$user_url = esc_url(
-					add_query_arg(
-						array(
-							'user_id' => absint( $payment_meta['payment_transaction'] ),
-						),
-						admin_url( 'user-edit.php' )
-					)
-				);
-				$payment_meta['payment_note'] = "<strong><a href=" . $user_url . ">" . absint( $payment_meta['payment_transaction'] ) . "</a></strong>";
-				// $payment_meta['payment_note']        = 'Yay <a href="test">test</a>';
-				wpforms()->entry->update( $payment_id, array(
-					'status' => 'completed',
-					'meta'   => wp_json_encode( $payment_meta ),
-				) );
+			// TODO: add payonline transaction ID (which is currently not returned) to be able to provide a link to it
 
-			}
+			wpforms()->entry->update( $payment_id, array(
+				'status' => 'completed',
+				'meta'   => wp_json_encode( $payment_meta ),
+			) );
+		}
 
-			// Completed EPFL Payonline IPN call.
-			do_action( 'wpforms_epfl_payonline_process_complete', wpforms_decode( $payment->fields ), $form_data, $payment_id, $data );
+		// Just in case something elese is needed...
+		do_action( 'wpforms_epfl_payonline_process_complete', wpforms_decode( $payment->fields ), $form_data, $payment_id, $data );
 
+		error_log( "Payonline transaction returned  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - " );
 		error_log( var_export( $_POST, true ) );
 		error_log( var_export( $_GET, true ) );
 		error_log( var_export( $_SERVER, true ) );
-		error_log( " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - " );
-		echo var_export( $_POST, true ) ;
-		echo var_export( $_GET, true ) ;
-		echo var_export( $_SERVER, true ) ;
+		error_log( " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - " );
 		die();
-		
 	}
 
 	
@@ -445,6 +469,39 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		return $currencies;
 	}
 
+  /**
+	 * Add some details in the payment details sidebar
+	 */
+	public function action_entry_payment_sidebar( $entry, $form_data ) {
+		$entry_meta = json_decode($entry->meta);
+
+		// TODO: it would be nice to be able to create a link to the payment detail
+		//       on payonline, but right now there are no ways to get the 
+		//       transaction ID, payonline just return the payment ID issued from
+		//       Post Finance.
+		if ( ! empty($entry_meta->payment_id_inst) ) {
+		// echo '<p class="wpforms-entry-payment-payonline-link">';
+		// echo __('Payonline link') . ': ' ;
+		// echo sprintf( ' <a href="https://payonline.epfl.ch/cgi-bin/payonline/dettrans?id_trans=%s" target="_blank" rel="noopener noreferrer">%s</a>', $entry_meta->payment_transaction, $entry_meta->payment_transaction );
+		// echo '</p>';
+		}
+
+		if ( ! empty($entry_meta->payment_paymode) ) {
+			$entry_meta->payment_paymode = ($entry_meta->payment_paymode == 'PostFinance Card PostFinance Card') ? 'PostFinance Card' : $entry_meta->payment_paymode;
+			$entry_meta->payment_paymode = ($entry_meta->payment_paymode == 'PAYPAL PAYPAL') ? 'PayPal' : $entry_meta->payment_paymode;
+			echo '<p class="wpforms-entry-payment-paymode">';
+			echo __('Paymode') . ': ' ;
+			echo '<strong>' . $entry_meta->payment_paymode . '</strong>';
+			echo '</p>';
+		}
+
+		if ( ! empty($entry_meta->payment_id_inst) ) {
+			echo '<p class="wpforms-entry-payment-list">';
+			echo sprintf( '<a href="https://payonline.epfl.ch/cgi-bin/payonline/listtrans?id=%s" target="_blank" rel="noopener noreferrer">%s</a>', $entry_meta->payment_id_inst, __( 'Payonline transactions list', 'wpforms-epfl-payonline' ) );
+			echo '</p>';
+		}
+	}
+
 	/**
 	 * Enable by default EPFL Payonline payment gateway.
 	 *
@@ -470,7 +527,6 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	public function filter_entry_details_payment_transaction( $entry_meta, $entry, $form_data ) {
 		if ( ! empty( $entry['payment_transaction'] ) ) {
 			return $entry['payment_transaction']; // Links don't work here
-			// return sprintf( '<a href="https://payonline.epfl.ch/cgi-bin/payonline/dettrans?id_trans=%s" target="_blank" rel="noopener noreferrer">%s</a>', $entry['payment_transaction'], $entry['payment_transaction'] );
 		} else {
 			return '-';
 		}
