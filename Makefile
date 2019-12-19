@@ -112,9 +112,9 @@ commit:
 	@-git commit -o languages -m "[T9N] Translations updated"
 	@-git add wpforms-epfl-payonline.php
 	@-git commit -o wpforms-epfl-payonline.php -m "[VER] Bump to v$(VERSION)"
-	read -p "Would you like to git add all? [Yy]: " -n 1 -r; \
+	read -p "Would you like to git add and commit all? [Yy]: " -n 1 -r; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
-		git add . ; \
+		git commit -am "[ARE] Automated releasing change" ; \
 	fi
 	@-git push
 	@-git status

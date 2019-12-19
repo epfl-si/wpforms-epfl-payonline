@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.0.11
+* Payment details improvements
+* Releasing: improved process that check CHANGELOG
+* Code clean up
+
+## v0.0.10
+* Fix plugin "View details" link
+* Releasing: do not commit unstaged change by default
+
 ## v0.0.9
 * SemVer management and releasing scripts improved
 
