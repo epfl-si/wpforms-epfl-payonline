@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.0.13
+* Translations fix
+* Link to Payonline paiement details added
+
+## v0.0.12
+* Quick fix
+* Releasing: small improvements
+
 ## v0.0.11
 * Payment details improvements
 * Releasing: improved process that check CHANGELOG
