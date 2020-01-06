@@ -68,6 +68,7 @@ version-major: bump-version.sh
 pot: check-wp check-gettext languages/$(PROJECT_NAME).pot
 	@wp i18n make-pot . languages/$(PROJECT_NAME).pot --headers='$(JSON_HEADERS)'
 	if [ -f languages/$(PROJECT_NAME)-fr_FR.po ] ; then \
+		sed -i.bak '/Project-Id-Version:/c "Project-Id-Version: WPForms EPFL Payonline $(VERSION)\\n"' languages/$(PROJECT_NAME)-fr_FR.po; \
 		msgmerge --update languages/$(PROJECT_NAME)-fr_FR.po languages/$(PROJECT_NAME).pot; \
 	else \
 		msginit --input=languages/$(PROJECT_NAME).pot --locale=fr --output=languages/$(PROJECT_NAME)-fr_FR.po; \
@@ -81,6 +82,7 @@ zip: check-zip
 		--exclude *.zip \
 		--exclude *.po~ \
 		--exclude *.php.bak \
+		--exclude *.po.bak \
 		--exclude \*builds\* \
 		--exclude \*doc\* \
 		--exclude Makefile \
