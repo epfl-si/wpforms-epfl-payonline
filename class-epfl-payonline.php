@@ -364,7 +364,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			$error = esc_html__( 'Payment failed: recipient emails do not match', 'wpforms-epfl-payonline' );
 		}
 		if ( 0 == $payment_status ) {
-			$error = esc_html__( 'Payment failed: payonline returned 0', 'wpforms-epfl-payonline' );
+			$error = esc_html__( 'Payment failed: Payonline returned 0', 'wpforms-epfl-payonline' );
 		}
 
 		// If there was an error, log and update the payment status.
@@ -391,6 +391,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		if ( 1 == $payment_status ) {
 			$payment_meta['payment_transaction'] = $data['PaymentID']; // PostFinance transaction ID
 			$payment_meta['payment_id_inst']     = $data['id_inst']; // PostFinance transaction ID
+			$payment_meta['payment_id_trans']    = $data['id_trans']; // Payonline transaction ID
 			$payment_meta['payment_paymode']     = $data['paymode']; // Master Card, etc...
 			//$payment_meta['payment_note']        = '-'; // Probably not needed if the payment is completed
 			$payment_meta['payonline']           = $data; // Save the returned value by payonline
@@ -461,31 +462,30 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	public function action_entry_payment_sidebar( $entry, $form_data ) {
 		$entry_meta = json_decode($entry->meta);
 
-		// TODO: it would be nice to be able to create a link to the payment detail
-		//       on payonline, but right now there are no ways to get the 
-		//       transaction ID, payonline just return the payment ID issued from
-		//       Post Finance.
-		if ( ! empty($entry_meta->payment_id_inst) ) {
-		// echo '<p class="wpforms-entry-payment-payonline-link">';
-		// echo __('Payonline link') . ': ' ;
-		// echo sprintf( ' <a href="https://payonline.epfl.ch/cgi-bin/payonline/dettrans?id_trans=%s" target="_blank" rel="noopener noreferrer">%s</a>', $entry_meta->payment_transaction, $entry_meta->payment_transaction );
-		// echo '</p>';
-		}
-
 		if ( ! empty($entry_meta->payment_paymode) ) {
 			$entry_meta->payment_paymode = ($entry_meta->payment_paymode == 'PostFinance Card PostFinance Card') ? 'PostFinance Card' : $entry_meta->payment_paymode;
 			$entry_meta->payment_paymode = ($entry_meta->payment_paymode == 'PAYPAL PAYPAL') ? 'PayPal' : $entry_meta->payment_paymode;
 			echo '<p class="wpforms-entry-payment-paymode">';
-			echo __('Paymode') . ': ' ;
+			echo __( 'Paymode', 'wpforms-epfl-payonline' ) . ': ' ;
 			echo '<strong>' . $entry_meta->payment_paymode . '</strong>';
 			echo '</p>';
 		}
 
-		if ( ! empty($entry_meta->payment_id_inst) ) {
-			echo '<p class="wpforms-entry-payment-list">';
-			echo sprintf( '<a href="https://payonline.epfl.ch/cgi-bin/payonline/listtrans?id=%s" target="_blank" rel="noopener noreferrer">%s</a>', $entry_meta->payment_id_inst, __( 'Payonline transactions list', 'wpforms-epfl-payonline' ) );
+		if ( ! empty($entry_meta->payment_id_trans) || ! empty($entry_meta->payment_id_inst) ) {
+			echo '<p class="wpforms-entry-payment-id_trans">';
+			echo '<strong>' . __( 'Payonline', 'wpforms-epfl-payonline' ) . ': </strong>';
+			echo '<br><small>(' . __( 'Note: accessible only for Payonline instance\'s administrators', 'wpforms-epfl-payonline' ) . ')</small>' ;
+			if ( ! empty($entry_meta->payment_id_trans) ) {
+				echo '<br>&nbsp;&nbsp;•&nbsp;' . __( 'Transaction detail', 'wpforms-epfl-payonline' ) . ': ' ;
+				echo sprintf( '<a href="https://payonline.epfl.ch/cgi-bin/payonline/dettrans?id_trans=%s" target="_blank" rel="noopener noreferrer">%s</a>', $entry_meta->payment_id_trans, $entry_meta->payment_id_trans );
+			}
+			if ( ! empty($entry_meta->payment_id_inst) ) {
+				echo '<br>&nbsp;&nbsp;•&nbsp;' . __( 'Payonline transactions list', 'wpforms-epfl-payonline' ) . ': ' ;
+				echo sprintf( '<a href="https://payonline.epfl.ch/cgi-bin/payonline/listtrans?id=%s" target="_blank" rel="noopener noreferrer">%s</a>', $entry_meta->payment_id_inst, $entry_meta->payment_id_inst );
+			}
 			echo '</p>';
 		}
+
 	}
 
 	/**
@@ -560,7 +560,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			esc_html__( 'EPFL Payonline instance ID', 'wpforms-epfl-payonline' ),
 			array(
 				'parent'  => 'payments',
-				'tooltip' => esc_html__('You must create a payment instance (entity that identifies your conference in the Payonline service) by using the "New Instance" link in the main menu on <a href="https://payonline.epfl.ch" target="_blank">payonline.epfl.ch</a>', 'wpforms-epfl-payonline' ),
+				'tooltip' => esc_html__( 'You must create a payment instance (entity that identifies your conference in the Payonline service) by using the "New Instance" link in the main menu on <a href="https://payonline.epfl.ch" target="_blank">payonline.epfl.ch</a>', 'wpforms-epfl-payonline' ),
 			)
 		);
 		wpforms_panel_field(
