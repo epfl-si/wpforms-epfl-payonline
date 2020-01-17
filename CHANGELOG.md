@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.0.15
+* Functions `getFieldsFromType` and `getArraysFromType` to manage to get 
+  form fields data based on field type.
+* Debbuging cleaned up
+* CC payment confirmation to form manager
+* Better address management
+
 ## v0.0.13
 * Translations fix
 * Link to Payonline paiement details added
