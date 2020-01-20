@@ -395,7 +395,9 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		}
 
 		// Verify that the returned hash is legit
-		if ( !$this->ssha_password_verify($data['token'], $data['id_transact']. ':' . $data['id_inst']) ) {
+		if ($this->ssha_password_verify($data['token'], $data['id_transact']. ':' . $data['id_inst']) ) {
+            $this->setup_wpforms_superuser();  // Nobody is logged in, but the crypto checks out
+        } else {
 			error_log( "process_return_from_epfl_payonline: Error: Hash can not be verified" );
 			return;
 		}
@@ -455,10 +457,15 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			$entry_meta['payonline']           = $data;              // Save the returned value by payonline
 			//$entry_meta['payment_note']        = '-';              // Probably not needed if the payment is completed
 
-			wpforms()->entry->update( $entry_id, array(
+			$status = wpforms()->entry->update( $entry_id, array(
 				'status' => 'completed',
 				'meta'   => wp_json_encode( $entry_meta ),
 			) );
+
+			error_log("Success - wpforms()->entry->update " . var_export([$entry_id, array(
+				'status' => 'completed',
+				'meta'   => wp_json_encode( $entry_meta ),
+			)], true) . "returned " . var_export($status, true));
 
 			// Send email to benificiary (payment proof)
 			$email['subject']        = sprintf( esc_html__( '[%s] Payment confirmation for "%s"', 'wpforms-epfl-payonline' ), get_bloginfo( 'name' ), $form_data['settings']['form_title'] );
@@ -960,6 +967,16 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		$changelog_content = $Parsedown->text($changelog_content); # prints: <p>Hello <em>Parsedown</em>!</p>
 		return 'See CHANGELOG.md on <a href="https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/CHANGELOG.md">GitHub</a>.<br><div class="epfl_payonline_changelog">' . $changelog_content . '</div>';
 	}
+
+	/**
+	 * Override all permission checks for the duration of this query.
+	 *
+	 * This is for use in the "web hook" path, when Payonline calls us to transition the payment state (@see process_return_from_epfl_payonline)
+	 */
+	private function setup_wpforms_superuser () {
+		add_filter('wpforms_current_user_can', function() { return true; }, 10, 3);
+	}
+
 }
 
 new WPForms_EPFL_Payonline();
