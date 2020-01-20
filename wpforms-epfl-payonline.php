@@ -5,7 +5,7 @@
  * Description: EPFL Payonline integration with WPForms.
  * Author:      Nicolas Borboën
  * Author URI:  https://go.epfl.ch/nbo
- * Version:     0.0.15
+ * Version:     0.0.16
  * Text Domain: wpforms-epfl-payonline
  * Domain Path: languages
  * License:     GPL-2.0+
@@ -36,11 +36,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin version.
-define( 'WPFORMS_EPFL_PAYONLINE_VERSION', '0.0.15' );
+define( 'WPFORMS_EPFL_PAYONLINE_VERSION', '0.0.16' );
 // Plugin name.
 define( 'WPFORMS_EPFL_PAYONLINE_NAME', 'WPForms EPFL Payonline' );
 // Latest WP version tested with this plugin
-define( 'WP_LATEST_VERSION_WPFORMS_EPFL_PAYONLINE', '5.3.1' );
+define( 'WP_LATEST_VERSION_WPFORMS_EPFL_PAYONLINE', '5.4' );
 // Minimal WP version required for this plugin
 define( 'WP_MIN_VERSION_WPFORMS_EPFL_PAYONLINE', '5.0' );
 
