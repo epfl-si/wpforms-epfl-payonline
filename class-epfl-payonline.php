@@ -210,7 +210,8 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 		// Build the return URL with hash.
 		$query_args  = 'form_id=' . $form_data['id'] . '&entry_id=' . $entry_id . '&hash=' . wp_hash( $form_data['id'] . ',' . $entry_id );
-		$return_url = home_url('/index.php');
+		// $return_url = home_url('/index.php');
+		$return_url = home_url('/');
 		if ( ! empty( $form_data['settings']['ajax_submit'] ) && ! empty( $_SERVER['HTTP_REFERER'] ) ) {
 			$return_url = $_SERVER['HTTP_REFERER'];
 		}
@@ -242,13 +243,13 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			'id_inst'       => $id_inst,
 			'Currency'      => strtoupper( wpforms_setting( 'currency', 'USD' ) ),
 			// @TODO: Get real entry
-			'LastName'      => $this->getArraysFromType( $fields, 'name')[0]['last'],
-			'FirstName'     => $this->getArraysFromType( $fields, 'name')[0]['first'],
+			'LastName'      => $this->getArraysFromType( $fields, 'name' )[0]['last'],
+			'FirstName'     => $this->getArraysFromType( $fields, 'name' )[0]['first'],
 			'Addr'          => $payonline_addr,
-			'ZipCode'       => $this->getArraysFromType( $fields, 'address')[0]['postal'],
-			'City'          => $this->getArraysFromType( $fields, 'address')[0]['city'],
-			'Country'       => $this->getArraysFromType( $fields, 'address')[0]['country'],
-			'Email'         => $this->getFieldsFromType( $fields, 'email')[0],
+			'ZipCode'       => $this->getArraysFromType( $fields, 'address' )[0]['postal'],
+			'City'          => $this->getArraysFromType( $fields, 'address' )[0]['city'],
+			'Country'       => $this->getArraysFromType( $fields, 'address' )[0]['country'],
+			'Email'         => $this->getFieldsFromType( $fields, 'email' )[0],
 			'id_transact'   => absint( $entry_id ),
 			// 'URL'           => "http://localhost:8080/index.php?commande=OK",
 			// 'url'           => "http://localhost:8080/index.php?commande=OK",
@@ -266,7 +267,8 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			'invoice'       => absint( $entry_id ),	
 			'no_note'       => absint( $payment_settings['note'] ),
 			'no_shipping'   => absint( $payment_settings['shipping'] ),
-			'notify_url'    => add_query_arg( 'wpforms-listener', '', home_url( 'index.php' ) ), // add_query_arg( 'wpforms-listener', 'IPN', home_url( 'index.php' ) ),
+			// 'notify_url'    => add_query_arg( 'wpforms-listener', '', home_url( 'index.php' ) ), // add_query_arg( 'wpforms-listener', 'IPN', home_url( 'index.php' ) ),
+			'notify_url'    => add_query_arg( 'wpforms-listener', '', home_url( '/' ) ), // add_query_arg( 'wpforms-listener', 'IPN', home_url( 'index.php' ) ),
 			'return'        => $return_url,
 			'rm'            => '2',
 			'tax'           => 0,
@@ -371,8 +373,9 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	public function process_return_from_epfl_payonline () {
 		// Anything like wp_url/index.php?EPFLPayonline
 		if ( ! isset( $_GET['EPFLPayonline'] ) || ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' !== $_SERVER['REQUEST_METHOD'] ) ) {
-			error_log( "process_return_from_epfl_payonline: Hit index.php?EPFLPayonline; RETURN" );
 			return;
+		} else {
+			error_log( "process_return_from_epfl_payonline: Get hit on '/?EPFLPayonline'" );
 		}
 
 		$data = array();
