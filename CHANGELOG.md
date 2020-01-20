@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.0.19
+* Compatibility with latest WPForms version
+* Moar logs
+
 ## v0.0.18
 * Addition debug logs
 
