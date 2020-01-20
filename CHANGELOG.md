@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.0.18
+* Addition debug logs
+
+## v0.0.17
+* Get rid of PHP 7 array '[]'
+
+## v0.0.16
+* Translation updated
+
 ## v0.0.15
 * Functions `getFieldsFromType` and `getArraysFromType` to manage to get 
   form fields data based on field type.

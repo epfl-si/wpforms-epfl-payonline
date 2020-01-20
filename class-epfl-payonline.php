@@ -275,8 +275,9 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			'upload'        => '1',
 		);
 
-		// error_log('payonline_args ------------------');
-		// error_log( print_r( $payonline_args, true ) );
+		error_log('BEGIN payonline_args ------------------');
+		error_log( print_r( $payonline_args, true ) );
+		error_log('END payonline_args ------------------');
 
 		// Add cart items.
 		if ( '_cart' === $transaction ) {
@@ -356,8 +357,10 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		$ohash = substr($ohash, 0, 20);
 		$nhash = pack("H*", sha1($inputHash . $osalt));
 		if ($ohash === $nhash) {
+			error_log( "ssha_password_verify (" . $token . " - " . $inputHash  . "): success " );
 			return True;
 		} else {
+			error_log( "ssha_password_verify (" . $token . " - " . $inputHash  . "): failed " );
 			return False;
 		}
 	}
@@ -443,6 +446,8 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 		// Completed payment.
 		if ( 1 == $payment_status ) {
+			error_log( "process_return_from_epfl_payonline: payment_status == 1" );
+
 			$entry_meta['payment_transaction'] = $data['PaymentID']; // PostFinance transaction ID
 			$entry_meta['payment_id_inst']     = $data['id_inst'];   // PostFinance transaction ID
 			$entry_meta['payment_id_trans']    = $data['id_trans'];  // Payonline transaction ID
