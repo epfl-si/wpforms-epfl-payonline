@@ -73,7 +73,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	 */
 	private function getFieldsFromType ($fields, $type) {
 		$wantedArrays = $this->getArraysFromType($fields, $type);
-		$wantedFields = [];
+		$wantedFields = array();
 		foreach ($wantedArrays as $key => $value) {
 			$wantedFields[] = $wantedArrays[$key]['value'];
 		}
@@ -92,7 +92,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		if ((is_string($fields) && (is_object(json_decode($fields)) || is_array(json_decode($fields))))) {
 			$fields = json_decode( $fields, true );
 		}
-		$wantedArrays = [];
+		$wantedArrays = array();
 		foreach ($fields as $key => $value) {
 			if ( $value['type'] === $type ) {
 				$wantedArrays[] = $fields[$key];
