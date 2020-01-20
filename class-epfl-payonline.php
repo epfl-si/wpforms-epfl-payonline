@@ -120,7 +120,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			return;
 		}
 
-		// Degubbing submission to EPFL Payonline
+		// Debugging submission to EPFL Payonline
 		// error_log('payment settings ------------------');
 		// error_log(var_export($form_data['payments'][ $this->slug ], true));
 		// error_log('fields ------------------');
