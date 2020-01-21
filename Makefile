@@ -77,6 +77,7 @@ pot: check-wp check-gettext languages/$(PROJECT_NAME).pot
 
 .PHONY: zip
 zip: check-zip
+	@mkdir builds
 	@zip -r -FS builds/wpforms-epfl-payonline-$(VERSION).zip * \
 		--exclude *.git* \
 		--exclude *.zip \

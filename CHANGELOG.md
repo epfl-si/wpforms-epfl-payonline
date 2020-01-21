@@ -2,8 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.0.20
+* Improved compatibility with WPForms version 1.5.8.2
+* Code cleanup
+
 ## v0.0.19
-* Compatibility with latest WPForms version
+* Compatibility with latest WPForms version 1.5.8.2
 * Moar logs
 
 ## v0.0.18
