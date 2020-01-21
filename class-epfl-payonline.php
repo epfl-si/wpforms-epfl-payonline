@@ -206,7 +206,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 				)
 			),
 		);
-		wpforms()->entry->update( $entry_id, $entry_data );
+		wpforms()->entry->update( $entry_id, $entry_data, '', '', array( 'cap' => false ) );
 
 		// Build the return URL with hash.
 		$query_args  = 'form_id=' . $form_data['id'] . '&entry_id=' . $entry_id . '&hash=' . wp_hash( $form_data['id'] . ',' . $entry_id );
@@ -396,15 +396,13 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		}
 
 		// Verify that the returned hash is legit
-		if ($this->ssha_password_verify($data['token'], $data['id_transact']. ':' . $data['id_inst']) ) {
-            $this->setup_wpforms_superuser();  // Nobody is logged in, but the crypto checks out
-        } else {
+		if ( ! $this->ssha_password_verify($data['token'], $data['id_transact']. ':' . $data['id_inst']) ) {
 			error_log( "process_return_from_epfl_payonline: Error: Hash can not be verified" );
 			return;
 		}
 
 		$error          = '';
-		$entry_id       = absint( $data['invoice'] );
+		$entry_id       = absint( $data['id_transact'] );
 		$entry          = wpforms()->entry->get( absint( $entry_id ) );
 		$payment_status = $data['result'];
 		$form_data      = wpforms()->form->get( $entry->form_id, array(
@@ -439,11 +437,17 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 					'form_id' => $entry->form_id,
 				)
 			);
-			wpforms()->entry->update( $entry_id, array(
-				'status' => 'failed',
-				'meta'   => wp_json_encode( $entry_meta ),
-			) );
-
+			error_log( "process_return_from_epfl_payonline: Failed: " . $error . " " . var_export($data, true) );
+			wpforms()->entry->update(
+				$entry_id,
+				array(
+					'status' => 'failed',
+					'meta'   => wp_json_encode( $entry_meta ),
+				),
+				'',
+				'',
+				array( 'cap' => false )
+			);
 			return;
 		}
 
@@ -451,22 +455,25 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		if ( 1 == $payment_status ) {
 			error_log( "process_return_from_epfl_payonline: payment_status == 1" );
 
-			$entry_meta['payment_transaction'] = $data['PaymentID']; // PostFinance transaction ID
-			$entry_meta['payment_id_inst']     = $data['id_inst'];   // PostFinance transaction ID
-			$entry_meta['payment_id_trans']    = $data['id_trans'];  // Payonline transaction ID
-			$entry_meta['payment_paymode']     = $data['paymode'];   // Master Card, etc...
-			$entry_meta['payonline']           = $data;              // Save the returned value by payonline
-			//$entry_meta['payment_note']        = '-';              // Probably not needed if the payment is completed
+			$entry_meta['payment_id_inst']     = $data['id_inst'];      // Payonline instance ID
+			$entry_meta['payment_id_trans']    = $data['id_trans'];     // Payonline transaction ID
+			$entry_meta['payment_id_transact'] = $data['id_transact'];  // WPForms EPFL Payonline transaction ID
+			$entry_meta['payment_transaction'] = $data['PaymentID'];    // PostFinance/Payonline transaction ID
+			$entry_meta['payment_paymode']     = $data['paymode'];      // Master Card, etc...
+			$entry_meta['payonline']           = $data;                 // Save the returned value by payonline
+			//$entry_meta['payment_note']        = '-';                 // Probably not needed if the payment is completed
 
-			$status = wpforms()->entry->update( $entry_id, array(
-				'status' => 'completed',
-				'meta'   => wp_json_encode( $entry_meta ),
-			) );
-
-			error_log("Success - wpforms()->entry->update " . var_export([$entry_id, array(
-				'status' => 'completed',
-				'meta'   => wp_json_encode( $entry_meta ),
-			)], true) . "returned " . var_export($status, true));
+			// Set the payment status to completed
+			wpforms()->entry->update(
+				$entry_id,
+				array(
+					'status' => 'completed',
+					'meta'   => wp_json_encode( $entry_meta ),
+				),
+				'',
+				'',
+				array( 'cap' => false )
+			);
 
 			// Send email to benificiary (payment proof)
 			$email['subject']        = sprintf( esc_html__( '[%s] Payment confirmation for "%s"', 'wpforms-epfl-payonline' ), get_bloginfo( 'name' ), $form_data['settings']['form_title'] );
@@ -967,15 +974,6 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		$Parsedown = new Parsedown();
 		$changelog_content = $Parsedown->text($changelog_content); # prints: <p>Hello <em>Parsedown</em>!</p>
 		return 'See CHANGELOG.md on <a href="https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/CHANGELOG.md">GitHub</a>.<br><div class="epfl_payonline_changelog">' . $changelog_content . '</div>';
-	}
-
-	/**
-	 * Override all permission checks for the duration of this query.
-	 *
-	 * This is for use in the "web hook" path, when Payonline calls us to transition the payment state (@see process_return_from_epfl_payonline)
-	 */
-	private function setup_wpforms_superuser () {
-		add_filter('wpforms_current_user_can', function() { return true; }, 10, 3);
 	}
 
 }
