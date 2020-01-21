@@ -25,7 +25,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 		add_action( 'wpforms_process_complete', array( $this, 'process_entry_to_epfl_payonline' ), 20, 4 );
 		add_action( 'init', array( $this, 'process_return_from_epfl_payonline' ) );
-		
+
 		// (see wpforms/pro/includes/payments/functions.php)
 		add_filter( 'wpforms_currencies', array( $this, 'filter_currencies' ), 10, 1 );
 		add_filter( 'wpforms_has_payment_gateway', array( $this, 'filter_has_payment_gateway' ), 10, 1 );
@@ -34,7 +34,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		add_action( 'wpforms_entry_payment_sidebar_actions', array( $this, 'action_entry_payment_sidebar' ), 10, 2 );
 		add_filter( 'wpforms_entry_details_payment_gateway', array( $this, 'filter_entry_details_payment_gateway' ), 10, 3 );
 		add_filter( 'wpforms_entry_details_payment_transaction', array( $this, 'filter_entry_details_payment_transaction' ), 10, 3 );
-		
+
 		// Add additional link to the plugin row
 		add_filter( 'plugin_row_meta', array( $this, 'add_links_to_plugin_row'), 10, 4 );
 
@@ -300,9 +300,10 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 				// Don't yet support quantities.
 				//$payonline_args['quantity_' . $i ]  = $item['quantity'];
 				$payonline_args[ 'amount_' . $i ] = $item_amount;
-				$payonline_args['Total']    += $item_amount;
+				$payonline_args['Total']  += $item_amount;
 				$i ++;
 			}
+
 		} else {
 
 			// Combine a donation name from all payment fields names.
@@ -357,10 +358,10 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		$ohash = substr($ohash, 0, 20);
 		$nhash = pack("H*", sha1($inputHash . $osalt));
 		if ($ohash === $nhash) {
-			error_log( "ssha_password_verify (" . $token . " - " . $inputHash  . "): success " );
+			error_log( "ssha_password_verify (" . $token . " - " . $inputHash . "): success " );
 			return True;
 		} else {
-			error_log( "ssha_password_verify (" . $token . " - " . $inputHash  . "): failed " );
+			error_log( "ssha_password_verify (" . $token . " - " . $inputHash . "): failed " );
 			return False;
 		}
 	}
@@ -480,7 +481,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			$email['message']        .= esc_html__( '<p>Thanks for your payment!</p>', 'wpforms-epfl-payonline' );
 			$email['message']        .= esc_html__( '<p>Please find below your order details.</p>', 'wpforms-epfl-payonline' );
 			$email['message']        .= '{all_fields}'; // @TODO learn how to use custom notification for that... ! empty( $notification['message'] ) ? $notification['message'] : '{all_fields}';
-			
+
 			// Create new email.
 			$emails = new WPForms_WP_Emails();
 			$emails->__set( 'form_data', $form_data );
@@ -553,7 +554,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		return $currencies;
 	}
 
-  /**
+	/**
 	 * Add some details in the payment details sidebar
 	 */
 	public function action_entry_payment_sidebar( $entry, $form_data ) {
