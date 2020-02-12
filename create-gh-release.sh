@@ -9,15 +9,15 @@ PROJECT_NAME=$(basename ${PWD})
 # 0.0.4
 VERSION=$(cat wpforms-epfl-payonline.php | grep '* Version:' | awk '{print $3}')
 VERSION_NO_DOTS=$(echo $VERSION | sed -e 's/\.//g')
-# git@github.com:epfl-idevelop/wpforms-epfl-payonline.git
+# git@github.com:epfl-si/wpforms-epfl-payonline.git
 REPO_REMOTE=$(git config --get remote.origin.url)
 # Nicolas Borboën
 REPO_OWNER_NAME=$(git config --get user.name)
 # ponsfrilus@gmail.com
 REPO_OWNER_EMAIL=$(git config --get user.email)
-# epfl-idevelop/wpforms-epfl-payonline
+# epfl-si/wpforms-epfl-payonline
 REPO_GH_PATH=$(echo $REPO_REMOTE |  cut -d':' -f 2 | cut -d'.' -f 1)
-# epfl-idevelop
+# epfl-si
 REPO_ORG_OR_USR=$(echo $REPO_GH_PATH | cut -d'/' -f1)
 # wpforms-epfl-payonline
 REPO_NAME=$(echo $REPO_GH_PATH | cut -d'/' -f2)
@@ -25,7 +25,7 @@ GH_URL=https://github.com/
 GH_API=https://api.github.com
 # https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
 GH_ACCESS_TOKEN=$WPEP_GH_TOKEN
-# https://github.com/epfl-idevelop/wpforms-epfl-payonline
+# https://github.com/epfl-si/wpforms-epfl-payonline
 REPO_HTTP_URL=$GH_URL$REPO_GH_PATH
 GH_RELEASE_URL=$GH_URL/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases
 GH_API_RELEASE_URL=$GH_API/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases?access_token=$GH_ACCESS_TOKEN

@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WPForms EPFL Payonline 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/wp-cli/i18n-command/issues\n"
 "Last-Translator: Nicolas Borboën <ponsfrilus@gmail.com>\n"
-"Language-Team: EPFL IDEV-FSD <https://github.com/epfl-idevelop/wpforms-epfl-payonline>\n"
+"Language-Team: EPFL IDEV-FSD <https://github.com/epfl-si/wpforms-epfl-payonline>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,7 +19,7 @@ msgid "WPForms EPFL Payonline"
 msgstr ""
 
 #. Plugin URI of the plugin
-msgid "https://github.com/epfl-idevelop/wpforms-epfl-payonline"
+msgid "https://github.com/epfl-si/wpforms-epfl-payonline"
 msgstr ""
 
 #. Description of the plugin

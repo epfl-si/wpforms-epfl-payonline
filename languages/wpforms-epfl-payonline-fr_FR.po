@@ -21,8 +21,8 @@ msgid "WPForms EPFL Payonline"
 msgstr "WPForms EPFL Payonline"
 
 #. Plugin URI of the plugin
-msgid "https://github.com/epfl-idevelop/wpforms-epfl-payonline"
-msgstr "https://github.com/epfl-idevelop/wpforms-epfl-payonline"
+msgid "https://github.com/epfl-si/wpforms-epfl-payonline"
+msgstr "https://github.com/epfl-si/wpforms-epfl-payonline"
 
 #. Description of the plugin
 msgid "EPFL Payonline integration with WPForms."

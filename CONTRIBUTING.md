@@ -18,5 +18,5 @@ repository before making a change.
    developers, or if you do not have permission to do that, you may request the
    second reviewer to merge it for you.
 
-[README.md]: https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/README.md
-[issue]: https://github.com/epfl-idevelop/wpforms-epfl-payonline/issues
+[README.md]: https://github.com/epfl-si/wpforms-epfl-payonline/blob/master/README.md
+[issue]: https://github.com/epfl-si/wpforms-epfl-payonline/issues

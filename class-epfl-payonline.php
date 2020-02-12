@@ -821,7 +821,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		// trying to get from cache first, to disable cache comment 10,20,21,22,24
 		if ( false == $remote = get_transient( 'upgrade_wpforms_epfl_payonline' ) ) {
 			// info.json is the file with the actual plugin information on your server
-			$remote = wp_remote_get( 'https://api.github.com/repos/epfl-idevelop/wpforms-epfl-payonline/releases/latest', array(
+			$remote = wp_remote_get( 'https://api.github.com/repos/epfl-si/wpforms-epfl-payonline/releases/latest', array(
 				'timeout' => 10,
 				'headers' => array(
 					'Accept' => 'application/json'
@@ -844,7 +844,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 				$res->plugin =  dirname( plugin_basename( __FILE__ )) . '/wpforms-epfl-payonline.php';
 				$res->new_version = $latest_version;
 				$res->tested = $this->wp_tested_version;
-				$res->package = 'https://github.com/epfl-idevelop/wpforms-epfl-payonline/releases/latest/download/wpforms-epfl-payonline.zip';
+				$res->package = 'https://github.com/epfl-si/wpforms-epfl-payonline/releases/latest/download/wpforms-epfl-payonline.zip';
 				$transient->response[$res->plugin] = $res;
 				// error_log(var_export($res, true));
 				// $transient->checked[$res->plugin] = $latest_version;
@@ -888,7 +888,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		if ( false == $remote = get_transient( 'upgrade_wpforms_epfl_payonline' ) ) {
 
 			// info.json is the file with the actual plugin information on your server
-			$remote = wp_remote_get( 'https://api.github.com/repos/epfl-idevelop/wpforms-epfl-payonline/releases/latest', array(
+			$remote = wp_remote_get( 'https://api.github.com/repos/epfl-si/wpforms-epfl-payonline/releases/latest', array(
 				'timeout' => 10,
 				'headers' => array(
 					'Accept' => 'application/json'
@@ -948,7 +948,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		require_once(plugin_dir_path( __FILE__ ) .'/lib/Parsedown.php');
 		$Parsedown = new Parsedown();
 		$readme_content = $Parsedown->text($readme_content); # prints: <p>Hello <em>Parsedown</em>!</p>
-		return 'See README.md on <a href="https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/README.md">GitHub</a>.<br><div class="epfl_payonline_readme">' . $readme_content . '</div>';
+		return 'See README.md on <a href="https://github.com/epfl-si/wpforms-epfl-payonline/blob/master/README.md">GitHub</a>.<br><div class="epfl_payonline_readme">' . $readme_content . '</div>';
 	}
 
 	/**
@@ -961,7 +961,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		require_once(plugin_dir_path( __FILE__ ) .'/lib/Parsedown.php');
 		$Parsedown = new Parsedown();
 		$install_content = $Parsedown->text($install_content); # prints: <p>Hello <em>Parsedown</em>!</p>
-		return 'See INSTALL.md on <a href="https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/INSTALL.md">GitHub</a>.<br><div class="epfl_payonline_install">' . $install_content . '</div>';
+		return 'See INSTALL.md on <a href="https://github.com/epfl-si/wpforms-epfl-payonline/blob/master/INSTALL.md">GitHub</a>.<br><div class="epfl_payonline_install">' . $install_content . '</div>';
 	}
 
 	/**
@@ -969,11 +969,11 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	 *
 	 */
 	private function getChangelog() {
-		$changelog_content = file_get_contents('https://raw.githubusercontent.com/epfl-idevelop/wpforms-epfl-payonline/master/CHANGELOG.md', true);
+		$changelog_content = file_get_contents('https://raw.githubusercontent.com/epfl-si/wpforms-epfl-payonline/master/CHANGELOG.md', true);
 		require_once(plugin_dir_path( __FILE__ ) .'/lib/Parsedown.php');
 		$Parsedown = new Parsedown();
 		$changelog_content = $Parsedown->text($changelog_content); # prints: <p>Hello <em>Parsedown</em>!</p>
-		return 'See CHANGELOG.md on <a href="https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/CHANGELOG.md">GitHub</a>.<br><div class="epfl_payonline_changelog">' . $changelog_content . '</div>';
+		return 'See CHANGELOG.md on <a href="https://github.com/epfl-si/wpforms-epfl-payonline/blob/master/CHANGELOG.md">GitHub</a>.<br><div class="epfl_payonline_changelog">' . $changelog_content . '</div>';
 	}
 
 }
