@@ -241,7 +241,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		// error_log(var_export($entry, true));
 
 		$payonline_addr = $this->getArraysFromType( $fields, 'address')[0]['address1'];
-		$payonline_addr .= (trim($this->getArraysFromType( $fields, 'address')[0]['address2']) === '') ? '' : "\n" . $this->getArraysFromType( $fields, 'address')[0]['address2'];
+		$payonline_addr .= (trim($this->getArraysFromType( $fields, 'address')[0]['address2']) === '') ? '' : ' / ' . $this->getArraysFromType( $fields, 'address')[0]['address2'];
 		// Setup EPFL Payonline arguments.
 		$payonline_args = array(
 			'id_inst'       => $id_inst,
