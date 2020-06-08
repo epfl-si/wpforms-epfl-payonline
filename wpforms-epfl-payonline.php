@@ -44,6 +44,16 @@ define( 'WP_LATEST_VERSION_WPFORMS_EPFL_PAYONLINE', '5.4' );
 // Minimal WP version required for this plugin
 define( 'WP_MIN_VERSION_WPFORMS_EPFL_PAYONLINE', '5.0' );
 
+// Plugin Folder Path.
+if ( ! defined( 'WPFORMS_EPFL_PAYONLINE_PLUGIN_DIR' ) ) {
+	define( 'WPFORMS_EPFL_PAYONLINE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+}
+
+// Plugin Folder URL.
+if ( ! defined( 'WPFORMS_EPFL_PAYONLINE_PLUGIN_URL' ) ) {
+	define( 'WPFORMS_EPFL_PAYONLINE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+}
+
 /**
  * Load the payment class.
  *
