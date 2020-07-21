@@ -27,6 +27,8 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		$this->icon               = plugins_url( 'assets/images/EPFL-Payonline-trans.png', __FILE__ );
 		$this->cache_seconds      = 3600; // 43200 = 12 hours cache
 
+		add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_wp_admin_style' ) );
+
 		add_action( 'wpforms_process_complete', array( $this, 'process_entry_to_epfl_payonline' ), 20, 4 );
 		add_action( 'init', array( $this, 'process_return_from_epfl_payonline' ) );
 
@@ -66,6 +68,16 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		//error_log(var_export($form, true));
 		//error_log("--------------------------------------------");
 		//error_log(var_export($th, true));
+	}
+
+	/**
+	 * Load custom CSS to hide Paypal and Stripe addon
+	 */
+	function load_custom_wp_admin_style ($hook) {
+		// no need to load this CSS everywhere
+		if ($hook != 'wpforms_page_wpforms-builder') { return; }
+		wp_register_style( 'epfl-payonline', plugins_url('assets/css/epfl-payonline.css', __FILE__ ), false, '1.0.0' );
+		wp_enqueue_style( 'epfl-payonline' );
 	}
 
 	/**
@@ -862,7 +874,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	 * @TODO: Try to auto reactivate plugin
 	 */
 	function wpforms_epfl_payonline_after_update( $upgrader_object, $options ) {
-		if ( $options['action'] == 'update' && $options['type'] === 'plugin' )  {
+		if ( $options['action'] == 'update' && $options['type'] === 'plugin' ) {
 			// just clean the cache when new plugin version is installed
 			delete_transient( 'upgrade_wpforms_epfl_payonline' );
 		}
