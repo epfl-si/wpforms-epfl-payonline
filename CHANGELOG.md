@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.0.4
+* Plugin zip contains a subdirectory with the same name, for wp-ops/Ansible
+
 ## v1.0.2
 * Hide some payment addons
 

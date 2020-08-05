@@ -78,7 +78,7 @@ pot: check-wp check-gettext languages/$(PROJECT_NAME).pot
 .PHONY: zip
 zip: check-zip
 	@mkdir builds || true
-	@zip -r -FS builds/wpforms-epfl-payonline-$(VERSION).zip * \
+	cd ..; zip -r -FS $(PROJECT_NAME)/builds/$(PROJECT_NAME)-$(VERSION).zip $(PROJECT_NAME) \
 		--exclude *.git* \
 		--exclude *.zip \
 		--exclude *.po~ \
@@ -88,17 +88,17 @@ zip: check-zip
 		--exclude \*doc\* \
 		--exclude Makefile \
 		--exclude create-gh-release.sh \
-		--exclude bump-version.sh
-	@if [ -L ./builds/wpforms-epfl-payonline.zip ] ; then \
+		--exclude bump-version.sh; cd $(PROJECT_NAME)
+	@if [ -L ./builds/$(PROJECT_NAME).zip ] ; then \
 		cd ./builds; \
-		ln -sfn wpforms-epfl-payonline-$(VERSION).zip ./wpforms-epfl-payonline.zip; \
-		ln -sfn wpforms-epfl-payonline-$(VERSION).zip ./latest.zip; \
+		ln -sfn $(PROJECT_NAME)-$(VERSION).zip ./$(PROJECT_NAME).zip; \
+		ln -sfn $(PROJECT_NAME)-$(VERSION).zip ./latest.zip; \
 	else \
 		cd ./builds; \
-		ln -s wpforms-epfl-payonline-$(VERSION).zip ./wpforms-epfl-payonline.zip; \
-		ln -s wpforms-epfl-payonline-$(VERSION).zip ./latest.zip; \
+		ln -s $(PROJECT_NAME)-$(VERSION).zip ./$(PROJECT_NAME).zip; \
+		ln -s $(PROJECT_NAME)-$(VERSION).zip ./latest.zip; \
 	fi
-	@echo "Zip for version $(VERSION) is now available in ./builds/wpforms-epfl-payonline.zip"
+	@echo "Zip for version $(VERSION) is now available in ./builds/$(PROJECT_NAME).zip"
 
 .PHONY: commit
 commit:
