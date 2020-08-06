@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.0.5
+* Conference form template updated
+* Better user's information
+* FIX for https://developer.github.com/changes/2020-02-10-deprecating-auth-through-query-param
+
 ## v1.0.4
 * Plugin zip contains a subdirectory with the same name, for wp-ops/Ansible
 
