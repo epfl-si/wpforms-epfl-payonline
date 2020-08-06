@@ -138,11 +138,12 @@ function add_release_file () {
   if [ -n "$ASSET_ID" -a "$ASSET_ID" != 'null' ]
   then
     echo -e "  ... asset created !\n"
-    echo "Asset ID        : $ASSET_ID"
-    echo "Asset name      : $ASSET_NAME"
-    echo "Asset size      : $ASSET_SIZE"
-    echo "Asset Download  : $ASSET_DWNLD_URL"
-    echo "View release    : $GH_RELEASE_URL"
+    echo "Asset ID             : $ASSET_ID"
+    echo "Asset name           : $ASSET_NAME"
+    echo "Asset size           : $ASSET_SIZE"
+    echo "Asset download       : $ASSET_DWNLD_URL"
+    echo "View releases        : $GH_RELEASE_URL"
+    echo "View release details : $GH_RELEASE_URL/tag/v$VERSION"
   else
     echo "Failed to create GitHub asset. Exiting with error."
     exit 1
