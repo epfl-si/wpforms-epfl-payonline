@@ -646,11 +646,11 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	public function builder_content() {
 
 		echo
-			'<p class="note">' .
+			'<p class="lead">' .
 			sprintf(
 				wp_kses(
 					/* translators: %s - Addons page URL in admin area. */
-					__( 'This addon allows to use <a href="%s">EPFL Payonline</a> with the <a href="%s">WPForms plugin</a>. Please read <a href="%s">Payonline Help</a>.', 'wpforms-epfl-payonline' ),
+					__( 'This addon allows to use <a href="%s">EPFL Payonline</a> with the <a href="%s">WPForms plugin</a>. Please read <a href="%s">Payonline Help</a> in order to create a payment instance.', 'wpforms-epfl-payonline' ),
 					array(
 						'a' => array(
 							'href' => array(),
@@ -661,7 +661,19 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 				esc_url( 'https://wpforms.com/' ),
 				esc_url( __( 'https://wiki.epfl.ch/payonline-help', 'wpforms-epfl-payonline' ) )
 			) .
-			'</p><br /><hr><br />';
+			'	<div class="notice">
+					<p>' . __( 'General Data Protection Regulation (<b>GDPR</b>): By using this addon, you agree to comply with the directives relating to data protection at EPFL and to apply the seven key principles of article 5 of the GDPR.', 'wpforms-epfl-payonline' ) . '</p>
+				</div>
+				<p>' .
+				sprintf(
+					__( 'WPForms-EPFL-Payonline\'s information, help and sources are available on <a href="%s">GitHub</a>. Your are using the version <a href="%s">v%s</a> of the addon.', 'wpforms-epfl-payonline' ),
+					esc_url( 'https://github.com/epfl-si/wpforms-epfl-payonline' ),
+					esc_url( 'https://github.com/epfl-si/wpforms-epfl-payonline/releases/tag/v' . WPFORMS_EPFL_PAYONLINE_VERSION ),
+					WPFORMS_EPFL_PAYONLINE_VERSION)
+				. '</p>
+				<hr>
+			</p>';
+
 		wpforms_panel_field(
 			'checkbox',
 			$this->slug,
