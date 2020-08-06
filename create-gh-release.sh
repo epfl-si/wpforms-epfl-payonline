@@ -29,9 +29,9 @@ GH_ACCESS_TOKEN=$WPEP_GH_TOKEN
 REPO_HTTP_URL=$GH_URL$REPO_GH_PATH
 # https://github.com/epfl-si/wpforms-epfl-payonline/releases
 GH_RELEASE_URL=$GH_URL$REPO_ORG_OR_USR/$REPO_NAME/releases
-GH_API_RELEASE_URL=$GH_API/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases?access_token=$GH_ACCESS_TOKEN
+GH_API_RELEASE_URL=$GH_API/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases
 # GET /repos/:owner/:repo/releases/tags/:tag
-GH_RELEASE_CHECK_URL=$GH_API/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases/tags/v${VERSION}?access_token=$GH_ACCESS_TOKEN
+GH_RELEASE_CHECK_URL=$GH_API/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases/tags/v${VERSION}
 AUTH="Authorization: token $GH_ACCESS_TOKEN"
 
 function printInfo() {
@@ -42,8 +42,8 @@ function printInfo() {
   echo "Remote          : $REPO_REMOTE"
   echo "Org             : $REPO_ORG_OR_USR"
   echo "Repo name       : $REPO_NAME"
-  echo "URL             : $REPO_HTTP_URL"
-  echo "Proj name       : $PROJECT_NAME"
+  echo "Repo URL        : $REPO_HTTP_URL"
+  echo "Project name    : $PROJECT_NAME"
   echo "Owner name      : $REPO_OWNER_NAME"
   echo "Owner email     : $REPO_OWNER_EMAIL"
   echo "--------------------------------------------------------------------------------"
@@ -58,7 +58,7 @@ function create_tag () {
   echo -e "\nchecking existing release..."
   # check if tag already exists
   # GET /repos/:owner/:repo/releases/tags/:tag
-  RELEASE_ID=$(curl -s $GH_RELEASE_CHECK_URL | jq -r .id)
+  RELEASE_ID=$(curl -sH "$AUTH" $GH_RELEASE_CHECK_URL | jq -r .id)
   if [ -n "$RELEASE_ID" -a "$RELEASE_ID" != 'null' ]
   then
     echo "... release ID: $RELEASE_ID already exists!"
@@ -77,7 +77,7 @@ RELEASE_JSON="{\
 \"prerelease\":false\
 }"
 
-  RELEASE=$(curl --data ${RELEASE_JSON} -s ${GH_API_RELEASE_URL})
+  RELEASE=$(curl --data ${RELEASE_JSON} -sH "$AUTH" ${GH_API_RELEASE_URL})
   echo $RELEASE
   RELEASE_ID=$( echo $RELEASE | jq -r .id)
   echo $RELEASE_ID
@@ -105,14 +105,14 @@ function add_release_file () {
   echo -e "\nchecking existing asset..."
   # check if release already exists
   # GET /repos/:owner/:repo/releases/:release_id/assets
-  ASSET_DATA=$(curl -s "https://api.github.com/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases/$RELEASE_ID/assets?access_token=$GH_ACCESS_TOKEN")
+  ASSET_DATA=$(curl -sH "$AUTH" "https://api.github.com/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases/$RELEASE_ID/assets")
   ASSET_ID=$(echo $ASSET_DATA | jq -r '.[0].id')
   echo "ASSET ID: $ASSET_ID"
   if [ -n "$ASSET_ID" -a "$ASSET_ID" != 'null' ]
   then
     echo "... asset ID $ASSET_ID: already exists for this release!"
     echo "... DELETING asset ID $ASSET_ID!"
-    ASSET_DELETE=$(curl -s -X DELETE "https://api.github.com/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases/assets/$ASSET_ID?access_token=$GH_ACCESS_TOKEN")
+    ASSET_DELETE=$(curl -sH "$AUTH" -X DELETE "https://api.github.com/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases/assets/$ASSET_ID")
     echo $ASSET_DELETE
     # return
   else 
@@ -121,8 +121,8 @@ function add_release_file () {
   fi
 
   FILENAME=./builds/${PROJECT_NAME}.zip
-  GH_ASSET="https://uploads.github.com/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases/$RELEASE_ID/assets?name=$(basename $FILENAME)&access_token=$GH_ACCESS_TOKEN"
-  ASSET_INFO=$(curl -s --data-binary @"$FILENAME" -H "Content-Type: application/octet-stream" "$GH_ASSET")
+  GH_ASSET="https://uploads.github.com/repos/$REPO_ORG_OR_USR/$REPO_NAME/releases/$RELEASE_ID/assets?name=$(basename $FILENAME)"
+  ASSET_INFO=$(curl -sH "$AUTH" --data-binary @"$FILENAME" -H "Content-Type: application/octet-stream" "$GH_ASSET")
   ASSET_ERRORS=$( echo $ASSET_INFO | jq -r .errors)
   ASSET_DWNLD_URL=$( echo $ASSET_INFO | jq -r .browser_download_url)
   ASSET_ID=$( echo $ASSET_INFO | jq -r .id)
