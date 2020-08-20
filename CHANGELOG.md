@@ -69,7 +69,7 @@ All notable changes to this project will be documented in this file.
 ## v0.0.6 
 * create-gh-release.sh improved
 * Release asset keep the same name so that [the latest release download
-link](https://github.com/epfl-idevelop/wpforms-epfl-payonline/releases/latest/download/wpforms-epfl-payonline.zip)
+link](https://github.com/epfl-si/wpforms-epfl-payonline/releases/latest/download/wpforms-epfl-payonline.zip)
 is always available
 
 ## v0.0.5

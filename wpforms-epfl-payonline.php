@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: WPForms EPFL Payonline
- * Plugin URI:  https://github.com/epfl-idevelop/wpforms-epfl-payonline
+ * Plugin URI:  https://github.com/epfl-si/wpforms-epfl-payonline
  * Description: EPFL Payonline integration with WPForms.
  * Author:      Nicolas Borboën
  * Author URI:  https://go.epfl.ch/nbo

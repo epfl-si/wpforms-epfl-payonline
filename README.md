@@ -75,17 +75,17 @@ _Note:_ you need to create a [personal access token] and add it to your
 
 [EPFL]: https://www.epfl.ch
 [EPFL Payonline]: https://payonline.epfl.ch
-[WPForms EPFL Payonline]: https://github.com/epfl-idevelop/wpforms-epfl-payonline
-[latest release]: https://github.com/epfl-idevelop/wpforms-epfl-payonline/releases/latest
-[issue]: https://github.com/epfl-idevelop/wpforms-epfl-payonline/issues
+[WPForms EPFL Payonline]: https://github.com/epfl-si/wpforms-epfl-payonline
+[latest release]: https://github.com/epfl-si/wpforms-epfl-payonline/releases/latest
+[issue]: https://github.com/epfl-si/wpforms-epfl-payonline/issues
 [WPForms]: https://wpforms.com/
 [Elite]: https://wpforms.com/checkout?edd_action=add_to_cart&download_id=290232&discount=SAVE50
 [Pro]: https://wpforms.com/checkout?edd_action=add_to_cart&download_id=290008&discount=SAVE50
-[INSTALL.md]: https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/INSTALL.md
-[CONTRIBUTING.md]: https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/CONTRIBUTING.md
-[wp-dev]: https://github.com/epfl-idevelop/wp-dev
+[INSTALL.md]: https://github.com/epfl-si/wpforms-epfl-payonline/blob/master/INSTALL.md
+[CONTRIBUTING.md]: https://github.com/epfl-si/wpforms-epfl-payonline/blob/master/CONTRIBUTING.md
+[wp-dev]: https://github.com/epfl-si/wp-dev
 [personal access token]: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
-[bump-version.sh]: https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/bump-version.sh
-[create-gh-release.sh]: https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/create-gh-release.sh
-[Makefile]: https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/Makefile
-[wpforms-epfl-payonline.php]: https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/wpforms-epfl-payonline.php
+[bump-version.sh]: https://github.com/epfl-si/wpforms-epfl-payonline/blob/master/bump-version.sh
+[create-gh-release.sh]: https://github.com/epfl-si/wpforms-epfl-payonline/blob/master/create-gh-release.sh
+[Makefile]: https://github.com/epfl-si/wpforms-epfl-payonline/blob/master/Makefile
+[wpforms-epfl-payonline.php]: https://github.com/epfl-si/wpforms-epfl-payonline/blob/master/wpforms-epfl-payonline.php

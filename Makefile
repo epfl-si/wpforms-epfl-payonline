@@ -42,7 +42,7 @@ check-gettext:
 define JSON_HEADERS
 {"Project-Id-Version": "WPForms EPFL Payonline $(VERSION)",\
 "Last-Translator": "$(REPO_OWNER_NAME) <$(REPO_OWNER_EMAIL)>",\
-"Language-Team": "EPFL IDEV-FSD <https://github.com/epfl-idevelop/$(PROJECT_NAME)>",\
+"Language-Team": "EPFL IDEV-FSD <https://github.com/epfl-si/$(PROJECT_NAME)>",\
 "Report-Msgid-Bugs-To":"https://github.com/wp-cli/i18n-command/issues",\
 "X-Domain": "$(PROJECT_NAME)"}
 endef
