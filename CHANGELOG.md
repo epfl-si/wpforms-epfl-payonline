@@ -2,10 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.0.6
+## v1.0.9
+* FIX HTML char in sent emails
+* Set the example form to large to improve readability
+
+## v1.0.8
 * FIX enforce default EPFL sender address
 
-## v1.0.5
+## v1.0.6
 * Conference form template updated
 * Better user's information
 * FIX for https://developer.github.com/changes/2020-02-10-deprecating-auth-through-query-param
