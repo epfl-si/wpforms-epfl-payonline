@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.0.6
+* FIX enforce default EPFL sender address
+
 ## v1.0.5
 * Conference form template updated
 * Better user's information
