@@ -501,8 +501,8 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			$form_title              = $form_data['settings']['form_title'];
 			$email['message']        = "<h1>$form_title</h1>\n\n";
 			// @TODO: Template this
-			$email['message']        .= esc_html__( '<p>Thanks for your payment!</p>', 'wpforms-epfl-payonline' );
-			$email['message']        .= esc_html__( '<p>Please find below your order details.</p>', 'wpforms-epfl-payonline' );
+			$email['message']        .= __( '<p>Thanks for your payment!</p>', 'wpforms-epfl-payonline' );
+			$email['message']        .= __( '<p>Please find below your order details.</p>', 'wpforms-epfl-payonline' );
 			$email['message']        .= '{all_fields}'; // @TODO learn how to use custom notification for that... ! empty( $notification['message'] ) ? $notification['message'] : '{all_fields}';
 
 			// Create new email.
