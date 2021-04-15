@@ -40,14 +40,14 @@ class WPForms_Template_conference_form_epfl_payonline extends WPForms_Template {
           'label' => 'Name',
           'format' => 'first-last',
           'required' => '1',
-          'size' => 'medium',
+          'size' => 'large',
         ),
         1 => array (
           'id' => '1',
           'type' => 'email',
           'label' => 'Email',
           'required' => '1',
-          'size' => 'medium',
+          'size' => 'large',
         ),
         2 => array (
           'id' => '2',
@@ -55,7 +55,7 @@ class WPForms_Template_conference_form_epfl_payonline extends WPForms_Template {
           'label' => 'Phone',
           'format' => 'us',
           'required' => '1',
-          'size' => 'medium',
+          'size' => 'large',
         ),
         3 => array (
           'id' => '3',
@@ -63,7 +63,7 @@ class WPForms_Template_conference_form_epfl_payonline extends WPForms_Template {
           'label' => 'Address',
           'scheme' => 'international',
           'required' => '1',
-          'size' => 'medium',
+          'size' => 'large',
           'country_default' => 'CH',
         ),
         8 => array (
@@ -139,7 +139,7 @@ class WPForms_Template_conference_form_epfl_payonline extends WPForms_Template {
           'type' => 'textarea',
           'label' => 'Comment or Message',
           'required' => '1',
-          'size' => 'medium',
+          'size' => 'large',
           'limit_count' => '1',
           'limit_mode' => 'characters',
         ),
