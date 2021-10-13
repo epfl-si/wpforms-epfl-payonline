@@ -23,7 +23,7 @@ test:
 	@echo "REPO_OWNER_EMAIL: ${REPO_OWNER_EMAIL}"
 
 .PHONY: release
-## This create the whole jam for publishing a new release on GitHub, including 
+## 🚩 This create the whole jam for publishing a new release on GitHub, including 
 ## a new version number, updated translation, a "Bounce version commit", a new
 ## tag and a new release including the wpforms-epfl-payonline.zip as asset.
 release: check
@@ -90,23 +90,22 @@ pot: check-wp check-gettext languages/$(PROJECT_NAME).pot
 
 .PHONY: zip
 ## Create the plugin's zip file and link it as ./builds/latest.zip
-zip: check-zip
-	@mkdir builds || true
+zip: check-zip builds/$(PROJECT_NAME)-$(VERSION).zip
+	@mkdir -p builds || true
+	@rm -f ./builds/$(PROJECT_NAME)-$(VERSION).zip
 	cd ..; zip -r -FS $(PROJECT_NAME)/builds/$(PROJECT_NAME)-$(VERSION).zip $(PROJECT_NAME) \
-		--exclude *.git* \
-		--exclude *.zip \
-		--exclude *.po~ \
-		--exclude *.php.bak \
-		--exclude *.po.bak \
-		--exclude *.cache \
-		--exclude \*builds\* \
-		--exclude \*doc\* \
-		--exclude \*vendor\* \
-		--exclude composer.json \
-		--exclude compose.lock \
-		--exclude Makefile \
-		--exclude create-gh-release.sh \
-		--exclude bump-version.sh; cd $(PROJECT_NAME)
+		--exclude "$(PROJECT_NAME)/.*"                   \
+		--exclude "$(PROJECT_NAME)/*.po.bak"             \
+		--exclude "$(PROJECT_NAME)/*.*~"                 \
+		--exclude "$(PROJECT_NAME)/*.orig"               \
+		--exclude "$(PROJECT_NAME)/builds/*"             \
+		--exclude "$(PROJECT_NAME)/doc/*"                \
+		--exclude "$(PROJECT_NAME)/vendor/*"             \
+		--exclude "$(PROJECT_NAME)/composer.json"        \
+		--exclude "$(PROJECT_NAME)/compose.lock"         \
+		--exclude "$(PROJECT_NAME)/Makefile"             \
+		--exclude "$(PROJECT_NAME)/create-gh-release.sh" \
+		--exclude "$(PROJECT_NAME)/bump-version.sh"; cd $(PROJECT_NAME)
 	@if [ -L ./builds/$(PROJECT_NAME).zip ] ; then \
 		cd ./builds; \
 		ln -sfn $(PROJECT_NAME)-$(VERSION).zip ./$(PROJECT_NAME).zip; \
