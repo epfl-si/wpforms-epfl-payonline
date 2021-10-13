@@ -1,25 +1,34 @@
 SHELL := /bin/bash
 
-# Define some useful variables
-# wpforms-epfl-payonline
+# Script's variables
 PROJECT_NAME := $(shell basename $(CURDIR))
-# 0.0.4
 VERSION := $(shell cat wpforms-epfl-payonline.php | grep '* Version:' | awk '{print $$3}')
-# Nicolas Borboën
 REPO_OWNER_NAME := $(shell git config --get user.name)
-# ponsfrilus@gmail.com
 REPO_OWNER_EMAIL := $(shell git config --get user.email)
 
-# This create the whole jam for publishing a new release on github, including 
-# a new version number, updated translation, a "Bounce version commit", a new
-# tag and a new release including the wpforms-epfl-payonline.zip as asset.
+.PHONY: help
+## Print this help (see <https://gist.github.com/klmr/575726c7e05d8780505a> for explanation)
+help:
+	@echo "$$(tput bold)Available rules (alphabetical order):$$(tput sgr0)";sed -ne"/^## /{h;s/.*//;:d" -e"H;n;s/^## //;td" -e"s/:.*//;G;s/\\n## /---/;s/\\n/ /g;p;}" ${MAKEFILE_LIST}|LC_ALL='C' sort -f |awk -F --- -v n=$$(tput cols) -v i=20 -v a="$$(tput setaf 6)" -v z="$$(tput sgr0)" '{printf"%s%*s%s ",a,-i,$$1,z;m=split($$2,w," ");l=n-i;for(j=1;j<=m;j++){l-=length(w[j])+1;if(l<= 0){l=n-i-length(w[j])-1;printf"\n%*s ",-i," ";}printf"%s ",w[j];}printf"\n";}'
+
+.PHONY: check
+## Check dependand softwares
+check: test check-jq check-wp check-zip check-curl check-git check-gettext
+
+## Print the scipt's variables
+test:
+	@echo "PROJECT_NAME:     ${PROJECT_NAME}"
+	@echo "VERSION:          ${VERSION}"
+	@echo "REPO_OWNER_NAME:  ${REPO_OWNER_NAME}"
+	@echo "REPO_OWNER_EMAIL: ${REPO_OWNER_EMAIL}"
+
 .PHONY: release
+## This create the whole jam for publishing a new release on GitHub, including 
+## a new version number, updated translation, a "Bounce version commit", a new
+## tag and a new release including the wpforms-epfl-payonline.zip as asset.
 release: check
 	$(MAKE) version
 	$(MAKE) pot zip commit tag gh-release
-
-.PHONY: check
-check: check-wp check-zip check-git check-jq check-curl
 
 check-jq:
 	@type jq > /dev/null 2>&1 || { echo >&2 "Please install jq. Aborting."; exit 1; }
@@ -47,24 +56,28 @@ define JSON_HEADERS
 "X-Domain": "$(PROJECT_NAME)"}
 endef
 
-# By default, bounce patch version
 .PHONY: version
+## Bounce patch version (default)
 version: bump-version.sh
 	$(MAKE) version-patch
 
 .PHONY: version-patch
+## Bounce patch version
 version-patch: bump-version.sh
 	./bump-version.sh -p
 
 .PHONY: version-minor
+## Bounce minor version
 version-minor: bump-version.sh
 	./bump-version.sh -m
 
 .PHONY: version-major
+## Bounce major version
 version-major: bump-version.sh
 	./bump-version.sh -M
 
 .PHONY: pot
+## (Re)Generate the pot and mo files for translations
 pot: check-wp check-gettext languages/$(PROJECT_NAME).pot
 	@wp i18n make-pot . languages/$(PROJECT_NAME).pot --headers='$(JSON_HEADERS)'
 	if [ -f languages/$(PROJECT_NAME)-fr_FR.po ] ; then \
@@ -76,6 +89,7 @@ pot: check-wp check-gettext languages/$(PROJECT_NAME).pot
 	msgfmt --output-file=languages/$(PROJECT_NAME)-fr_FR.mo languages/$(PROJECT_NAME)-fr_FR.po
 
 .PHONY: zip
+## Create the plugin's zip file and link it as ./builds/latest.zip
 zip: check-zip
 	@mkdir builds || true
 	cd ..; zip -r -FS $(PROJECT_NAME)/builds/$(PROJECT_NAME)-$(VERSION).zip $(PROJECT_NAME) \
@@ -84,8 +98,12 @@ zip: check-zip
 		--exclude *.po~ \
 		--exclude *.php.bak \
 		--exclude *.po.bak \
+		--exclude *.cache \
 		--exclude \*builds\* \
 		--exclude \*doc\* \
+		--exclude \*vendor\* \
+		--exclude composer.json \
+		--exclude compose.lock \
 		--exclude Makefile \
 		--exclude create-gh-release.sh \
 		--exclude bump-version.sh; cd $(PROJECT_NAME)
@@ -101,14 +119,15 @@ zip: check-zip
 	@echo "Zip for version $(VERSION) is now available in ./builds/$(PROJECT_NAME).zip"
 
 .PHONY: commit
+## Interactive automated commit for new release
 commit:
 	@if [[ -z $$(git commit --dry-run --short | grep CHANGELOG.md) ]]; then \
-		read -p "Did you forget to modify the CHANGELOG? Want to abort? [Yy]: " -n 1 -r; \
-		if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+		read -p "Did you forget to modify the CHANGELOG? Want to abort? [Nn]: " -n 1 -r; \
+		if [[ $$REPLY =~ ^[Nn]$$ ]]; then \
+			echo -e "\nContinuing....\n"; \
+		else \
 			echo -e "\nAborting....\n"; \
 			exit 1; \
-		else \
-			echo -e "\nContinuing....\n"; \
 		fi \
 	fi
 	@-git add languages/*
@@ -118,16 +137,21 @@ commit:
 	read -p "Would you like to git add and commit all? [Yy]: " -n 1 -r; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
 		git commit -am "[ARE] Automated releasing change" ; \
+		@-git push ; \
+		@-git status ; \
+	else \
+		echo -e "\nAborting....\n"; \
+		exit 1; \
 	fi
-	@-git push
-	@-git status
 
 .PHONY: tag
+## Git tag with current version
 tag:
 	@-git tag -a v$(VERSION) -m "Version $(VERSION)"
 	@-git push origin --tags
 
 .PHONY: gh-release
+## Create a new GitHub release
 gh-release: create-gh-release.sh
 	./create-gh-release.sh
 
@@ -142,11 +166,11 @@ install_phpcs:
 phpcs:
 	@echo '**** run phpcs ****'
 	 ./vendor/bin/phpcs --standard=WordPress-Core --extensions=php --ignore="vendor/*,lib" .
-#	./vendor/bin/php-cs-fixer fix --dry-run --verbose
 
 .PHONY: phpcbf
 ## Run PHP Code Beautifuller and Fixer (it fixes what it can)
 phpcbf:
 	@echo '**** run phpcbf ****'
 	./vendor/bin/phpcbf -pv --standard=WordPress-Core --extensions=php --ignore="vendor/*,lib" .
+
 
