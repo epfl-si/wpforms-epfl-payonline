@@ -131,3 +131,22 @@ tag:
 gh-release: create-gh-release.sh
 	./create-gh-release.sh
 
+## Install PHP code sniffer, PHP CS Fixer, PHP code beautifuler and fixer and the wp-coding-standards, wpcs
+install_phpcs:
+	composer require squizlabs/php_codesniffer friendsofphp/php-cs-fixer wp-coding-standards/wpcs --dev
+	./vendor/bin/phpcs --config-set installed_paths vendor/wp-coding-standards/wpcs
+	./vendor/bin/phpcs --config-set default_standard WordPress-Core
+
+.PHONY: phpcs
+## Run PHP Code Sniffer linter using WordPress-Core coding standards
+phpcs:
+	@echo '**** run phpcs ****'
+	 ./vendor/bin/phpcs --standard=WordPress-Core --extensions=php --ignore="vendor/*,lib" .
+#	./vendor/bin/php-cs-fixer fix --dry-run --verbose
+
+.PHONY: phpcbf
+## Run PHP Code Beautifuller and Fixer (it fixes what it can)
+phpcbf:
+	@echo '**** run phpcbf ****'
+	./vendor/bin/phpcbf -pv --standard=WordPress-Core --extensions=php --ignore="vendor/*,lib" .
+
