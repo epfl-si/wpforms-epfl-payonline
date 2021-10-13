@@ -5,13 +5,13 @@
  * Description: EPFL Payonline integration with WPForms.
  * Author:      Nicolas Borboën
  * Author URI:  https://go.epfl.ch/nbo
- * Version:     1.0.9
+ * Version:     1.1.0
  * Text Domain: wpforms-epfl-payonline
  * Domain Path: languages
  * License:     GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  *
- * WPForms EPFL Payonline is free software: you can redistribute it and/or 
+ * WPForms EPFL Payonline is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 2 of the License, or
  * any later version.
@@ -39,9 +39,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'WPFORMS_EPFL_PAYONLINE_VERSION', '1.0.9' );
 // Plugin name.
 define( 'WPFORMS_EPFL_PAYONLINE_NAME', 'WPForms EPFL Payonline' );
-// Latest WP version tested with this plugin
+// Latest WP version tested with this plugin.
 define( 'WP_LATEST_VERSION_WPFORMS_EPFL_PAYONLINE', '5.4' );
-// Minimal WP version required for this plugin
+// Minimal WP version required for this plugin.
 define( 'WP_MIN_VERSION_WPFORMS_EPFL_PAYONLINE', '5.0' );
 
 // Plugin Folder Path.
@@ -56,7 +56,6 @@ if ( ! defined( 'WPFORMS_EPFL_PAYONLINE_PLUGIN_URL' ) ) {
 
 /**
  * Load the payment class.
- *
  */
 function wpforms_epfl_payonline() {
 
@@ -67,8 +66,8 @@ function wpforms_epfl_payonline() {
 
 	load_plugin_textdomain( 'wpforms-epfl-payonline', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
-	require_once plugin_dir_path( __FILE__ ) . 'class-epfl-payonline.php';
-	require_once plugin_dir_path( __FILE__ ) . 'epfl-payonline-form-template.php';
+	require_once plugin_dir_path( __FILE__ ) . 'class-wpforms-epfl-payonline.php';
+	require_once plugin_dir_path( __FILE__ ) . 'class-epfl-conference-form-template.php';
 
 }
 

@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the WPForms EPFL Payonline plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: WPForms EPFL Payonline 1.0.9\n"
+"Project-Id-Version: WPForms EPFL Payonline 1.1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/wp-cli/i18n-command/issues\n"
-"POT-Creation-Date: 2020-08-06T14:56:33+02:00\n"
+"POT-Creation-Date: 2021-10-13T14:24:04+02:00\n"
 "PO-Revision-Date: 2019-12-11 18:32+0100\n"
 "Last-Translator: nborboen <nicolas.borboen@epfl.ch>\n"
 "Language-Team: French\n"
@@ -36,113 +36,114 @@ msgstr "Nicolas Borboën"
 msgid "https://go.epfl.ch/nbo"
 msgstr "https://go.epfl.ch/nbo"
 
-#: class-epfl-payonline.php:180
+#: class-wpforms-epfl-payonline.php:178
 msgid "EPFL Payonline Payment stopped by conditional logic"
 msgstr "Paiement EPFL Payonline arrêté à cause de la logique conditionnelle"
 
-#: class-epfl-payonline.php:198
+#: class-wpforms-epfl-payonline.php:196
 msgid "EPFL Payonline Payment stopped, missing payment fields"
 msgstr "Paiement EPFL Payonline arrêté, champs de paiement manquants"
 
-#: class-epfl-payonline.php:204
+#: class-wpforms-epfl-payonline.php:202
 msgid "EPFL Payonline Payment stopped, invalid/empty amount"
 msgstr "Paiement EPFL Payonline arrêté, montant non valide ou vide"
 
-#: class-epfl-payonline.php:438
+#: class-wpforms-epfl-payonline.php:437
 msgid "Payment failed: recipient emails do not match"
 msgstr "Échec du paiement : les e-mails des destinataires ne correspondent pas"
 
-#: class-epfl-payonline.php:441
+#: class-wpforms-epfl-payonline.php:440
 msgid "Payment failed: Payonline returned 0"
 msgstr "Échec du paiement : la valeur retournée par Payonline est 0"
 
-#: class-epfl-payonline.php:448
+#: class-wpforms-epfl-payonline.php:447
 msgid "EPFL Payonline Return Error"
 msgstr "Échec du paiement : Payonline a retourné une erreure"
 
-#: class-epfl-payonline.php:495
-msgid "[%s] Payment confirmation for \"%s\""
+#. translators: %1$s blog's name, %2$s form's name
+#: class-wpforms-epfl-payonline.php:495
+msgid "[%1$s] Payment confirmation for \"%2$s\""
 msgstr "[%s] Confirmation de paiement pour \"%s\""
 
-#: class-epfl-payonline.php:504
-msgid "<p>Thanks for your payment!</p>"
-msgstr "<p>Merci pour votre paiement !</p>"
+#: class-wpforms-epfl-payonline.php:504
+msgid "Thanks for your payment!"
+msgstr "Merci pour votre paiement !"
 
-#: class-epfl-payonline.php:505
-msgid "<p>Please find below your order details.</p>"
-msgstr "<p>Ci-dessous les détails de votre commande.</p>"
+#: class-wpforms-epfl-payonline.php:505
+msgid "Please find below your order details."
+msgstr "Ci-dessous les détails de votre commande."
 
-#: class-epfl-payonline.php:522
+#: class-wpforms-epfl-payonline.php:522
 msgid "[COPY]"
 msgstr "[COPY]"
 
-#: class-epfl-payonline.php:590
+#: class-wpforms-epfl-payonline.php:590
 msgid "Paymode"
 msgstr "Mode de paiement"
 
-#: class-epfl-payonline.php:597 class-epfl-payonline.php:831
+#: class-wpforms-epfl-payonline.php:597 class-wpforms-epfl-payonline.php:827
 msgid "Payonline"
 msgstr "Payonline"
 
-#: class-epfl-payonline.php:598
+#: class-wpforms-epfl-payonline.php:598
 msgid "Note: accessible only for Payonline instance's administrators"
 msgstr "Note: accessible uniquement pour les admin Payonline"
 
-#: class-epfl-payonline.php:600
+#: class-wpforms-epfl-payonline.php:600
 msgid "Transaction detail"
 msgstr "Détail de la transaction"
 
-#: class-epfl-payonline.php:604
+#: class-wpforms-epfl-payonline.php:604
 msgid "Payonline transactions list"
 msgstr "Liste des transactions Payonline"
 
-#: class-epfl-payonline.php:627
+#: class-wpforms-epfl-payonline.php:625
 msgid "EPFL Payonline"
 msgstr "EPFL Payonline"
 
 #. translators: %s - Addons page URL in admin area.
-#: class-epfl-payonline.php:653
-#, fuzzy
+#: class-wpforms-epfl-payonline.php:649
 msgid ""
-"This addon allows to use <a href=\"%s\">EPFL Payonline</a> with the <a href="
-"\"%s\">WPForms plugin</a>. Please read <a href=\"%s\">Payonline Help</a> in "
-"order to create a payment instance."
+"This addon allows to use <a href=\"%1$s\">EPFL Payonline</a> with the <a "
+"href=\"%2$s\">WPForms plugin</a>. Please read <a href=\"%3$s\">Payonline "
+"Help</a> in order to create a payment instance."
 msgstr ""
 "Ce module active l'utilisation d'<a href=\"%s\">EPFL Payonline</a> avec le "
 "<a href=\"%s\">plugin WPForms</a>. Merci de lire <a href=\"%s\">l'aide "
 "Payonline</a>."
 
-#: class-epfl-payonline.php:660
+#: class-wpforms-epfl-payonline.php:656
 msgid "https://payonline.epfl.ch?lang=en"
 msgstr "https://payonline.epfl.ch?lang=fr"
 
-#: class-epfl-payonline.php:662
+#: class-wpforms-epfl-payonline.php:658
 msgid "https://wiki.epfl.ch/payonline-help"
 msgstr "https://wiki.epfl.ch/payonline-aide"
 
-#: class-epfl-payonline.php:665
+#: class-wpforms-epfl-payonline.php:661
 msgid ""
 "General Data Protection Regulation (<b>GDPR</b>): By using this addon, you "
 "agree to comply with the directives relating to data protection at EPFL and "
 "to apply the seven key principles of article 5 of the GDPR."
 msgstr ""
 
-#: class-epfl-payonline.php:669
+#. translators: %1$s plugin github URL, %2$s plugin release URL, %3$s plugin version
+#: class-wpforms-epfl-payonline.php:666
 msgid ""
 "WPForms-EPFL-Payonline's information, help and sources are available on <a "
-"href=\"%s\">GitHub</a>. Your are using the version <a href=\"%s\">v%s</a> of "
-"the addon."
+"href=\"%1$s\">GitHub</a>. Your are using the version <a href=\"%2$s\">v%3$s</"
+"a> of the addon."
 msgstr ""
 
-#: class-epfl-payonline.php:682
+#: class-wpforms-epfl-payonline.php:680
 msgid "Enable EPFL Payonline payments"
 msgstr "Activer les paiements EPFL Payonline"
 
-#: class-epfl-payonline.php:693
+#: class-wpforms-epfl-payonline.php:691
 msgid "EPFL Payonline instance ID"
 msgstr "ID de l'instance EPFL Payonline"
 
-#: class-epfl-payonline.php:696
+#: class-wpforms-epfl-payonline.php:694
 msgid ""
 "You must create a payment instance (entity that identifies your conference "
 "in the Payonline service) by using the \"New Instance\" link in the main "
@@ -154,28 +155,27 @@ msgstr ""
 "menu du site <a href=\"https://payonline.epfl.ch\" target=\"_blank"
 "\">payonline.epfl.ch</a>"
 
-#: class-epfl-payonline.php:704
-#, fuzzy
+#: class-wpforms-epfl-payonline.php:702
 msgid "WPForms EPFL Payonline Email Address"
 msgstr "Email WPForms EPFL Payonline"
 
-#: class-epfl-payonline.php:707
+#: class-wpforms-epfl-payonline.php:705
 msgid "Enter an email address for payments notification"
 msgstr "Spécifier une adresse email pour les notifications de paiement."
 
-#: class-epfl-payonline.php:715
+#: class-wpforms-epfl-payonline.php:713
 msgid "Mode"
 msgstr "Mode"
 
-#: class-epfl-payonline.php:720
+#: class-wpforms-epfl-payonline.php:718
 msgid "Production"
 msgstr "Production"
 
-#: class-epfl-payonline.php:721
+#: class-wpforms-epfl-payonline.php:719
 msgid "Test / Sandbox"
 msgstr "Test / Sandbox"
 
-#: class-epfl-payonline.php:723
+#: class-wpforms-epfl-payonline.php:721
 msgid ""
 "Select Production to receive real payments or select Test to use the EPFL "
 "Payonline developer sandbox (id_inst=1234567890)"
@@ -183,44 +183,44 @@ msgstr ""
 "Sélectionnez Production pour recevoir des paiements réels ou sélectionnez "
 "Test pour utiliser l'instance Payonline de test (id_inst=1234567890)"
 
-#: class-epfl-payonline.php:758
+#: class-wpforms-epfl-payonline.php:756
 msgid "Shipping"
 msgstr "Livraison"
 
-#: class-epfl-payonline.php:763
+#: class-wpforms-epfl-payonline.php:761
 msgid "Don't ask for an address"
 msgstr "Ne pas demander d’adresse"
 
-#: class-epfl-payonline.php:764
+#: class-wpforms-epfl-payonline.php:762
 msgid "Ask for an address, but do not require"
 msgstr "Demander une adresse, mais ne pas l’exiger"
 
-#: class-epfl-payonline.php:765
+#: class-wpforms-epfl-payonline.php:763
 msgid "Ask for an address and require it"
 msgstr "Demander une adresse et l’exiger"
 
-#: class-epfl-payonline.php:774
+#: class-wpforms-epfl-payonline.php:772
 msgid "Don't ask buyer to include a note with payment"
 msgstr "Ne pas demander à l’acheteur d’inclure une note avec le paiement"
 
-#: class-epfl-payonline.php:789
+#: class-wpforms-epfl-payonline.php:787
 msgid "Process"
 msgstr "Traiter"
 
-#: class-epfl-payonline.php:790
+#: class-wpforms-epfl-payonline.php:788
 msgid "Don't process"
 msgstr "Ne pas traiter"
 
-#: class-epfl-payonline.php:792
+#: class-wpforms-epfl-payonline.php:790
 msgid "this charge if"
 msgstr "ces frais si"
 
-#: class-epfl-payonline.php:793
+#: class-wpforms-epfl-payonline.php:791
 msgid "EPFL Payonline Standard payment"
 msgstr "EPFL Payonline Standard payment"
 
 #. translators: %s - Addons page URL in admin area.
-#: class-epfl-payonline.php:802
+#: class-wpforms-epfl-payonline.php:800
 msgid ""
 "Install the <a href=\"%s\">Conditional Logic addon</a> to enable conditional "
 "logic for EPFL Payonline payments."
@@ -228,44 +228,10 @@ msgstr ""
 "Installer le <a href=\"%s\">module Conditional Logic</a> pour activer la "
 "logique conditionnelle pour les paiements EPFL Payonline."
 
-#: class-epfl-payonline.php:831 class-epfl-payonline.php:832
+#: class-wpforms-epfl-payonline.php:827 class-wpforms-epfl-payonline.php:828
 msgid "Plugin Additional Links"
 msgstr "Liens additionnels du plugin"
 
-#: class-epfl-payonline.php:832
+#: class-wpforms-epfl-payonline.php:828
 msgid "Help Payonline"
 msgstr "Aide Payonline"
-
-#, fuzzy
-#~ msgid ""
-#~ "EPFL Payonline Payment stopped: Missing \\$data in "
-#~ "process_return_from_epfl_payonline()"
-#~ msgstr "Paiement EPFL Payonline arrêté, champs de paiement manquants"
-
-#~ msgid "EPFL IDEV-FSD"
-#~ msgstr "EPFL IDEV-FSD"
-
-#~ msgid "https://search.epfl.ch/browseunit.do?unit=13030"
-#~ msgstr "https://search.epfl.ch/browseunit.do?unit=13030"
-
-#~ msgid "Payment Type"
-#~ msgstr "Type de paiement"
-
-#~ msgid "Products and Services"
-#~ msgstr "Produits et services"
-
-#~ msgid "Donation"
-#~ msgstr "Don"
-
-#~ msgid "Select the type of payment you are receiving."
-#~ msgstr "Sélectionnez le type de paiement que vous recevez."
-
-#~ msgid "Cancel URL"
-#~ msgstr "URL d’annulation"
-
-#~ msgid ""
-#~ "Enter the URL to send users to if they do not complete the EPFL Payonline "
-#~ "checkout"
-#~ msgstr ""
-#~ "Saisissez l’URL où envoyer les utilisateurs s’ils ne terminent pas la "
-#~ "commande EPFL Payonline"

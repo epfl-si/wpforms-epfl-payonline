@@ -13,19 +13,18 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 	/**
 	 * Initialize.
-	 *
 	 */
 	public function init() {
 
-		$this->wp_tested_version  = WP_LATEST_VERSION_WPFORMS_EPFL_PAYONLINE;
-		$this->wp_min_version     = WP_MIN_VERSION_WPFORMS_EPFL_PAYONLINE;
-		$this->version            = WPFORMS_EPFL_PAYONLINE_VERSION;
-		$this->plugin_name        = WPFORMS_EPFL_PAYONLINE_NAME;
-		$this->name               = 'EPFL Payonline';
-		$this->slug               = 'epfl_payonline';
-		$this->priority           = 10;
-		$this->icon               = plugins_url( 'assets/images/EPFL-Payonline-trans.png', __FILE__ );
-		$this->cache_seconds      = 3600; // 43200 = 12 hours cache
+		$this->wp_tested_version = WP_LATEST_VERSION_WPFORMS_EPFL_PAYONLINE;
+		$this->wp_min_version    = WP_MIN_VERSION_WPFORMS_EPFL_PAYONLINE;
+		$this->version           = WPFORMS_EPFL_PAYONLINE_VERSION;
+		$this->plugin_name       = WPFORMS_EPFL_PAYONLINE_NAME;
+		$this->name              = 'EPFL Payonline';
+		$this->slug              = 'epfl_payonline';
+		$this->priority          = 10;
+		$this->icon              = plugins_url( 'assets/images/EPFL-Payonline-trans.png', __FILE__ );
+		$this->cache_seconds     = 3600; // 43200 = 12 hours cache
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_wp_admin_style' ) );
 
@@ -42,7 +41,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		add_filter( 'wpforms_entry_details_payment_transaction', array( $this, 'filter_entry_details_payment_transaction' ), 10, 3 );
 
 		// Add additional link to the plugin row
-		add_filter( 'plugin_row_meta', array( $this, 'add_links_to_plugin_row'), 10, 4 );
+		add_filter( 'plugin_row_meta', array( $this, 'add_links_to_plugin_row' ), 10, 4 );
 
 		// Plugin updater
 		// https://rudrastyh.com/wordpress/self-hosted-plugin-update.html
@@ -50,20 +49,19 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		add_action( 'upgrader_process_complete', array( $this, 'wpforms_epfl_payonline_after_update' ), 10, 2 );
 
 		// Plugin details
-		add_filter('plugins_api', array( $this, 'wpforms_epfl_payonline_plugin_info' ), 20, 3);
+		add_filter( 'plugins_api', array( $this, 'wpforms_epfl_payonline_plugin_info' ), 20, 3 );
 
 	}
 
 	/**
 	 * Temporary function to test actions and filters.
-	 *
 	 */
-	function test($entry, $form) {
-		error_log("--------------------------------------------");
-		error_log(var_export($entry->meta, true));
-		error_log("--------------------------------------------");
-		error_log(var_export(json_decode($entry->meta), true));
-		error_log("--------------------------------------------");
+	function test( $entry, $form ) {
+		error_log( '--------------------------------------------' );
+		error_log( var_export( $entry->meta, true ) );
+		error_log( '--------------------------------------------' );
+		error_log( var_export( json_decode( $entry->meta ), true ) );
+		error_log( '--------------------------------------------' );
 		//error_log("--------------------------------------------");
 		//error_log(var_export($form, true));
 		//error_log("--------------------------------------------");
@@ -73,10 +71,11 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	/**
 	 * Load custom CSS to hide Paypal and Stripe addon
 	 */
-	function load_custom_wp_admin_style ($hook) {
+	function load_custom_wp_admin_style( $hook ) {
 		// no need to load this CSS everywhere
-		if ($hook != 'wpforms_page_wpforms-builder') { return; }
-		wp_register_style( 'epfl-payonline', plugins_url('assets/css/epfl-payonline.css', __FILE__ ), false, '1.0.0' );
+		if ( 'wpforms_page_wpforms-builder' !== $hook ) {
+			return; }
+		wp_register_style( 'epfl-payonline', plugins_url( 'assets/css/epfl-payonline.css', __FILE__ ), false, '1.0.0' );
 		wp_enqueue_style( 'epfl-payonline' );
 	}
 
@@ -85,15 +84,15 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	 *
 	 * e.g. error_log( var_export($this->getFieldsFromType( $entry->fields, 'email'), true) );
 	 *
-	 * @return Array $wantedFields
+	 * @return Array $wanted_fileds
 	 */
-	private function getFieldsFromType ($fields, $type) {
-		$wantedArrays = $this->getArraysFromType($fields, $type);
-		$wantedFields = array();
-		foreach ($wantedArrays as $key => $value) {
-			$wantedFields[] = $wantedArrays[$key]['value'];
+	private function getFieldsFromType( $fields, $type ) {
+		$wanted_arrays = $this->getArraysFromType( $fields, $type );
+		$wanted_fileds = array();
+		foreach ( $wanted_arrays as $key => $value ) {
+			$wanted_fileds[] = $wanted_arrays[ $key ]['value'];
 		}
-		return $wantedFields;
+		return $wanted_fileds;
 	}
 
 	/**
@@ -101,25 +100,24 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	 *
 	 * e.g. error_log( var_export($this->getArraysFromType( $entry->fields, 'email'), true) );
 	 *
-	 * @return Array $wantedArrays
+	 * @return Array $wanted_arrays
 	 */
-	private function getArraysFromType ($fields, $type) {
+	private function getArraysFromType( $fields, $type ) {
 		// Test if $fields is JSON
-		if ((is_string($fields) && (is_object(json_decode($fields)) || is_array(json_decode($fields))))) {
+		if ( ( is_string( $fields ) && ( is_object( json_decode( $fields ) ) || is_array( json_decode( $fields ) ) ) ) ) {
 			$fields = json_decode( $fields, true );
 		}
-		$wantedArrays = array();
-		foreach ($fields as $key => $value) {
+		$wanted_arrays = array();
+		foreach ( $fields as $key => $value ) {
 			if ( $value['type'] === $type ) {
-				$wantedArrays[] = $fields[$key];
+				$wanted_arrays[] = $fields[ $key ];
 			}
 		}
-		return $wantedArrays;
+		return $wanted_arrays;
 	}
 
 	/**
 	 * Process and submit entry to provider.
-	 *
 	 *
 	 * @param array $fields
 	 * @param array $entry
@@ -154,7 +152,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		if (
 			empty( $payment_settings['email'] ) ||
 			empty( $payment_settings['enable'] ) ||
-			$payment_settings['enable'] != '1'
+			( '1' !== $payment_settings['enable'] )
 		) {
 			return;
 		}
@@ -200,7 +198,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 		// Check total charge amount.
 		$amount = wpforms_get_total_payment( $fields );
-		if ( empty( $amount ) || $amount == wpforms_sanitize_amount( 0 ) ) {
+		if ( empty( $amount ) || wpforms_sanitize_amount( 0 ) === $amount ) {
 			$error = esc_html__( 'EPFL Payonline Payment stopped, invalid/empty amount', 'wpforms-epfl-payonline' );
 		}
 
@@ -225,9 +223,9 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		wpforms()->entry->update( $entry_id, $entry_data, '', '', array( 'cap' => false ) );
 
 		// Build the return URL with hash.
-		$query_args  = 'form_id=' . $form_data['id'] . '&entry_id=' . $entry_id . '&hash=' . wp_hash( $form_data['id'] . ',' . $entry_id );
+		$query_args = 'form_id=' . $form_data['id'] . '&entry_id=' . $entry_id . '&hash=' . wp_hash( $form_data['id'] . ',' . $entry_id );
 		// $return_url = home_url('/index.php');
-		$return_url = home_url('/');
+		$return_url = home_url( '/' );
 		if ( ! empty( $form_data['settings']['ajax_submit'] ) && ! empty( $_SERVER['HTTP_REFERER'] ) ) {
 			$return_url = $_SERVER['HTTP_REFERER'];
 		}
@@ -248,52 +246,51 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		$cancel_url  = ! empty( $payment_settings['cancel_url'] ) ? esc_url_raw( $payment_settings['cancel_url'] ) : home_url();
 		$transaction = ! empty( $payment_settings['transaction'] ) && 'donation' === $payment_settings['transaction'] ? '_donations' : '_cart';
 
-
 		// error_log('ENTRY ------------------');
 		// error_log(var_export($entry, true));
 
-		$payonline_addr = $this->getArraysFromType( $fields, 'address')[0]['address1'];
-		$payonline_addr .= (trim($this->getArraysFromType( $fields, 'address')[0]['address2']) === '') ? '' : ' / ' . $this->getArraysFromType( $fields, 'address')[0]['address2'];
+		$payonline_addr  = $this->getArraysFromType( $fields, 'address' )[0]['address1'];
+		$payonline_addr .= ( trim( $this->getArraysFromType( $fields, 'address' )[0]['address2'] ) === '' ) ? '' : ' / ' . $this->getArraysFromType( $fields, 'address' )[0]['address2'];
 		// Setup EPFL Payonline arguments.
 		$payonline_args = array(
-			'id_inst'       => $id_inst,
-			'Currency'      => strtoupper( wpforms_setting( 'currency', 'USD' ) ),
+			'id_inst'        => $id_inst,
+			'Currency'       => strtoupper( wpforms_setting( 'currency', 'USD' ) ),
 			// @TODO: Get real entry
-			'LastName'      => $this->getArraysFromType( $fields, 'name' )[0]['last'],
-			'FirstName'     => $this->getArraysFromType( $fields, 'name' )[0]['first'],
-			'Addr'          => $payonline_addr,
-			'ZipCode'       => $this->getArraysFromType( $fields, 'address' )[0]['postal'],
-			'City'          => $this->getArraysFromType( $fields, 'address' )[0]['city'],
-			'Country'       => $this->getArraysFromType( $fields, 'address' )[0]['country'],
-			'Email'         => $this->getFieldsFromType( $fields, 'email' )[0],
-			'id_transact'   => absint( $entry_id ),
+			'LastName'       => $this->getArraysFromType( $fields, 'name' )[0]['last'],
+			'FirstName'      => $this->getArraysFromType( $fields, 'name' )[0]['first'],
+			'Addr'           => $payonline_addr,
+			'ZipCode'        => $this->getArraysFromType( $fields, 'address' )[0]['postal'],
+			'City'           => $this->getArraysFromType( $fields, 'address' )[0]['city'],
+			'Country'        => $this->getArraysFromType( $fields, 'address' )[0]['country'],
+			'Email'          => $this->getFieldsFromType( $fields, 'email' )[0],
+			'id_transact'    => absint( $entry_id ),
 			// 'URL'           => "http://localhost:8080/index.php?commande=OK",
 			// 'url'           => "http://localhost:8080/index.php?commande=OK",
-			'Total'         => 0, // defined below...
+			'Total'          => 0, // defined below...
 			'wpforms_return' => base64_encode( $query_args ), // Test for return var
 			// WPForms default...
-			'bn'            => 'WPForms_SP',
-			'business'      => trim( $payment_settings['email'] ),
-			'cancel_return' => $cancel_url,
-			'cbt'           => get_bloginfo( 'name' ),
-			'charset'       => get_bloginfo( 'charset' ),
-			'cmd'           => $transaction,
-			'currency_code' => strtoupper( wpforms_setting( 'currency', 'USD' ) ),
-			'custom'        => absint( $form_data['id'] ),
-			'invoice'       => absint( $entry_id ),	
-			'no_note'       => absint( $payment_settings['note'] ),
-			'no_shipping'   => absint( $payment_settings['shipping'] ),
+			'bn'             => 'WPForms_SP',
+			'business'       => trim( $payment_settings['email'] ),
+			'cancel_return'  => $cancel_url,
+			'cbt'            => get_bloginfo( 'name' ),
+			'charset'        => get_bloginfo( 'charset' ),
+			'cmd'            => $transaction,
+			'currency_code'  => strtoupper( wpforms_setting( 'currency', 'USD' ) ),
+			'custom'         => absint( $form_data['id'] ),
+			'invoice'        => absint( $entry_id ),
+			'no_note'        => absint( $payment_settings['note'] ),
+			'no_shipping'    => absint( $payment_settings['shipping'] ),
 			// 'notify_url'    => add_query_arg( 'wpforms-listener', '', home_url( 'index.php' ) ), // add_query_arg( 'wpforms-listener', 'IPN', home_url( 'index.php' ) ),
-			'notify_url'    => add_query_arg( 'wpforms-listener', '', home_url( '/' ) ), // add_query_arg( 'wpforms-listener', 'IPN', home_url( 'index.php' ) ),
-			'return'        => $return_url,
-			'rm'            => '2',
-			'tax'           => 0,
-			'upload'        => '1',
+			'notify_url'     => add_query_arg( 'wpforms-listener', '', home_url( '/' ) ), // add_query_arg( 'wpforms-listener', 'IPN', home_url( 'index.php' ) ),
+			'return'         => $return_url,
+			'rm'             => '2',
+			'tax'            => 0,
+			'upload'         => '1',
 		);
 
-		error_log('BEGIN payonline_args ------------------');
+		error_log( 'BEGIN payonline_args ------------------' );
 		error_log( print_r( $payonline_args, true ) );
-		error_log('END payonline_args ------------------');
+		error_log( 'END payonline_args ------------------' );
 
 		// Add cart items.
 		if ( '_cart' === $transaction ) {
@@ -316,10 +313,9 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 				// Don't yet support quantities.
 				//$payonline_args['quantity_' . $i ]  = $item['quantity'];
 				$payonline_args[ 'amount_' . $i ] = $item_amount;
-				$payonline_args['Total']  += $item_amount;
+				$payonline_args['Total']         += $item_amount;
 				$i ++;
 			}
-
 		} else {
 
 			// Combine a donation name from all payment fields names.
@@ -344,7 +340,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			$payonline_args['Total']     = $amount;
 		}
 
-		$payonline_args['Total'] = number_format($payonline_args['Total'], 2, '.', '');
+		$payonline_args['Total'] = number_format( $payonline_args['Total'], 2, '.', '' );
 		// Last change to filter args.
 		$payonline_args = apply_filters( 'wpforms_payonline_redirect_args', $payonline_args, $fields, $form_data, $entry_id );
 
@@ -364,21 +360,21 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	 * and https://github.com/anhofmann/php-ssha/blob/master/ssha.php
 	 *
 	 * @param string $token
-	 * @param string $inputHash ($id_transact . ':' . $id_inst)
+	 * @param string $input_hash ($id_transact . ':' . $id_inst)
 	 * @return boolean
 	 */
-	private function ssha_password_verify ($token, $inputHash) {
-		list($salt, $hash) = explode(':', $token);
-		$ohash = base64_decode(substr($hash, 6));
-		$osalt = substr($ohash, 20);
-		$ohash = substr($ohash, 0, 20);
-		$nhash = pack("H*", sha1($inputHash . $osalt));
-		if ($ohash === $nhash) {
-			error_log( "ssha_password_verify (" . $token . " - " . $inputHash . "): success " );
-			return True;
+	private function ssha_password_verify( $token, $input_hash ) {
+		list($salt, $hash) = explode( ':', $token );
+		$ohash             = base64_decode( substr( $hash, 6 ) );
+		$osalt             = substr( $ohash, 20 );
+		$ohash             = substr( $ohash, 0, 20 );
+		$nhash             = pack( 'H*', sha1( $input_hash . $osalt ) );
+		if ( $ohash === $nhash ) {
+			error_log( 'ssha_password_verify (' . $token . ' - ' . $input_hash . '): success ' );
+			return true;
 		} else {
-			error_log( "ssha_password_verify (" . $token . " - " . $inputHash . "): failed " );
-			return False;
+			error_log( 'ssha_password_verify (' . $token . ' - ' . $input_hash . '): failed ' );
+			return false;
 		}
 	}
 
@@ -390,7 +386,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	 *
 	 * @return void
 	 */
-	public function process_return_from_epfl_payonline () {
+	public function process_return_from_epfl_payonline() {
 		// Anything like wp_url/index.php?EPFLPayonline
 		if ( ! isset( $_GET['EPFLPayonline'] ) || ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' !== $_SERVER['REQUEST_METHOD'] ) ) {
 			return;
@@ -402,18 +398,18 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		// Loop through each POST.
 		foreach ( $_POST as $key => $value ) {
 			// @TODO Sanitize values
-			$data[$key] = $value;
+			$data[ $key ] = $value;
 		}
 
 		// Check if $post_data_array has been populated.
 		if ( ! is_array( $data ) || empty( $data ) || empty( $data['invoice'] ) || empty( $data['token'] ) || empty( $data['id_transact'] ) || empty( $data['id_inst'] ) ) {
-			error_log( "process_return_from_epfl_payonline: Error: Missing \$data in process_return_from_epfl_payonline()" );
+			error_log( 'process_return_from_epfl_payonline: Error: Missing $data in process_return_from_epfl_payonline()' );
 			return;
 		}
 
 		// Verify that the returned hash is legit
-		if ( ! $this->ssha_password_verify($data['token'], $data['id_transact']. ':' . $data['id_inst']) ) {
-			error_log( "process_return_from_epfl_payonline: Error: Hash can not be verified" );
+		if ( ! $this->ssha_password_verify( $data['token'], $data['id_transact'] . ':' . $data['id_inst'] ) ) {
+			error_log( 'process_return_from_epfl_payonline: Error: Hash can not be verified' );
 			return;
 		}
 
@@ -421,13 +417,16 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		$entry_id       = absint( $data['id_transact'] );
 		$entry          = wpforms()->entry->get( absint( $entry_id ) );
 		$payment_status = $data['result'];
-		$form_data      = wpforms()->form->get( $entry->form_id, array(
-			'content_only' => true,
-		) );
+		$form_data      = wpforms()->form->get(
+			$entry->form_id,
+			array(
+				'content_only' => true,
+			)
+		);
 
 		// If payment or form doesn't exist, bail.
 		if ( empty( $entry ) || empty( $form_data ) ) {
-			error_log( "process_return_from_epfl_payonline: Error: Missing \$payment or \$form_data in process_return_from_epfl_payonline()" );
+			error_log( 'process_return_from_epfl_payonline: Error: Missing $payment or $form_data in process_return_from_epfl_payonline()' );
 			return;
 		}
 
@@ -437,12 +436,12 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		if ( empty( $form_data['payments'][ $this->slug ]['email'] ) || strtolower( $data['business'] ) !== strtolower( trim( $form_data['payments'][ $this->slug ]['email'] ) ) ) {
 			$error = esc_html__( 'Payment failed: recipient emails do not match', 'wpforms-epfl-payonline' );
 		}
-		if ( 0 == $payment_status ) {
+		if ( 0 === $payment_status ) {
 			$error = esc_html__( 'Payment failed: Payonline returned 0', 'wpforms-epfl-payonline' );
 		}
 
 		// If there was an error, log and update the payment status.
-		if ( ! empty( $error ) || 0 == $payment_status ) {
+		if ( ! empty( $error ) || 0 === $payment_status ) {
 			$entry_meta['payment_note'] = $error;
 			wpforms_log(
 				esc_html__( 'EPFL Payonline Return Error', 'wpforms-epfl-payonline' ),
@@ -453,7 +452,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 					'form_id' => $entry->form_id,
 				)
 			);
-			error_log( "process_return_from_epfl_payonline: Failed: " . $error . " " . var_export($data, true) );
+			error_log( 'process_return_from_epfl_payonline: Failed: ' . $error . ' ' . var_export( $data, true ) );
 			wpforms()->entry->update(
 				$entry_id,
 				array(
@@ -468,8 +467,8 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		}
 
 		// Completed payment.
-		if ( 1 == $payment_status ) {
-			error_log( "process_return_from_epfl_payonline: payment_status == 1" );
+		if ( 1 === $payment_status ) {
+			error_log( 'process_return_from_epfl_payonline: payment_status == 1' );
 
 			$entry_meta['payment_id_inst']     = $data['id_inst'];      // Payonline instance ID
 			$entry_meta['payment_id_trans']    = $data['id_trans'];     // Payonline transaction ID
@@ -491,9 +490,10 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 				array( 'cap' => false )
 			);
 
-			// Send email to benificiary (payment proof)
-			$email['subject']        = sprintf( esc_html__( '[%s] Payment confirmation for "%s"', 'wpforms-epfl-payonline' ), get_bloginfo( 'name' ), $form_data['settings']['form_title'] );
-			$email['address']        = $this->getFieldsFromType( $entry->fields, 'email');
+			// Send email to benificiary (payment proof).
+			/* translators: %1$s blog's name, %2$s form's name */
+			$email['subject']        = sprintf( esc_html__( '[%1$s] Payment confirmation for "%2$s"', 'wpforms-epfl-payonline' ), get_bloginfo( 'name' ), $form_data['settings']['form_title'] );
+			$email['address']        = $this->getFieldsFromType( $entry->fields, 'email' );
 			$email['address']        = array_map( 'sanitize_email', $email['address'] );
 			$email['sender_address'] = 'noreply@epfl.ch'; // TODO: improve it ! Check https://it.epfl.ch/kb_view_customer.do?sysparm_article=KB0013524  for EPFL SMTP detail
 			$email['sender_name']    = get_bloginfo( 'name' );
@@ -501,9 +501,9 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			$form_title              = $form_data['settings']['form_title'];
 			$email['message']        = "<h1>$form_title</h1>\n\n";
 			// @TODO: Template this
-			$email['message']        .= __( '<p>Thanks for your payment!</p>', 'wpforms-epfl-payonline' );
-			$email['message']        .= __( '<p>Please find below your order details.</p>', 'wpforms-epfl-payonline' );
-			$email['message']        .= '{all_fields}'; // @TODO learn how to use custom notification for that... ! empty( $notification['message'] ) ? $notification['message'] : '{all_fields}';
+			$email['message'] .= '<p>' . __( 'Thanks for your payment!', 'wpforms-epfl-payonline' ) . '</p>';
+			$email['message'] .= '<p>' . __( 'Please find below your order details.', 'wpforms-epfl-payonline' ) . '</p>';
+			$email['message'] .= '{all_fields}'; // @TODO learn how to use custom notification for that... ! empty( $notification['message'] ) ? $notification['message'] : '{all_fields}';
 
 			// Create new email.
 			$emails = new WPForms_WP_Emails();
@@ -526,13 +526,13 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		do_action( 'wpforms_epfl_payonline_process_complete', wpforms_decode( $entry->fields ), $form_data, $entry_id, $data );
 
 		// Debbug process_return_from_epfl_payonline
-		error_log( "process_return_from_epfl_payonline: POST:" );
+		error_log( 'process_return_from_epfl_payonline: POST:' );
 		error_log( var_export( $_POST, true ) );
-		error_log( "process_return_from_epfl_payonline: GET:" );
+		error_log( 'process_return_from_epfl_payonline: GET:' );
 		error_log( var_export( $_GET, true ) );
-		error_log( "process_return_from_epfl_payonline: SERVER:" );
+		error_log( 'process_return_from_epfl_payonline: SERVER:' );
 		error_log( var_export( $_SERVER, true ) );
-		error_log( "process_return_from_epfl_payonline: END ---" );
+		error_log( 'process_return_from_epfl_payonline: END ---' );
 
 		die();
 	}
@@ -581,27 +581,27 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	 * Add some details in the payment details sidebar
 	 */
 	public function action_entry_payment_sidebar( $entry, $form_data ) {
-		$entry_meta = json_decode($entry->meta);
+		$entry_meta = json_decode( $entry->meta );
 
-		if ( ! empty($entry_meta->payment_paymode) ) {
-			$entry_meta->payment_paymode = ($entry_meta->payment_paymode == 'PostFinance Card PostFinance Card') ? 'PostFinance Card' : $entry_meta->payment_paymode;
-			$entry_meta->payment_paymode = ($entry_meta->payment_paymode == 'PAYPAL PAYPAL') ? 'PayPal' : $entry_meta->payment_paymode;
+		if ( ! empty( $entry_meta->payment_paymode ) ) {
+			$entry_meta->payment_paymode = ( 'PostFinance Card PostFinance Card' === $entry_meta->payment_paymode ) ? 'PostFinance Card' : $entry_meta->payment_paymode;
+			$entry_meta->payment_paymode = ( 'PAYPAL PAYPAL' === $entry_meta->payment_paymode ) ? 'PayPal' : $entry_meta->payment_paymode;
 			echo '<p class="wpforms-entry-payment-paymode">';
-			echo __( 'Paymode', 'wpforms-epfl-payonline' ) . ': ' ;
+			echo __( 'Paymode', 'wpforms-epfl-payonline' ) . ': ';
 			echo '<strong>' . $entry_meta->payment_paymode . '</strong>';
 			echo '</p>';
 		}
 
-		if ( ! empty($entry_meta->payment_id_trans) || ! empty($entry_meta->payment_id_inst) ) {
+		if ( ! empty( $entry_meta->payment_id_trans ) || ! empty( $entry_meta->payment_id_inst ) ) {
 			echo '<p class="wpforms-entry-payment-id_trans">';
 			echo '<strong>' . __( 'Payonline', 'wpforms-epfl-payonline' ) . ': </strong>';
-			echo '<br><small>(' . __( 'Note: accessible only for Payonline instance\'s administrators', 'wpforms-epfl-payonline' ) . ')</small>' ;
-			if ( ! empty($entry_meta->payment_id_trans) ) {
-				echo '<br>&nbsp;&nbsp;•&nbsp;' . __( 'Transaction detail', 'wpforms-epfl-payonline' ) . ': ' ;
+			echo '<br><small>(' . __( 'Note: accessible only for Payonline instance\'s administrators', 'wpforms-epfl-payonline' ) . ')</small>';
+			if ( ! empty( $entry_meta->payment_id_trans ) ) {
+				echo '<br>&nbsp;&nbsp;•&nbsp;' . __( 'Transaction detail', 'wpforms-epfl-payonline' ) . ': ';
 				echo sprintf( '<a href="https://payonline.epfl.ch/cgi-bin/payonline/dettrans?id_trans=%s" target="_blank" rel="noopener noreferrer">%s</a>', $entry_meta->payment_id_trans, $entry_meta->payment_id_trans );
 			}
-			if ( ! empty($entry_meta->payment_id_inst) ) {
-				echo '<br>&nbsp;&nbsp;•&nbsp;' . __( 'Payonline transactions list', 'wpforms-epfl-payonline' ) . ': ' ;
+			if ( ! empty( $entry_meta->payment_id_inst ) ) {
+				echo '<br>&nbsp;&nbsp;•&nbsp;' . __( 'Payonline transactions list', 'wpforms-epfl-payonline' ) . ': ';
 				echo sprintf( '<a href="https://payonline.epfl.ch/cgi-bin/payonline/listtrans?id=%s" target="_blank" rel="noopener noreferrer">%s</a>', $entry_meta->payment_id_inst, $entry_meta->payment_id_inst );
 			}
 			echo '</p>';
@@ -611,7 +611,6 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 	/**
 	 * Enable by default EPFL Payonline payment gateway.
-	 *
 	 */
 	public function filter_has_payment_gateway( $form_data ) {
 		if ( ! empty( $form_data['payments']['epfl_payonline']['enable'] ) ) {
@@ -621,7 +620,6 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 	/**
 	 * Define the payment gateway name in a entry detail.
-	 *
 	 */
 	public function filter_entry_details_payment_gateway( $entry_meta, $entry, $form_data ) {
 		return esc_html__( 'EPFL Payonline', 'wpforms-epfl-payonline' );
@@ -629,7 +627,6 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 	/**
 	 * Define the payment transaction name in a entry detail.
-	 *
 	 */
 	public function filter_entry_details_payment_transaction( $entry_meta, $entry, $form_data ) {
 		if ( ! empty( $entry['payment_transaction'] ) ) {
@@ -641,7 +638,6 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 	/**
 	 * Display content inside the panel content area.
-	 *
 	 */
 	public function builder_content() {
 
@@ -650,7 +646,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			sprintf(
 				wp_kses(
 					/* translators: %s - Addons page URL in admin area. */
-					__( 'This addon allows to use <a href="%s">EPFL Payonline</a> with the <a href="%s">WPForms plugin</a>. Please read <a href="%s">Payonline Help</a> in order to create a payment instance.', 'wpforms-epfl-payonline' ),
+					__( 'This addon allows to use <a href="%1$s">EPFL Payonline</a> with the <a href="%2$s">WPForms plugin</a>. Please read <a href="%3$s">Payonline Help</a> in order to create a payment instance.', 'wpforms-epfl-payonline' ),
 					array(
 						'a' => array(
 							'href' => array(),
@@ -666,10 +662,12 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 				</div>
 				<p>' .
 				sprintf(
-					__( 'WPForms-EPFL-Payonline\'s information, help and sources are available on <a href="%s">GitHub</a>. Your are using the version <a href="%s">v%s</a> of the addon.', 'wpforms-epfl-payonline' ),
+					/* translators: %1$s plugin github URL, %2$s plugin release URL, %3$s plugin version */
+					__( 'WPForms-EPFL-Payonline\'s information, help and sources are available on <a href="%1$s">GitHub</a>. Your are using the version <a href="%2$s">v%3$s</a> of the addon.', 'wpforms-epfl-payonline' ),
 					esc_url( 'https://github.com/epfl-si/wpforms-epfl-payonline' ),
 					esc_url( 'https://github.com/epfl-si/wpforms-epfl-payonline/releases/tag/v' . WPFORMS_EPFL_PAYONLINE_VERSION ),
-					WPFORMS_EPFL_PAYONLINE_VERSION)
+					WPFORMS_EPFL_PAYONLINE_VERSION
+				)
 				. '</p>
 				<hr>
 			</p>';
@@ -814,24 +812,21 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 	/**
 	 * Add additional links for WPForms EPFL Payonline in the plugins list.
-	 *
 	 */
 	function add_links_to_plugin_row( $plugin_meta, $plugin_file, $plugin_data, $status ) {
-		if ( $this->plugin_name == $plugin_data['Name'] ) {
-			if (substr_compare($plugin_meta[2], '<a href="' . $plugin_data['PluginURI'] .'">', 0, 66) == 0) {
-				// Kick the "Visit plugin site" link and add the "View details" wich is normally reserved for WP hosted plugin
-				$plugin_meta[2] = sprintf( '<a href="%s" class="thickbox" aria-label="%s" data-title="%s">%s</a>',
-														esc_url( network_admin_url( 'plugin-install.php?tab=plugin-information&plugin=' . $this->slug . '&TB_iframe=true&width=600&height=550' ) ),
-														esc_attr( sprintf( __( 'More information about %s' ), $this->name ) ),
-														esc_attr( $this->name ),
-														__( 'View details' )
-												);
-			}
+		if ( $this->plugin_name === $plugin_data['Name'] ) {
 			$row_meta = array(
+				'view-details'   => sprintf(
+					'<a href="%s" class="thickbox" aria-label="%s" data-title="%s">%s</a>',
+					esc_url( network_admin_url( 'plugin-install.php?tab=plugin-information&plugin=' . $this->slug . '&TB_iframe=true&width=600&height=550' ) ),
+					/* translators: %s plugin name */
+					esc_attr( sprintf( __( 'More information about %s' ), $this->name ) ),
+					esc_attr( $this->name ),
+					__( 'View details' )
+				),
 				'payonline'      => '<a href="' . esc_url( 'https://payonline.epfl.ch' ) . '" target="_blank" aria-label="' . esc_attr__( 'Plugin Additional Links', 'wpforms-epfl-payonline' ) . '">' . esc_html__( 'Payonline', 'wpforms-epfl-payonline' ) . '</a>',
-				'help-payonline' => '<a href="' . esc_url( 'https://wiki.epfl.ch/payonline-help' ) . '" target="_blank" aria-label="' . esc_attr__( 'Plugin Additional Links', 'wpforms-epfl-payonline' ) . '">' . esc_html__( 'Help Payonline', 'wpforms-epfl-payonline' ) . '</a>'
+				'help-payonline' => '<a href="' . esc_url( 'https://wiki.epfl.ch/payonline-help' ) . '" target="_blank" aria-label="' . esc_attr__( 'Plugin Additional Links', 'wpforms-epfl-payonline' ) . '">' . esc_html__( 'Help Payonline', 'wpforms-epfl-payonline' ) . '</a>',
 			);
-
 			return array_merge( $plugin_meta, $row_meta );
 		}
 		return (array) $plugin_meta;
@@ -839,41 +834,43 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 	/**
 	 * Allow plugin to offer an update link to update itself
-	 *
 	 */
 	function wpforms_epfl_payonline_push_update( $transient ) {
-		if ( empty($transient->checked ) ) {
+		if ( empty( $transient->checked ) ) {
 			return $transient;
 		}
 
-		// trying to get from cache first, to disable cache comment 10,20,21,22,24
-		if ( false == $remote = get_transient( 'upgrade_wpforms_epfl_payonline' ) ) {
+		// trying to get from cache first, to disable cache comment 10,20,21,22,24.
+		$remote = get_transient( 'upgrade_wpforms_epfl_payonline' );
+		if ( false === $remote ) {
 			// info.json is the file with the actual plugin information on your server
-			$remote = wp_remote_get( 'https://api.github.com/repos/epfl-idevelop/wpforms-epfl-payonline/releases/latest', array(
-				'timeout' => 10,
-				'headers' => array(
-					'Accept' => 'application/json'
-				) )
+			$remote = wp_remote_get(
+				'https://api.github.com/repos/epfl-idevelop/wpforms-epfl-payonline/releases/latest',
+				array(
+					'timeout' => 10,
+					'headers' => array(
+						'Accept' => 'application/json',
+					),
+				)
 			);
 
-			if ( !is_wp_error( $remote ) && isset( $remote['response']['code'] ) && $remote['response']['code'] == 200 && !empty( $remote['body'] ) ) {
+			if ( ! is_wp_error( $remote ) && isset( $remote['response']['code'] ) && 200 === $remote['response']['code'] && ! empty( $remote['body'] ) ) {
 				set_transient( 'upgrade_wpforms_epfl_payonline', $remote, $this->cache_seconds ); // 43200 ? 12 hours cache
 			}
-
 		}
 
 		if ( $remote ) {
-			$remote = json_decode($remote['body']);
-			$latest_version = ltrim($remote->tag_name, 'v');
+			$remote         = json_decode( $remote['body'] );
+			$latest_version = ltrim( $remote->tag_name, 'v' );
 
-			if ( $remote && version_compare( $this->version, $latest_version, '<' ) && version_compare($this->wp_min_version, get_bloginfo('version'), '<' ) ) {
-				$res = new stdClass();
-				$res->slug = $this->slug;
-				$res->plugin =  dirname( plugin_basename( __FILE__ )) . '/wpforms-epfl-payonline.php';
-				$res->new_version = $latest_version;
-				$res->tested = $this->wp_tested_version;
-				$res->package = 'https://github.com/epfl-idevelop/wpforms-epfl-payonline/releases/latest/download/wpforms-epfl-payonline.zip';
-				$transient->response[$res->plugin] = $res;
+			if ( $remote && version_compare( $this->version, $latest_version, '<' ) && version_compare( $this->wp_min_version, get_bloginfo( 'version' ), '<' ) ) {
+				$res                                 = new stdClass();
+				$res->slug                           = $this->slug;
+				$res->plugin                         = dirname( plugin_basename( __FILE__ ) ) . '/wpforms-epfl-payonline.php';
+				$res->new_version                    = $latest_version;
+				$res->tested                         = $this->wp_tested_version;
+				$res->package                        = 'https://github.com/epfl-idevelop/wpforms-epfl-payonline/releases/latest/download/wpforms-epfl-payonline.zip';
+				$transient->response[ $res->plugin ] = $res;
 				// error_log(var_export($res, true));
 				// $transient->checked[$res->plugin] = $latest_version;
 			}
@@ -886,8 +883,8 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	 * @TODO: Try to auto reactivate plugin
 	 */
 	function wpforms_epfl_payonline_after_update( $upgrader_object, $options ) {
-		if ( $options['action'] == 'update' && $options['type'] === 'plugin' ) {
-			// just clean the cache when new plugin version is installed
+		if ( 'update' === $options['action'] && 'plugin' === $options['type'] ) {
+			// just clean the cache when new plugin version is installed.
 			delete_transient( 'upgrade_wpforms_epfl_payonline' );
 		}
 	}
@@ -897,67 +894,72 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	 *  - Description: information from README.md
 	 *  - Installation: information from INSTALL.md
 	 *  - Changelog: information from CHANGELOG.md on github
-	 * 
-	 * $res contains information for plugins with custom update server 
+	 *
+	 * $res contains information for plugins with custom update server
 	 * $action 'plugin_information'
 	 * $args stdClass Object ( [slug] => woocommerce [is_ssl] => [fields] => Array ( [banners] => 1 [reviews] => 1 [downloaded] => [active_installs] => 1 ) [per_page] => 24 [locale] => en_US )
-	 */	
+	 */
 	function wpforms_epfl_payonline_plugin_info( $res, $action, $args ) {
 
 		// do nothing if this is not about getting plugin information
-		if ( $action !== 'plugin_information' )
+		if ( 'plugin_information' !== $action ) {
 			return false;
+		}
 
-		// do nothing if it is not our plugin	
-		if ( $this->slug !== $args->slug )
+		// do nothing if it is not our plugin
+		if ( $this->slug !== $args->slug ) {
 			return $res;
+		}
 
-		// trying to get from cache first, to disable cache comment 18,28,29,30,32
-		if ( false == $remote = get_transient( 'upgrade_wpforms_epfl_payonline' ) ) {
+		// trying to get from cache first, to disable cache comment 18,28,29,30,32.
+		$remote = get_transient( 'upgrade_wpforms_epfl_payonline' );
+		if ( false === $remote ) {
 
-			// info.json is the file with the actual plugin information on your server
-			$remote = wp_remote_get( 'https://api.github.com/repos/epfl-idevelop/wpforms-epfl-payonline/releases/latest', array(
-				'timeout' => 10,
-				'headers' => array(
-					'Accept' => 'application/json'
-				) )
+			// info.json is the file with the actual plugin information on your server.
+			$remote = wp_remote_get(
+				'https://api.github.com/repos/epfl-idevelop/wpforms-epfl-payonline/releases/latest',
+				array(
+					'timeout' => 10,
+					'headers' => array(
+						'Accept' => 'application/json',
+					),
+				)
 			);
 
-			if ( !is_wp_error( $remote ) && isset( $remote['response']['code'] ) && $remote['response']['code'] == 200 && !empty( $remote['body'] ) ) {
+			if ( ! is_wp_error( $remote ) && isset( $remote['response']['code'] ) && 200 === $remote['response']['code'] && ! empty( $remote['body'] ) ) {
 				set_transient( 'upgrade_wpforms_epfl_payonline', $remote, $this->cache_seconds ); // 43200 = 12 hours cache
 			}
-
 		}
 
 		if ( $remote ) {
 			$remote = json_decode( $remote['body'] );
 			// error_log( var_export($remote, true)) ;
-			$latest_version = ltrim( $remote->tag_name, 'v' );
-			$res = new stdClass();
-			$res->name = $this->plugin_name;
-			$res->slug = $this->slug;
-			$res->version = $latest_version;
-			$res->tested = $this->wp_tested_version;
-			$res->requires = $this->wp_min_version;
-			$res->author = '<a href="https://search.epfl.ch/browseunit.do?unit=13030">EPFL IDEV-FSD</a>'; // I decided to write it directly in the plugin
+			$latest_version      = ltrim( $remote->tag_name, 'v' );
+			$res                 = new stdClass();
+			$res->name           = $this->plugin_name;
+			$res->slug           = $this->slug;
+			$res->version        = $latest_version;
+			$res->tested         = $this->wp_tested_version;
+			$res->requires       = $this->wp_min_version;
+			$res->author         = '<a href="https://search.epfl.ch/browseunit.do?unit=13030">EPFL IDEV-FSD</a>'; // I decided to write it directly in the plugin
 			$res->author_profile = 'https://profiles.wordpress.org/ponsfrilus/'; // WordPress.org profile
-			$res->download_link = $remote->zipball_url;
-			$res->trunk = $remote->html_url;
-			$res->last_updated = $remote->published_at;
-			$res->sections = array(
-				'description' => $this->getReadMe(), // description tab
+			$res->download_link  = $remote->zipball_url;
+			$res->trunk          = $remote->html_url;
+			$res->last_updated   = $remote->published_at;
+			$res->sections       = array(
+				'description'  => $this->getReadMe(), // description tab
 				'installation' => $this->getInstall(), // installation tab
-				'changelog' => $this->getChangelog(), // changelog tab
-				// you can add your custom sections (tabs) here 
+				'changelog'    => $this->getChangelog(), // changelog tab
+				// you can add your custom sections (tabs) here
 			);
 
 			// in case you want the screenshots tab, use the following HTML format for its content:
 			// <ol><li><a href="IMG_URL" target="_blank" rel="noopener noreferrer"><img src="IMG_URL" alt="CAPTION" /></a><p>CAPTION</p></li></ol>
-			if ( !empty( $remote->sections->screenshots ) ) {
+			if ( ! empty( $remote->sections->screenshots ) ) {
 				$res->sections['screenshots'] = $remote->sections->screenshots;
 			}
 			$res->banners = array(
-				'low' => plugin_dir_url( __FILE__ ) . 'assets/banners/banner-772x250.png',
+				'low'  => plugin_dir_url( __FILE__ ) . 'assets/banners/banner-772x250.png',
 				'high' => plugin_dir_url( __FILE__ ) . 'assets/banners/banner-1544x500.png',
 			);
 			return $res;
@@ -968,39 +970,36 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	// http://localhost:8089/wp-admin/plugin-install.php?tab=plugin-information&plugin=epfl_payonline&section=changelog&TB_iframe=true&width=600&height=800
 	/**
 	 * Retrieve and parse markdown of the README.md file
-	 *
 	 */
 	private function getReadMe() {
-		$readme_path = plugin_dir_path( __FILE__ ) . '/README.md';
-		$readme_content = file_get_contents($readme_path, true);
-		require_once(plugin_dir_path( __FILE__ ) .'/lib/Parsedown.php');
-		$Parsedown = new Parsedown();
-		$readme_content = $Parsedown->text($readme_content); # prints: <p>Hello <em>Parsedown</em>!</p>
+		$readme_path    = plugin_dir_path( __FILE__ ) . '/README.md';
+		$readme_content = file_get_contents( $readme_path, true );
+		require_once( plugin_dir_path( __FILE__ ) . '/lib/Parsedown.php' );
+		$parsedown      = new Parsedown();
+		$readme_content = $parsedown->text( $readme_content ); # prints: <p>Hello <em>parsedown</em>!</p>
 		return 'See README.md on <a href="https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/README.md">GitHub</a>.<br><div class="epfl_payonline_readme">' . $readme_content . '</div>';
 	}
 
 	/**
 	 * Retrieve and parse markdown of the INSTALL.md file
-	 *
 	 */
 	private function getInstall() {
-		$install_path = plugin_dir_path( __FILE__ ) . '/INSTALL.md';
-		$install_content = file_get_contents($install_path, true);
-		require_once(plugin_dir_path( __FILE__ ) .'/lib/Parsedown.php');
-		$Parsedown = new Parsedown();
-		$install_content = $Parsedown->text($install_content); # prints: <p>Hello <em>Parsedown</em>!</p>
+		$install_path    = plugin_dir_path( __FILE__ ) . '/INSTALL.md';
+		$install_content = file_get_contents( $install_path, true );
+		require_once( plugin_dir_path( __FILE__ ) . '/lib/Parsedown.php' );
+		$parsedown       = new Parsedown();
+		$install_content = $parsedown->text( $install_content ); # prints: <p>Hello <em>parsedown</em>!</p>
 		return 'See INSTALL.md on <a href="https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/INSTALL.md">GitHub</a>.<br><div class="epfl_payonline_install">' . $install_content . '</div>';
 	}
 
 	/**
 	 * Retrieve CHANGELOG.md on github and parse markdown
-	 *
 	 */
 	private function getChangelog() {
-		$changelog_content = file_get_contents('https://raw.githubusercontent.com/epfl-idevelop/wpforms-epfl-payonline/master/CHANGELOG.md', true);
-		require_once(plugin_dir_path( __FILE__ ) .'/lib/Parsedown.php');
-		$Parsedown = new Parsedown();
-		$changelog_content = $Parsedown->text($changelog_content); # prints: <p>Hello <em>Parsedown</em>!</p>
+		$changelog_content = file_get_contents( 'https://raw.githubusercontent.com/epfl-idevelop/wpforms-epfl-payonline/master/CHANGELOG.md', true );
+		require_once( plugin_dir_path( __FILE__ ) . '/lib/Parsedown.php' );
+		$parsedown         = new parsedown();
+		$changelog_content = $parsedown->text( $changelog_content ); # prints: <p>Hello <em>parsedown</em>!</p>
 		return 'See CHANGELOG.md on <a href="https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/CHANGELOG.md">GitHub</a>.<br><div class="epfl_payonline_changelog">' . $changelog_content . '</div>';
 	}
 
