@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.1.0
+* Hide some add-ons
+* Add composer.* to .gitignore
+* Add WordPress Coding Standards to CONTRIBUTING.md
+
 ## v1.0.9
 * FIX HTML char in sent emails
 * Set the example form to large to improve readability
@@ -41,7 +46,7 @@ All notable changes to this project will be documented in this file.
 * Translation updated
 
 ## v0.0.15
-* Functions `getFieldsFromType` and `getArraysFromType` to manage to get 
+* Functions `getFieldsFromType` and `getArraysFromType` to manage to get
   form fields data based on field type.
 * Debbuging cleaned up
 * CC payment confirmation to form manager
@@ -70,10 +75,10 @@ All notable changes to this project will be documented in this file.
 ## v0.0.8
 * Use of http://parsedown.org to display plugin info based on README, INSALL and CHANGELOG
 
-## v0.0.7 
+## v0.0.7
 * Auto update thanks to https://rudrastyh.com/wordpress/self-hosted-plugin-update.html
 
-## v0.0.6 
+## v0.0.6
 * create-gh-release.sh improved
 * Release asset keep the same name so that [the latest release download
 link](https://github.com/epfl-si/wpforms-epfl-payonline/releases/latest/download/wpforms-epfl-payonline.zip)
@@ -88,7 +93,7 @@ is always available
 * Translation files generated
 
 ## v0.0.3
-* Payments status updated from Payonline 
+* Payments status updated from Payonline
 * Default form template for conference
 
 ## v0.0.2

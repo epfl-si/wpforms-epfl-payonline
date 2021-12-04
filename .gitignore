@@ -9,6 +9,9 @@ languages/*.*~
 vendor
 # PHP CS
 .php-cs-fixer.cache
+# Composer is used only by phpcs / phpcbf...
+composer.json
+composer.lock
 
 # Created by https://www.gitignore.io/api/macos,intellij,phpcodesniffer
 # Edit at https://www.gitignore.io/?templates=macos,intellij,phpcodesniffer

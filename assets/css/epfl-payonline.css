@@ -1,15 +1,25 @@
 /* Hide PayPal and Stripe default payment addon */
-a[data-name="PayPal Standard addon"], 
+a[data-name="PayPal Standard addon"],
 a[data-name="Stripe addon"],
 a[data-name="Authorize.Net addon"] {
   visibility: hidden;
   display: none;
 }
-/* In case the addon is installed — leave it visible for now
-.wpforms-panel-sidebar-section-paypal_standard,
-.wpforms-panel-sidebar-section-stripe,
-.wpforms-panel-sidebar-section-authorize_net {
-  visibility: hidden;
-  display: none;
+
+/* Hide the Marketing options */
+.wpforms-panel-providers-button {
+  visibility: hidden !important;
+  display: none !important;
 }
-*/
+
+/* Hide additional settings that wanna install add-ons */
+.wpforms-panel-sidebar-section-conversational-forms,
+.wpforms-panel-sidebar-section-surveys-polls,
+.wpforms-panel-sidebar-section-form-pages,
+.wpforms-panel-sidebar-section-form-locker,
+.wpforms-panel-sidebar-section-form-abandonment,
+.wpforms-panel-sidebar-section-post-submissions,
+.wpforms-panel-sidebar-section-webhooks {
+  visibility: hidden !important;
+  display: none !important;
+}

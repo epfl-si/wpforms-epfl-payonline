@@ -23,7 +23,7 @@ test:
 	@echo "REPO_OWNER_EMAIL: ${REPO_OWNER_EMAIL}"
 
 .PHONY: release
-## 🚩 This create the whole jam for publishing a new release on GitHub, including 
+## 🚩 This create the whole jam for publishing a new release on GitHub, including
 ## a new version number, updated translation, a "Bounce version commit", a new
 ## tag and a new release including the wpforms-epfl-payonline.zip as asset.
 release: check
@@ -164,12 +164,12 @@ install_phpcs:
 ## Run PHP Code Sniffer linter using WordPress-Core coding standards
 phpcs:
 	@echo '**** run phpcs ****'
-	 ./vendor/bin/phpcs --standard=WordPress-Core --extensions=php --ignore="vendor/*,lib" .
+	 ./vendor/bin/phpcs --standard=WordPress --extensions=php --ignore="vendor/*,lib" .
+	 # ./vendor/bin/phpcs --standard=WordPress-Core --extensions=php --ignore="vendor/*,lib" .
 
 .PHONY: phpcbf
 ## Run PHP Code Beautifuller and Fixer (it fixes what it can)
 phpcbf:
 	@echo '**** run phpcbf ****'
-	./vendor/bin/phpcbf -pv --standard=WordPress-Core --extensions=php --ignore="vendor/*,lib" .
-
-
+	./vendor/bin/phpcbf -pv --standard=WordPress --extensions=php --ignore="vendor/*,lib" .
+	# ./vendor/bin/phpcbf -pv --standard=WordPress-Core --extensions=php --ignore="vendor/*,lib" .
