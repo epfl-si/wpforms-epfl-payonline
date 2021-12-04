@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WPForms EPFL Payonline 1.1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/wp-cli/i18n-command/issues\n"
-"POT-Creation-Date: 2021-10-13T14:24:04+02:00\n"
+"POT-Creation-Date: 2021-12-04T16:12:58+01:00\n"
 "PO-Revision-Date: 2019-12-11 18:32+0100\n"
 "Last-Translator: nborboen <nicolas.borboen@epfl.ch>\n"
 "Language-Team: French\n"
@@ -81,7 +81,7 @@ msgstr "[COPY]"
 msgid "Paymode"
 msgstr "Mode de paiement"
 
-#: class-wpforms-epfl-payonline.php:597 class-wpforms-epfl-payonline.php:827
+#: class-wpforms-epfl-payonline.php:597 class-wpforms-epfl-payonline.php:829
 msgid "Payonline"
 msgstr "Payonline"
 
@@ -163,64 +163,24 @@ msgstr "Email WPForms EPFL Payonline"
 msgid "Enter an email address for payments notification"
 msgstr "Spécifier une adresse email pour les notifications de paiement."
 
-#: class-wpforms-epfl-payonline.php:713
-msgid "Mode"
-msgstr "Mode"
-
-#: class-wpforms-epfl-payonline.php:718
-msgid "Production"
-msgstr "Production"
-
-#: class-wpforms-epfl-payonline.php:719
-msgid "Test / Sandbox"
-msgstr "Test / Sandbox"
-
-#: class-wpforms-epfl-payonline.php:721
-msgid ""
-"Select Production to receive real payments or select Test to use the EPFL "
-"Payonline developer sandbox (id_inst=1234567890)"
-msgstr ""
-"Sélectionnez Production pour recevoir des paiements réels ou sélectionnez "
-"Test pour utiliser l'instance Payonline de test (id_inst=1234567890)"
-
-#: class-wpforms-epfl-payonline.php:756
-msgid "Shipping"
-msgstr "Livraison"
-
-#: class-wpforms-epfl-payonline.php:761
-msgid "Don't ask for an address"
-msgstr "Ne pas demander d’adresse"
-
-#: class-wpforms-epfl-payonline.php:762
-msgid "Ask for an address, but do not require"
-msgstr "Demander une adresse, mais ne pas l’exiger"
-
-#: class-wpforms-epfl-payonline.php:763
-msgid "Ask for an address and require it"
-msgstr "Demander une adresse et l’exiger"
-
-#: class-wpforms-epfl-payonline.php:772
-msgid "Don't ask buyer to include a note with payment"
-msgstr "Ne pas demander à l’acheteur d’inclure une note avec le paiement"
-
-#: class-wpforms-epfl-payonline.php:787
+#: class-wpforms-epfl-payonline.php:789
 msgid "Process"
 msgstr "Traiter"
 
-#: class-wpforms-epfl-payonline.php:788
+#: class-wpforms-epfl-payonline.php:790
 msgid "Don't process"
 msgstr "Ne pas traiter"
 
-#: class-wpforms-epfl-payonline.php:790
+#: class-wpforms-epfl-payonline.php:792
 msgid "this charge if"
 msgstr "ces frais si"
 
-#: class-wpforms-epfl-payonline.php:791
+#: class-wpforms-epfl-payonline.php:793
 msgid "EPFL Payonline Standard payment"
 msgstr "EPFL Payonline Standard payment"
 
 #. translators: %s - Addons page URL in admin area.
-#: class-wpforms-epfl-payonline.php:800
+#: class-wpforms-epfl-payonline.php:802
 msgid ""
 "Install the <a href=\"%s\">Conditional Logic addon</a> to enable conditional "
 "logic for EPFL Payonline payments."
@@ -228,10 +188,41 @@ msgstr ""
 "Installer le <a href=\"%s\">module Conditional Logic</a> pour activer la "
 "logique conditionnelle pour les paiements EPFL Payonline."
 
-#: class-wpforms-epfl-payonline.php:827 class-wpforms-epfl-payonline.php:828
+#: class-wpforms-epfl-payonline.php:829 class-wpforms-epfl-payonline.php:830
 msgid "Plugin Additional Links"
 msgstr "Liens additionnels du plugin"
 
-#: class-wpforms-epfl-payonline.php:828
+#: class-wpforms-epfl-payonline.php:830
 msgid "Help Payonline"
 msgstr "Aide Payonline"
+
+#~ msgid "Mode"
+#~ msgstr "Mode"
+
+#~ msgid "Production"
+#~ msgstr "Production"
+
+#~ msgid "Test / Sandbox"
+#~ msgstr "Test / Sandbox"
+
+#~ msgid ""
+#~ "Select Production to receive real payments or select Test to use the EPFL "
+#~ "Payonline developer sandbox (id_inst=1234567890)"
+#~ msgstr ""
+#~ "Sélectionnez Production pour recevoir des paiements réels ou sélectionnez "
+#~ "Test pour utiliser l'instance Payonline de test (id_inst=1234567890)"
+
+#~ msgid "Shipping"
+#~ msgstr "Livraison"
+
+#~ msgid "Don't ask for an address"
+#~ msgstr "Ne pas demander d’adresse"
+
+#~ msgid "Ask for an address, but do not require"
+#~ msgstr "Demander une adresse, mais ne pas l’exiger"
+
+#~ msgid "Ask for an address and require it"
+#~ msgstr "Demander une adresse et l’exiger"
+
+#~ msgid "Don't ask buyer to include a note with payment"
+#~ msgstr "Ne pas demander à l’acheteur d’inclure une note avec le paiement"
