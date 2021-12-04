@@ -216,7 +216,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 					'payment_recipient' => sanitize_email( trim( $payment_settings['email'] ) ),
 					'payment_total'     => $amount,
 					'payment_currency'  => strtolower( wpforms_setting( 'currency', 'USD' ) ),
-					'payment_mode'      => esc_html( $payment_settings['mode'] ),
+					// 'payment_mode'      => esc_html( $payment_settings['mode'] ),
 				)
 			),
 		);
@@ -242,7 +242,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		// Setup various vars.
 		$items       = wpforms_get_payment_items( $fields );
 		$redirect    = 'https://payonline.epfl.ch/cgi-bin/commande/?';
-		$id_inst     = 'production' === $payment_settings['mode'] ? $payment_settings['id_inst'] : '1234567890'; // 1234567890 is the test instance
+		$id_inst     = empty( $payment_settings['id_inst'] ) ? '1234567890' : $payment_settings['id_inst']; // 1234567890 is the test instance
 		$cancel_url  = ! empty( $payment_settings['cancel_url'] ) ? esc_url_raw( $payment_settings['cancel_url'] ) : home_url();
 		$transaction = ! empty( $payment_settings['transaction'] ) && 'donation' === $payment_settings['transaction'] ? '_donations' : '_cart';
 
@@ -705,22 +705,22 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 				'tooltip' => esc_html__( 'Enter an email address for payments notification', 'wpforms-epfl-payonline' ),
 			)
 		);
-		wpforms_panel_field(
-			'select',
-			$this->slug,
-			'mode',
-			$this->form_data,
-			esc_html__( 'Mode', 'wpforms-epfl-payonline' ),
-			array(
-				'parent'  => 'payments',
-				'default' => 'production',
-				'options' => array(
-					'production' => esc_html__( 'Production', 'wpforms-epfl-payonline' ),
-					'test'       => esc_html__( 'Test / Sandbox', 'wpforms-epfl-payonline' ),
-				),
-				'tooltip' => esc_html__( 'Select Production to receive real payments or select Test to use the EPFL Payonline developer sandbox (id_inst=1234567890)', 'wpforms-epfl-payonline' ),
-			)
-		);
+		// wpforms_panel_field(
+		// 	'select',
+		// 	$this->slug,
+		// 	'mode',
+		// 	$this->form_data,
+		// 	esc_html__( 'Mode', 'wpforms-epfl-payonline' ),
+		// 	array(
+		// 		'parent'  => 'payments',
+		// 		'default' => 'production',
+		// 		'options' => array(
+		// 			'production' => esc_html__( 'Production', 'wpforms-epfl-payonline' ),
+		// 			'test'       => esc_html__( 'Test / Sandbox', 'wpforms-epfl-payonline' ),
+		// 		),
+		// 		'tooltip' => esc_html__( 'Select Production to receive real payments or select Test to use the EPFL Payonline developer sandbox (id_inst=1234567890)', 'wpforms-epfl-payonline' ),
+		// 	)
+		// );
 		// wpforms_panel_field(
 		// 	'select',
 		// 	$this->slug,
@@ -748,33 +748,35 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		// 		'tooltip' => esc_html__( 'Enter the URL to send users to if they do not complete the EPFL Payonline checkout', 'wpforms-epfl-payonline' ),
 		// 	)
 		// );
-		wpforms_panel_field(
-			'select',
-			$this->slug,
-			'shipping',
-			$this->form_data,
-			esc_html__( 'Shipping', 'wpforms-epfl-payonline' ),
-			array(
-				'parent'  => 'payments',
-				'default' => '0',
-				'options' => array(
-					'1' => esc_html__( 'Don\'t ask for an address', 'wpforms-epfl-payonline' ),
-					'0' => esc_html__( 'Ask for an address, but do not require', 'wpforms-epfl-payonline' ),
-					'2' => esc_html__( 'Ask for an address and require it', 'wpforms-epfl-payonline' ),
-				),
-			)
-		);
-		wpforms_panel_field(
-			'checkbox',
-			$this->slug,
-			'note',
-			$this->form_data,
-			esc_html__( 'Don\'t ask buyer to include a note with payment', 'wpforms-epfl-payonline' ),
-			array(
-				'parent'  => 'payments',
-				'default' => '1',
-			)
-		);
+
+		// wpforms_panel_field(
+		// 	'select',
+		// 	$this->slug,
+		// 	'shipping',
+		// 	$this->form_data,
+		// 	esc_html__( 'Shipping', 'wpforms-epfl-payonline' ),
+		// 	array(
+		// 		'parent'  => 'payments',
+		// 		'default' => '0',
+		// 		'options' => array(
+		// 			'1' => esc_html__( 'Don\'t ask for an address', 'wpforms-epfl-payonline' ),
+		// 			'0' => esc_html__( 'Ask for an address, but do not require', 'wpforms-epfl-payonline' ),
+		// 			'2' => esc_html__( 'Ask for an address and require it', 'wpforms-epfl-payonline' ),
+		// 		),
+		// 	)
+		// );
+
+		// wpforms_panel_field(
+		// 	'checkbox',
+		// 	$this->slug,
+		// 	'note',
+		// 	$this->form_data,
+		// 	esc_html__( 'Don\'t ask buyer to include a note with payment', 'wpforms-epfl-payonline' ),
+		// 	array(
+		// 		'parent'  => 'payments',
+		// 		'default' => '1',
+		// 	)
+		// );
 
 		if ( function_exists( 'wpforms_conditional_logic' ) ) {
 			wpforms_conditional_logic()->conditionals_block(
