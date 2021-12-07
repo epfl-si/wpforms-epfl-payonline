@@ -416,7 +416,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		$error          = '';
 		$entry_id       = absint( $data['id_transact'] );
 		$entry          = wpforms()->entry->get( absint( $entry_id ) );
-		$payment_status = $data['result'];
+		$payment_status = intval( $data['result'] );
 		$form_data      = wpforms()->form->get(
 			$entry->form_id,
 			array(
