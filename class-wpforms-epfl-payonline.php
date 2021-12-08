@@ -11,6 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WPForms_EPFL_Payonline extends WPForms_Payment {
 
+	const WPFEP_DEBUG = false;
+
 	/**
 	 * Initialize.
 	 */
@@ -54,18 +56,25 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	}
 
 	/**
-	 * Temporary function to test actions and filters.
+	 * Export var to error log
 	 */
-	function test( $entry, $form ) {
-		error_log( '--------------------------------------------' );
-		error_log( var_export( $entry->meta, true ) );
-		error_log( '--------------------------------------------' );
-		error_log( var_export( json_decode( $entry->meta ), true ) );
-		error_log( '--------------------------------------------' );
-		//error_log("--------------------------------------------");
-		//error_log(var_export($form, true));
-		//error_log("--------------------------------------------");
-		//error_log(var_export($th, true));
+	private function log( $var, $title = null ) {
+		$log = '-- WPFORMS EPFL Payonline ';
+		if ( $title ) {
+			$log .= "[$title] ";
+		}
+		$log  = str_pad( $log, 80, '-' );
+		$log .= "\n" . var_export( $var, true );
+		error_log( $log );
+	}
+
+	/**
+	 * Export var to error log if self::WPFEP_DEBUG is true
+	 */
+	private function debug( $var, $title = null ) {
+		if ( self::WPFEP_DEBUG ) {
+			$this->log( $var, $title );
+		}
 	}
 
 	/**
@@ -135,15 +144,13 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		}
 
 		// Debugging submission to EPFL Payonline
-		// error_log('payment settings ------------------');
-		// error_log(var_export($form_data['payments'][ $this->slug ], true));
-		// error_log('fields ------------------');
-		// error_log(var_export($fields, true));
-		// error_log('payment settings ------------------');
-		// error_log(var_export($entry, true));
+		$this->debug( $form_data['payments'], '2payonline: $form_data[payments]' );
+		$this->debug( $fields, '2payonline: $fields' );
+		$this->debug( $entry, '2payonline: $entry' );
 
 		// Check if payment method exists.
 		if ( empty( $form_data['payments'][ $this->slug ] ) ) {
+			$this->log( $form_data['payments'], 'No payment method found' );
 			return;
 		}
 
@@ -154,6 +161,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			empty( $payment_settings['enable'] ) ||
 			( '1' !== $payment_settings['enable'] )
 		) {
+			$this->log( $payment_settings, 'No required payment settings missing' );
 			return;
 		}
 
@@ -164,7 +172,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			! empty( $form_data['payments']['epfl_payonline']['conditionals'] ) &&
 			function_exists( 'wpforms_conditional_logic' )
 		) {
-
+			$this->log( $form_data['payments']['epfl_payonline'], 'Conditional logic enable' );
 			// All conditional logic checks passed, continue with processing.
 			$process = wpforms_conditional_logic()->conditionals_process( $fields, $form_data, $form_data['payments']['epfl_payonline']['conditionals'] );
 
@@ -193,16 +201,19 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		$form_has_payments  = wpforms_has_payment( 'form', $form_data );
 		$entry_has_paymemts = wpforms_has_payment( 'entry', $fields );
 		if ( ! $form_has_payments || ! $entry_has_paymemts ) {
+			$this->log( $fields, 'No payment fields' );
 			$error = esc_html__( 'EPFL Payonline Payment stopped, missing payment fields', 'wpforms-epfl-payonline' );
 		}
 
 		// Check total charge amount.
 		$amount = wpforms_get_total_payment( $fields );
 		if ( empty( $amount ) || wpforms_sanitize_amount( 0 ) === $amount ) {
+			$this->log( $fields, 'No total charge' );
 			$error = esc_html__( 'EPFL Payonline Payment stopped, invalid/empty amount', 'wpforms-epfl-payonline' );
 		}
 
 		if ( $error ) {
+			$this->log( $error, 'Errors found' );
 			return;
 		}
 
@@ -288,9 +299,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			'upload'         => '1',
 		);
 
-		error_log( 'BEGIN payonline_args ------------------' );
-		error_log( print_r( $payonline_args, true ) );
-		error_log( 'END payonline_args ------------------' );
+		$this->debug( $payonline_args, 'payonline_args' );
 
 		// Add cart items.
 		if ( '_cart' === $transaction ) {
@@ -349,6 +358,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		$redirect  = str_replace( '&amp;', '&', $redirect );
 
 		// Redirect to EPFL Payonline.
+		$this->debug( $redirect, 'redirecting' );
 		wp_redirect( $redirect );
 		exit;
 	}
@@ -370,10 +380,10 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		$ohash             = substr( $ohash, 0, 20 );
 		$nhash             = pack( 'H*', sha1( $input_hash . $osalt ) );
 		if ( $ohash === $nhash ) {
-			error_log( 'ssha_password_verify (' . $token . ' - ' . $input_hash . '): success ' );
+			$this->debug( 'ssha_password_verify (' . $token . ' - ' . $input_hash . '): success', 'ssha_password_verify' );
 			return true;
 		} else {
-			error_log( 'ssha_password_verify (' . $token . ' - ' . $input_hash . '): failed ' );
+			$this->log( 'ssha_password_verify (' . $token . ' - ' . $input_hash . '): failed', 'ssha_password_verify' );
 			return false;
 		}
 	}
@@ -391,7 +401,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		if ( ! isset( $_GET['EPFLPayonline'] ) || ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' !== $_SERVER['REQUEST_METHOD'] ) ) {
 			return;
 		} else {
-			error_log( "process_return_from_epfl_payonline: Get hit on '/?EPFLPayonline'" );
+			$this->debug( "process_return_from_epfl_payonline: Get hit on '/?EPFLPayonline'" );
 		}
 
 		$data = array();
@@ -403,13 +413,15 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 		// Check if $post_data_array has been populated.
 		if ( ! is_array( $data ) || empty( $data ) || empty( $data['invoice'] ) || empty( $data['token'] ) || empty( $data['id_transact'] ) || empty( $data['id_inst'] ) ) {
-			error_log( 'process_return_from_epfl_payonline: Error: Missing $data in process_return_from_epfl_payonline()' );
+			$this->log( 'Error: Missing $data in process_return_from_epfl_payonline()', 'process_return_from_epfl_payonline' );
+			// error_log( 'process_return_from_epfl_payonline: Error: Missing $data in process_return_from_epfl_payonline()' );
 			return;
 		}
 
 		// Verify that the returned hash is legit
 		if ( ! $this->ssha_password_verify( $data['token'], $data['id_transact'] . ':' . $data['id_inst'] ) ) {
-			error_log( 'process_return_from_epfl_payonline: Error: Hash can not be verified' );
+			$this->log( 'Error: Hash can not be verified', 'process_return_from_epfl_payonline' );
+			// error_log( 'process_return_from_epfl_payonline: Error: Hash can not be verified' );
 			return;
 		}
 
@@ -426,7 +438,8 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 		// If payment or form doesn't exist, bail.
 		if ( empty( $entry ) || empty( $form_data ) ) {
-			error_log( 'process_return_from_epfl_payonline: Error: Missing $payment or $form_data in process_return_from_epfl_payonline()' );
+			$this->log( 'Error: Missing $payment or $form_data in process_return_from_epfl_payonline()', 'process_return_from_epfl_payonline' );
+			//error_log( 'process_return_from_epfl_payonline: Error: Missing $payment or $form_data in process_return_from_epfl_payonline()' );
 			return;
 		}
 
@@ -452,7 +465,9 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 					'form_id' => $entry->form_id,
 				)
 			);
-			error_log( 'process_return_from_epfl_payonline: Failed: ' . $error . ' ' . var_export( $data, true ) );
+			$this->log( $error, 'process_return_from_epfl_payonline (error)' );
+			$this->debug( $data, 'process_return_from_epfl_payonline (data)' );
+			// error_log( 'process_return_from_epfl_payonline: Failed: ' . $error . ' ' . var_export( $data, true ) );
 			wpforms()->entry->update(
 				$entry_id,
 				array(
@@ -468,8 +483,6 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 		// Completed payment.
 		if ( 1 === $payment_status ) {
-			error_log( 'process_return_from_epfl_payonline: payment_status == 1' );
-
 			$entry_meta['payment_id_inst']     = $data['id_inst'];      // Payonline instance ID
 			$entry_meta['payment_id_trans']    = $data['id_trans'];     // Payonline transaction ID
 			$entry_meta['payment_id_transact'] = $data['id_transact'];  // WPForms EPFL Payonline transaction ID
@@ -477,6 +490,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			$entry_meta['payment_paymode']     = $data['paymode'];      // Master Card, etc...
 			$entry_meta['payonline']           = $data;                 // Save the returned value by payonline
 			//$entry_meta['payment_note']        = '-';                 // Probably not needed if the payment is completed
+			$this->log( $data, 'process_return_from_epfl_payonline (success)' );
 
 			// Set the payment status to completed
 			wpforms()->entry->update(
@@ -497,7 +511,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			$email['address']        = array_map( 'sanitize_email', $email['address'] );
 			$email['sender_address'] = 'noreply@epfl.ch'; // TODO: improve it ! Check https://it.epfl.ch/kb_view_customer.do?sysparm_article=KB0013524  for EPFL SMTP detail
 			$email['sender_name']    = get_bloginfo( 'name' );
-			$email['replyto']        = get_option( 'admin_email' );
+			$email['replyto']        = get_option( 'admin_email' ); // XXX
 			$form_title              = $form_data['settings']['form_title'];
 			$email['message']        = "<h1>$form_title</h1>\n\n";
 			// @TODO: Template this
@@ -525,14 +539,10 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		// Just in case something elese is needed...
 		do_action( 'wpforms_epfl_payonline_process_complete', wpforms_decode( $entry->fields ), $form_data, $entry_id, $data );
 
-		// Debbug process_return_from_epfl_payonline
-		error_log( 'process_return_from_epfl_payonline: POST:' );
-		error_log( var_export( $_POST, true ) );
-		error_log( 'process_return_from_epfl_payonline: GET:' );
-		error_log( var_export( $_GET, true ) );
-		error_log( 'process_return_from_epfl_payonline: SERVER:' );
-		error_log( var_export( $_SERVER, true ) );
-		error_log( 'process_return_from_epfl_payonline: END ---' );
+		// Debug process_return_from_epfl_payonline
+		$this->debug( $_POST, 'process_return_from_epfl_payonline: POST:' );
+		$this->debug( $_GET, 'process_return_from_epfl_payonline: GET:' );
+		$this->debug( $_SERVER, 'process_return_from_epfl_payonline: SERVER:' );
 
 		die();
 	}
