@@ -161,11 +161,16 @@ install_phpcs:
 	./vendor/bin/phpcs --config-set default_standard WordPress-Core
 
 .PHONY: phpcs
-## Run PHP Code Sniffer linter using WordPress-Core coding standards
+## Run PHP Code Sniffer linter using WordPress coding standards
 phpcs:
 	@echo '**** run phpcs ****'
-	 ./vendor/bin/phpcs --standard=WordPress --extensions=php --ignore="vendor/*,lib" .
-	 # ./vendor/bin/phpcs --standard=WordPress-Core --extensions=php --ignore="vendor/*,lib" .
+	./vendor/bin/phpcs --standard=WordPress --extensions=php --ignore="vendor/*,lib" .
+
+.PHONY: phpcs-wpcore
+## Run PHP Code Sniffer linter using WordPress-Core coding standards
+phpcs-wpcore:
+	@echo '**** run phpcs-wpcore ****'
+	./vendor/bin/phpcs --standard=WordPress-Core --extensions=php --ignore="vendor/*,lib" .
 
 .PHONY: phpcbf
 ## Run PHP Code Beautifuller and Fixer (it fixes what it can)
@@ -173,3 +178,9 @@ phpcbf:
 	@echo '**** run phpcbf ****'
 	./vendor/bin/phpcbf -pv --standard=WordPress --extensions=php --ignore="vendor/*,lib" .
 	# ./vendor/bin/phpcbf -pv --standard=WordPress-Core --extensions=php --ignore="vendor/*,lib" .
+
+.PHONY: phpcbf-wpcore
+## Run PHP Code Beautifuller and Fixer (it fixes what it can)
+phpcbf-wpcore:
+	@echo '**** run phpcbf-wpcore ****'
+	./vendor/bin/phpcbf -pv --standard=WordPress-Core --extensions=php --ignore="vendor/*,lib" .
