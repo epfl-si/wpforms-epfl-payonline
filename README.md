@@ -67,9 +67,9 @@ _Note:_ you need to create a [personal access token] and add it to your
 
 1. **Change the version**: `make version` (default to patch)  
    This will change version number in [wpforms-epfl-payonline.php], using [semver](https://semver.org/). Available options are:
-  * `make version-patch`
-  * `make version-minor`
-  * `make version-major`
+   * `make version-patch`
+   * `make version-minor`
+   * `make version-major`
 
 
 
