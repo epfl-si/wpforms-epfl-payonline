@@ -129,15 +129,15 @@ commit:
 			exit 1; \
 		fi \
 	fi
-	@-git add languages/*
-	@-git commit -o languages -m "[T9N] Translations updated"
-	@-git add wpforms-epfl-payonline.php
-	@-git commit -o wpforms-epfl-payonline.php -m "[VER] Bump to v$(VERSION)"
+	@git add languages/*
+	@git commit -o languages -m "[T9N] Translations updated"
+	@git add wpforms-epfl-payonline.php
+	@git commit -o wpforms-epfl-payonline.php -m "[VER] Bump to v$(VERSION)"
 	read -p "Would you like to git add and commit all? [Yy]: " -n 1 -r; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
 		git commit -am "[ARE] Automated releasing change" ; \
-		@-git push ; \
-		@-git status ; \
+		@git push ; \
+		@git status ; \
 	else \
 		echo -e "\nAborting....\n"; \
 		exit 1; \
@@ -146,8 +146,8 @@ commit:
 .PHONY: tag
 ## Git tag with current version
 tag:
-	@-git tag -a v$(VERSION) -m "Version $(VERSION)"
-	@-git push origin --tags
+	@git tag -a v$(VERSION) -m "Version $(VERSION)"
+	@git push origin --tags
 
 .PHONY: gh-release
 ## Create a new GitHub release
