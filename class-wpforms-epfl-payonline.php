@@ -511,7 +511,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			$email['address']        = array_map( 'sanitize_email', $email['address'] );
 			$email['sender_address'] = 'noreply@epfl.ch'; // TODO: improve it ! Check https://it.epfl.ch/kb_view_customer.do?sysparm_article=KB0013524  for EPFL SMTP detail
 			$email['sender_name']    = get_bloginfo( 'name' );
-			$email['replyto']        = get_option( 'admin_email' ); // XXX
+			$email['replyto']        = sanitize_email ( trim( $form_data['payments'][ $this->slug ]['email'] ) ) ; // TODO: fallback to get_option( 'admin_email' );
 			$form_title              = $form_data['settings']['form_title'];
 			$email['message']        = "<h1>$form_title</h1>\n\n";
 			// @TODO: Template this
