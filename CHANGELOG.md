@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.4.0
+* Reply to email as defined in the settings
+
 ## v1.3.0
 * Logging and debug logs refactored
 * Makefile improvements
