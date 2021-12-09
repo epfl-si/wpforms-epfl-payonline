@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.5.0
+* Use form's admin email for notification instead of blog's admin email, when it is not redefined.
+* Chane author to IDEV-FSD
+
 ## v1.4.0
 * Reply to email as defined in the settings
 
