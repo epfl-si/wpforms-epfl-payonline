@@ -42,6 +42,9 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		add_filter( 'wpforms_entry_details_payment_gateway', array( $this, 'filter_entry_details_payment_gateway' ), 10, 3 );
 		add_filter( 'wpforms_entry_details_payment_transaction', array( $this, 'filter_entry_details_payment_transaction' ), 10, 3 );
 
+		// Redefine notifications recipient address if set to blog's admin email ({admin_email} default of WPForms)
+		add_filter( 'wpforms_entry_email_atts', array( $this, 'redefine_notification_recipents_addresses' ), 10, 5 );
+
 		// Add additional link to the plugin row
 		add_filter( 'plugin_row_meta', array( $this, 'add_links_to_plugin_row' ), 10, 4 );
 
@@ -511,7 +514,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			$email['address']        = array_map( 'sanitize_email', $email['address'] );
 			$email['sender_address'] = 'noreply@epfl.ch'; // TODO: improve it ! Check https://it.epfl.ch/kb_view_customer.do?sysparm_article=KB0013524  for EPFL SMTP detail
 			$email['sender_name']    = get_bloginfo( 'name' );
-			$email['replyto']        = sanitize_email ( trim( $form_data['payments'][ $this->slug ]['email'] ) ) ; // TODO: fallback to get_option( 'admin_email' );
+			$email['replyto']        = sanitize_email( trim( $form_data['payments'][ $this->slug ]['email'] ) );
 			$form_title              = $form_data['settings']['form_title'];
 			$email['message']        = "<h1>$form_title</h1>\n\n";
 			// @TODO: Template this
@@ -644,6 +647,22 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		} else {
 			return '-';
 		}
+	}
+
+	/**
+	 * Redefine notifications recipient address if set to blog's admin email.
+	 * Can also be redefined in the plug by the user, but if function as a
+	 * fallback in case the default notification uses te `{admin_email}`
+	 * WPForms smart tag.
+	 */
+	function redefine_notification_recipents_addresses( $email, $fields, $entry, $form_data, $notification_id ) {
+		foreach ( $email['address'] as $k => $address ) {
+			if ( get_option( 'admin_email' ) === $address ) {
+				$email['address'][ $k ] = sanitize_email( trim( $form_data['payments'][ $this->slug ]['email'] ) );
+			}
+		}
+		$this->debug( $email['address'], 'redefine_notification_recipents_addresses' );
+		return $email;
 	}
 
 	/**
