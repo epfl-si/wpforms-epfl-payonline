@@ -156,7 +156,7 @@ gh-release: create-gh-release.sh
 
 ## Install PHP code sniffer, PHP CS Fixer, PHP code beautifuler and fixer and the wp-coding-standards, wpcs
 install_phpcs:
-	composer require squizlabs/php_codesniffer friendsofphp/php-cs-fixer wp-coding-standards/wpcs --dev
+	composer require squizlabs/php_codesniffer friendsofphp/php-cs-fixer wp-coding-standards/wpcs --dev -W
 	./vendor/bin/phpcs --config-set installed_paths vendor/wp-coding-standards/wpcs
 	./vendor/bin/phpcs --config-set default_standard WordPress-Core
 
