@@ -2,9 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.6.0
+* Adaptations for WPForms 1.7.0
+* Hide some new marketing button / entries
+* s/IDEV-FSD/ISAS-FSD
+* https://github.com/epfl-idevelop → https://github.com/epfl-si
+* A lot of lint fixes
+* Chores
+
 ## v1.5.0
 * Use form's admin email for notification instead of blog's admin email, when it is not redefined.
-* Chane author to IDEV-FSD
+* Change author to IDEV-FSD
 
 ## v1.4.0
 * Reply to email as defined in the settings
