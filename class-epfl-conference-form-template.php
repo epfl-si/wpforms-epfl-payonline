@@ -1,4 +1,26 @@
 <?php
+/**
+ * EPFL Template of a conference form using EPFL Payonline
+ *
+ * WPForms EPFL Payonline is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * any later version.
+ *
+ * WPForms EPFL Payonline is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with WPForms EPFL Payonline.
+ * If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package    WPFormsEPFLPayonline
+ * @license    GPL-2.0+
+ * @copyright  Copyright (c) 2019, EPFL
+ */
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -11,28 +33,27 @@ if ( class_exists( 'WPForms_Template', false ) ) :
 	 */
 	class EPFL_Conference_Form_Template extends WPForms_Template {
 
+
 		/**
 		 * Primary class constructor.
 		 *
 		 * @since 1.0.0
 		 */
 		public function init() {
-
 			// Allow to add this template in the top part of the template page.
 			$this->core = true;
 
-			// Template name
+			// Template name.
 			$this->name = 'Conference Form (EPFL Payonline)';
 
-			// Template slug
+			// Template slug.
 			$this->slug = 'conference_form_epfl_payonline';
 
-			// Template description
+			// Template description.
 			$this->description = 'Collect Payments via EPFL Payonline for conferences payments with this ready-made form template. You can add and remove fields as needed.';
 
-			// Template field and settings
+			// Template field and settings.
 			$this->data = array(
-				'field_id' => '9',
 				'fields'   => array(
 					0 => array(
 						'id'       => '0',
@@ -49,14 +70,6 @@ if ( class_exists( 'WPForms_Template', false ) ) :
 						'required' => '1',
 						'size'     => 'large',
 					),
-					2 => array(
-						'id'       => '2',
-						'type'     => 'phone',
-						'label'    => 'Phone',
-						'format'   => 'us',
-						'required' => '1',
-						'size'     => 'large',
-					),
 					3 => array(
 						'id'              => '3',
 						'type'            => 'address',
@@ -65,6 +78,14 @@ if ( class_exists( 'WPForms_Template', false ) ) :
 						'required'        => '1',
 						'size'            => 'large',
 						'country_default' => 'CH',
+					),
+					2 => array(
+						'id'       => '2',
+						'type'     => 'phone',
+						'label'    => 'Phone',
+						'format'   => 'smart',
+						'required' => '1',
+						'size'     => 'large',
 					),
 					8 => array(
 						'id'                   => '8',
@@ -92,10 +113,10 @@ if ( class_exists( 'WPForms_Template', false ) ) :
 						'input_columns'        => 'inline',
 					),
 					4 => array(
-						'id'                   => '4',
-						'type'                 => 'payment-multiple',
-						'label'                => 'Conference fees',
-						'choices'              => array(
+						'id'                      => '4',
+						'type'                    => 'payment-multiple',
+						'label'                   => 'Conference fees',
+						'choices'                 => array(
 							1 => array(
 								'label' => 'Student',
 								'value' => '100.00',
@@ -109,15 +130,16 @@ if ( class_exists( 'WPForms_Template', false ) ) :
 								'value' => '250.00',
 							),
 						),
-						'description'          => 'Students will be asked to show their card at the conference check-in.',
-						'required'             => '1',
-						'choices_images_style' => 'modern',
+						'show_price_after_labels' => '1',
+						'description'             => 'Students will be asked to show their card at the conference check-in.',
+						'required'                => '1',
+						'choices_images_style'    => 'modern',
 					),
 					7 => array(
-						'id'                   => '7',
-						'type'                 => 'payment-checkbox',
-						'label'                => 'Evenning events',
-						'choices'              => array(
+						'id'                      => '7',
+						'type'                    => 'payment-checkbox',
+						'label'                   => 'Evenning events',
+						'choices'                 => array(
 							1 => array(
 								'label' => 'Conference dinner (Wednesday evenning)',
 								'value' => '100.00',
@@ -127,7 +149,8 @@ if ( class_exists( 'WPForms_Template', false ) ) :
 								'value' => '100.00',
 							),
 						),
-						'choices_images_style' => 'modern',
+						'show_price_after_labels' => '1',
+						'choices_images_style'    => 'modern',
 					),
 					5 => array(
 						'id'    => '5',
@@ -139,11 +162,23 @@ if ( class_exists( 'WPForms_Template', false ) ) :
 						'type'        => 'textarea',
 						'label'       => 'Comment or Message',
 						'required'    => '1',
-						'size'        => 'large',
+						'size'        => 'small',
 						'limit_count' => '1',
 						'limit_mode'  => 'characters',
 					),
+					9 => array(
+						'id'       => '9',
+						'type'     => 'gdpr-checkbox',
+						'required' => '1',
+						'label'    => 'GDPR Agreement',
+						'choices'  => array(
+							1 => array(
+								'label' => 'I consent to having this website store my submitted information so they can respond to my inquiry. Head to <a href="https://www.epfl.ch/about/presidency/presidents-team/legal-affairs/epfl-privacy-policy/">EPFL Privacy Policy (https://www.epfl.ch/about/presidency/presidents-team/legal-affairs/epfl-privacy-policy/</a>) for details.',
+							),
+						),
+					),
 				),
+				'field_id' => 10,
 				'settings' => array(
 					'form_title'             => 'Conference Form (EPFL Payonline)',
 					'form_desc'              => 'Collect Payments via EPFL Payonline for conferences payments with this ready-made form template. You can add and remove fields as needed.',
@@ -163,21 +198,20 @@ if ( class_exists( 'WPForms_Template', false ) ) :
 					),
 					'confirmations'          => array(
 						1 => array(
-							'name'           => 'Default Confirmation',
-							'type'           => 'message',
-							'message'        => 'Thanks for contacting us! We will be in touch with you shortly.',
-							'message_scroll' => '1',
-							'page'           => '88',
+							'name'                        => 'Default Confirmation',
+							'type'                        => 'message',
+							'message'                     => '<p>Thanks for contacting us! We will be in touch with you shortly.</p>',
+							'message_scroll'              => '1',
+							'page'                        => '2',
+							'message_entry_preview_style' => 'basic',
 						),
 					),
 				),
 				'payments' => array(
 					'epfl_payonline' => array(
-						'id_inst'  => '',
-						'email'    => '',
-						'mode'     => 'production',
-						'shipping' => '0',
-						'note'     => '1',
+						'enable'  => '1',
+						'id_inst' => '1234567890',
+						'email'   => '',
 					),
 				),
 				'meta'     => array(
