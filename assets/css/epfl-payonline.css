@@ -1,13 +1,16 @@
 /* Hide PayPal and Stripe default payment addon */
-a[data-name="PayPal Standard addon"],
-a[data-name="Stripe addon"],
-a[data-name="Authorize.Net addon"] {
+a[data-name="PayPal Standard addon"], a[data-slug="paypal-standard"],
+a[data-name="Stripe addon"], a[data-slug="stripe"],
+a[data-name="Authorize.Net addon"], a[data-slug="authorize-net"],
+a[data-name="Square addon"], a[data-slug="square"] {
   visibility: hidden;
   display: none;
 }
 
 /* Hide the Marketing options */
-.wpforms-panel-providers-button {
+.wpforms-panel-providers-button,
+buttons[data-panel="providers"]
+{
   visibility: hidden !important;
   display: none !important;
 }
@@ -20,6 +23,16 @@ a[data-name="Authorize.Net addon"] {
 .wpforms-panel-sidebar-section-form-abandonment,
 .wpforms-panel-sidebar-section-post-submissions,
 .wpforms-panel-sidebar-section-webhooks {
+  visibility: hidden !important;
+  display: none !important;
+}
+
+/* Hide fields buttons for things that are not activated */
+#wpforms-add-fields-captcha, button[data-field-type="captcha"],
+#wpforms-add-fields-stripe-credit-card, button[data-field-type="stripe-credit-card"],
+#wpforms-add-fields-square, button[data-field-type="square"],
+#wpforms-add-fields-authorize_net, button[data-field-type="authorize_net"]
+{
   visibility: hidden !important;
   display: none !important;
 }
