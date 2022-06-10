@@ -853,7 +853,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		if ( false === $remote ) {
 			// info.json is the file with the actual plugin information on your server.
 			$remote = wp_remote_get(
-				'https://api.github.com/repos/epfl-idevelop/wpforms-epfl-payonline/releases/latest',
+				'https://api.github.com/repos/epfl-si/wpforms-epfl-payonline/releases/latest',
 				array(
 					'timeout' => 10,
 					'headers' => array(
@@ -877,7 +877,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 				$res->plugin                         = dirname( plugin_basename( __FILE__ ) ) . '/wpforms-epfl-payonline.php';
 				$res->new_version                    = $latest_version;
 				$res->tested                         = $this->wp_tested_version;
-				$res->package                        = 'https://github.com/epfl-idevelop/wpforms-epfl-payonline/releases/latest/download/wpforms-epfl-payonline.zip';
+				$res->package                        = 'https://github.com/epfl-si/wpforms-epfl-payonline/releases/latest/download/wpforms-epfl-payonline.zip';
 				$transient->response[ $res->plugin ] = $res;
 			}
 		}
@@ -927,7 +927,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 			// info.json is the file with the actual plugin information on your server.
 			$remote = wp_remote_get(
-				'https://api.github.com/repos/epfl-idevelop/wpforms-epfl-payonline/releases/latest',
+				'https://api.github.com/repos/epfl-si/wpforms-epfl-payonline/releases/latest',
 				array(
 					'timeout' => 10,
 					'headers' => array(
@@ -950,7 +950,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			$res->version        = $latest_version;
 			$res->tested         = $this->wp_tested_version;
 			$res->requires       = $this->wp_min_version;
-			$res->author         = '<a href="https://search.epfl.ch/browseunit.do?unit=13030">EPFL IDEV-FSD</a>'; // I decided to write it directly in the plugin.
+			$res->author         = '<a href="https://search.epfl.ch/browseunit.do?unit=13030">EPFL ISAS-FSD</a>'; // I decided to write it directly in the plugin.
 			$res->author_profile = 'https://profiles.wordpress.org/ponsfrilus/'; // WordPress.org profile.
 			$res->download_link  = $remote->zipball_url;
 			$res->trunk          = $remote->html_url;
@@ -987,7 +987,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		require_once plugin_dir_path( __FILE__ ) . '/lib/Parsedown.php';
 		$parsedown      = new Parsedown();
 		$readme_content = $parsedown->text( $readme_content );
-		return 'See README.md on <a href="https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/README.md">GitHub</a>.<br><div class="epfl_payonline_readme">' . $readme_content . '</div>';
+		return 'See README.md on <a href="https://github.com/epfl-si/wpforms-epfl-payonline/blob/master/README.md">GitHub</a>.<br><div class="epfl_payonline_readme">' . $readme_content . '</div>';
 	}
 
 	/**
@@ -999,18 +999,18 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		require_once plugin_dir_path( __FILE__ ) . '/lib/Parsedown.php';
 		$parsedown       = new Parsedown();
 		$install_content = $parsedown->text( $install_content );
-		return 'See INSTALL.md on <a href="https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/INSTALL.md">GitHub</a>.<br><div class="epfl_payonline_install">' . $install_content . '</div>';
+		return 'See INSTALL.md on <a href="https://github.com/epfl-si/wpforms-epfl-payonline/blob/master/INSTALL.md">GitHub</a>.<br><div class="epfl_payonline_install">' . $install_content . '</div>';
 	}
 
 	/**
 	 * Retrieve CHANGELOG.md on github and parse markdown.
 	 */
 	private function getChangelog() {
-		$changelog_content = file_get_contents( 'https://raw.githubusercontent.com/epfl-idevelop/wpforms-epfl-payonline/master/CHANGELOG.md', true );
+		$changelog_content = file_get_contents( 'https://raw.githubusercontent.com/epfl-si/wpforms-epfl-payonline/master/CHANGELOG.md', true );
 		require_once plugin_dir_path( __FILE__ ) . '/lib/Parsedown.php';
 		$parsedown         = new parsedown();
 		$changelog_content = $parsedown->text( $changelog_content );
-		return 'See CHANGELOG.md on <a href="https://github.com/epfl-idevelop/wpforms-epfl-payonline/blob/master/CHANGELOG.md">GitHub</a>.<br><div class="epfl_payonline_changelog">' . $changelog_content . '</div>';
+		return 'See CHANGELOG.md on <a href="https://github.com/epfl-si/wpforms-epfl-payonline/blob/master/CHANGELOG.md">GitHub</a>.<br><div class="epfl_payonline_changelog">' . $changelog_content . '</div>';
 	}
 
 }

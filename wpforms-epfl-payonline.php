@@ -3,7 +3,7 @@
  * Plugin Name: WPForms EPFL Payonline
  * Plugin URI:  https://github.com/epfl-si/wpforms-epfl-payonline
  * Description: EPFL Payonline integration with WPForms.
- * Author:      EPFL IDEV-FSD
+ * Author:      EPFL ISAS-FSD
  * Author URI:  https://go.epfl.ch/idev-fsd
  * Contributor: Nicolas Borboën <nicolas.borboen@epfl.ch>
  * Version:     1.5.0

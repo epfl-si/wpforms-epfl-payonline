@@ -191,7 +191,7 @@ if ( class_exists( 'WPForms_Template', false ) ) :
 							'notification_name' => 'Default Notification',
 							'email'             => '{admin_email}',
 							'subject'           => 'New Entry: Billing / Order Form with Payonline',
-							'sender_name'       => 'EPFL IDEV FSD',
+							'sender_name'       => 'EPFL ISAS FSD',
 							'sender_address'    => '{admin_email}',
 							'message'           => '{all_fields}',
 						),

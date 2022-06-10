@@ -14,9 +14,9 @@ WPForms EPFL Payonline is now ready to be configured.
 Both WPForms EPFL Payonline and the Payonline instance need to be configured
 together:
   - The **Return URL** have to be set on the Payonline instance: if your 
-    Event URL is https://idevfsd-test-conferences.epfl.ch, then the
+    Event URL is https://test-conferences.epfl.ch, then the
     **Return URL** would be 
-    https://idevfsd-test-conferences.epfl.ch/?EPFLPayonline.
+    https://test-conferences.epfl.ch/?EPFLPayonline.
 
     Please note the `?EPFLPayonline` parameter in the URL query string.
 
