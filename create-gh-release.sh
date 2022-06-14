@@ -24,7 +24,7 @@ REPO_NAME=$(echo $REPO_GH_PATH | cut -d'/' -f2)
 GH_URL=https://github.com/
 GH_API=https://api.github.com
 # https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
-GH_ACCESS_TOKEN=$WPEP_GH_TOKEN
+GH_ACCESS_TOKEN=$GH_ACCESS_TOKEN
 # https://github.com/epfl-si/wpforms-epfl-payonline
 REPO_HTTP_URL=$GH_URL$REPO_GH_PATH
 # https://github.com/epfl-si/wpforms-epfl-payonline/releases
