@@ -77,6 +77,8 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		// Plugin details.
 		add_filter( 'plugins_api', array( $this, 'wpforms_epfl_payonline_plugin_info' ), 20, 3 );
 
+		// Add payonline.epfl.ch to safe redirect hosts.
+		add_filter( 'allowed_redirect_hosts', array( $this, 'wpforms_add_payonline_to_allowed_redirect' ) );
 	}
 
 	/**
@@ -161,6 +163,18 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			}
 		}
 		return $wanted_arrays;
+	}
+
+	/**
+	 * Add payonline to allowed redirect hosts
+	 *
+	 * Note: use `$hosts[] = 'epfl.ch';` for all EPFL
+	 *
+	 * @param Array $hosts The list of allowed hosts.
+	 */
+	public function wpforms_add_payonline_to_allowed_redirect( $hosts ) {
+		$hosts[] = 'payonline.epfl.ch';
+		return $hosts;
 	}
 
 	/**
@@ -390,9 +404,13 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		$redirect  = str_replace( '&amp;', '&', $redirect );
 
 		// Redirect to EPFL Payonline.
-		$this->debug( $redirect, 'redirecting' );
-		wp_safe_redirect( $redirect );
-		exit();
+		if ( wp_safe_redirect( $redirect ) ) {
+			$this->debug( $redirect, 'redirecting to payonline' );
+			exit;
+		} else {
+			$this->log( $redirect, 'Error redirecting to payonline' );
+			exit;
+		}
 	}
 
 	/**
