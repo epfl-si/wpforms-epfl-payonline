@@ -779,7 +779,8 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		);
 
 		if ( function_exists( 'wpforms_conditional_logic' ) ) {
-			wpforms_conditional_logic()->conditionals_block(
+			wpforms_conditional_logic()->builder_block(
+			// DEPRECATED wpforms_conditional_logic()->conditionals_block( → removed.
 				array(
 					'form'        => $this->form_data,
 					'type'        => 'panel',
