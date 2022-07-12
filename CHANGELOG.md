@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.7.0
+* Force WP_Filesystem autodetection
+* Set allowed redirect hosts
+* Fix deprecated `wpforms_conditional_logic()->conditionals_block()`
+
 ## v1.6.0
 * Adaptations for WPForms 1.7.0
 * Hide some new marketing button / entries
