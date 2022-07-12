@@ -74,11 +74,19 @@ function wpforms_epfl_payonline() {
 
 add_action( 'wpforms_loaded', 'wpforms_epfl_payonline' );
 
-add_action('wp_ajax_wpforms_tools_entries_export_step', function() {
-    // WPForms requires WP_Filesystem() to be of ->method === "direct".
-    // For some reason (likely pertaining to our symlink scheme),
-    // WordPress' autodetection fails.
-    add_filter('filesystem_method', function() {
-        return 'direct';
-    }, 10, 3);
-});
+add_action(
+	'wp_ajax_wpforms_tools_entries_export_step',
+	function() {
+		// WPForms requires WP_Filesystem() to be of ->method === "direct".
+		// For some reason (likely pertaining to our symlink scheme),
+		// WordPress' autodetection fails.
+		add_filter(
+			'filesystem_method',
+			function() {
+				return 'direct';
+			},
+			10,
+			3
+		);
+	}
+);
