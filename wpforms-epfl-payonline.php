@@ -6,7 +6,7 @@
  * Author:      EPFL ISAS-FSD
  * Author URI:  https://go.epfl.ch/idev-fsd
  * Contributor: Nicolas Borboën <nicolas.borboen@epfl.ch>
- * Version:     1.8.1
+ * Version:     2.0.0
  * Text Domain: wpforms-epfl-payonline
  * Domain Path: languages
  * License:     GPL-2.0+
@@ -37,13 +37,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin version.
-define( 'WPFORMS_EPFL_PAYONLINE_VERSION', '1.8.1' );
+define( 'WPFORMS_EPFL_PAYONLINE_VERSION', '2.0.0' );
 // Plugin name.
 define( 'WPFORMS_EPFL_PAYONLINE_NAME', 'WPForms EPFL Payonline' );
 // Latest WP version tested with this plugin.
 define( 'WP_LATEST_VERSION_WPFORMS_EPFL_PAYONLINE', '6.1.1' );
 // Minimal WP version required for this plugin.
-define( 'WP_MIN_VERSION_WPFORMS_EPFL_PAYONLINE', '5.0' );
+define( 'WP_MIN_VERSION_WPFORMS_EPFL_PAYONLINE', '6.0.0' );
 
 // Plugin Folder Path.
 if ( ! defined( 'WPFORMS_EPFL_PAYONLINE_PLUGIN_DIR' ) ) {
