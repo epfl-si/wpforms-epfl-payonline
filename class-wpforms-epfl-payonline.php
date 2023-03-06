@@ -928,7 +928,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	 * @param String $action 'plugin_information'.
 	 * @param Object $args stdClass Object ( [slug] => woocommerce [is_ssl] => [fields] => Array ( [banners] => 1 [reviews] => 1 [downloaded] => [active_installs] => 1 ) [per_page] => 24 [locale] => en_US ).
 	 */
-	private function wpforms_epfl_payonline_plugin_info( $res, $action, $args ) {
+	public function wpforms_epfl_payonline_plugin_info( $res, $action, $args ) {
 
 		// do nothing if this is not about getting plugin information.
 		if ( 'plugin_information' !== $action ) {
