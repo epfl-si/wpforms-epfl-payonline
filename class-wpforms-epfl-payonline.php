@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WPForms_EPFL_Payonline extends WPForms_Payment {
 
-	const WPFEP_DEBUG = false;
+	const WPFEP_DEBUG = true;
 
 	/**
 	 * Initialize.
@@ -52,7 +52,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_wp_admin_style' ) );
 
-		add_action( 'wpforms_process_complete', array( $this, 'process_entry_to_epfl_payonline' ), 20, 4 );
+		add_action( 'wpforms_process_complete', array( $this, 'process_payment_to_wordline_saferpay' ), 20, 4 );
 		add_action( 'init', array( $this, 'process_return_from_epfl_payonline' ) );
 
 		// (see wpforms/pro/includes/payments/functions.php)
@@ -178,17 +178,16 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	}
 
 	/**
-	 * Process and submit entry to provider
+	 * When user submit a form with the EPFL Wordline SaferPay payment activated,
+	 * it is sent to saferpay/api/initialize to create the payment link according
+	 * to the Terminal, CustomerID, etc.
 	 *
 	 * @param Array $fields ...
 	 * @param Array $entry ...
 	 * @param Array $form_data ...
 	 * @param Int   $entry_id ...
 	 */
-	public function process_entry_to_epfl_payonline( $fields, $entry, $form_data, $entry_id ) {
-
-		// TODO: start actually using this variable or remove it.
-		$error = false;
+	public function process_payment_to_wordline_saferpay( $fields, $entry, $form_data, $entry_id ) {
 
 		// Check an entry was created and passed.
 		if ( empty( $entry_id ) ) {
@@ -209,43 +208,17 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		// Check required payment settings.
 		$payment_settings = $form_data['payments'][ $this->slug ];
 		if (
-			empty( $payment_settings['email'] ) ||
 			empty( $payment_settings['enable'] ) ||
+			empty( $payment_settings['email'] ) ||
+			empty( $payment_settings['saferpay_customer_id'] ) ||
+			empty( $payment_settings['saferpay_api_url'] ) ||
+			empty( $payment_settings['saferpay_api_username'] ) ||
+			empty( $payment_settings['saferpay_api_password'] ) ||
+			empty( $payment_settings['saferpay_terminal_id'] ) ||
 			( '1' !== $payment_settings['enable'] )
 		) {
-			$this->log( $payment_settings, 'No required payment settings missing' );
+			$this->log( $payment_settings, 'Some EPFL Wordline Saferpay settings are missing' );
 			return;
-		}
-
-		// Check for conditional logic.
-		if (
-			! empty( $form_data['payments']['epfl_payonline']['conditional_logic'] ) &&
-			! empty( $form_data['payments']['epfl_payonline']['conditional_type'] ) &&
-			! empty( $form_data['payments']['epfl_payonline']['conditionals'] ) &&
-			function_exists( 'wpforms_conditional_logic' )
-		) {
-			$this->log( $form_data['payments']['epfl_payonline'], 'Conditional logic enable' );
-			// All conditional logic checks passed, continue with processing.
-			$process = wpforms_conditional_logic()->conditionals_process( $fields, $form_data, $form_data['payments']['epfl_payonline']['conditionals'] );
-
-			if ( 'stop' === $form_data['payments']['epfl_payonline']['conditional_type'] ) {
-				$process = ! $process;
-			}
-
-			// If preventing the notification, log it, and then bail.
-			if ( ! $process ) {
-				wpforms_log(
-					esc_html__( 'EPFL Payonline Payment stopped by conditional logic', 'wpforms-epfl-payonline' ),
-					$fields,
-					array(
-						'parent'  => $entry_id,
-						'type'    => array( 'payment', 'conditional_logic' ),
-						'form_id' => $form_data['id'],
-					)
-				);
-
-				return;
-			}
 		}
 
 		// Check that, despite how the form is configured, the form and
@@ -269,149 +242,116 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			return;
 		}
 
-		// Update entry to include payment details.
-		$entry_data = array(
-			'status' => 'pending',
-			'type'   => 'payment',
-			'meta'   => wp_json_encode(
-				array(
-					'payment_type'      => $this->slug,
-					'payment_recipient' => sanitize_email( trim( $payment_settings['email'] ) ),
-					'payment_total'     => $amount,
-					'payment_currency'  => strtolower( wpforms_setting( 'currency', 'USD' ) ),
-					// 'payment_mode'      => esc_html( $payment_settings['mode'] ),
-				)
-			),
-		);
-		wpforms()->entry->update( $entry_id, $entry_data, '', '', array( 'cap' => false ) );
 
-		// Build the return URL with hash.
-		$query_args = 'form_id=' . $form_data['id'] . '&entry_id=' . $entry_id . '&hash=' . wp_hash( $form_data['id'] . ',' . $entry_id );
-		// $return_url = home_url('/index.php');
-		$return_url = home_url( '/' );
-		if ( ! empty( $form_data['settings']['ajax_submit'] ) && ! empty( $_SERVER['HTTP_REFERER'] ) ) {
-			$return_url = $_SERVER['HTTP_REFERER'];
-		}
-
-		$return_url = esc_url_raw(
-			add_query_arg(
-				array(
-					'wpforms_return' => base64_encode( $query_args ),
-				),
-				apply_filters( 'wpforms_payonline_return_url', $return_url, $form_data )
-			)
-		);
 
 		// Setup various vars.
-		$items       = wpforms_get_payment_items( $fields );
-		$redirect    = 'https://payonline.epfl.ch/cgi-bin/commande/?';
-		$id_inst     = empty( $payment_settings['id_inst'] ) ? '1234567890' : $payment_settings['id_inst']; // 1234567890 is the test instance
-		$cancel_url  = ! empty( $payment_settings['cancel_url'] ) ? esc_url_raw( $payment_settings['cancel_url'] ) : home_url();
-		$transaction = ! empty( $payment_settings['transaction'] ) && 'donation' === $payment_settings['transaction'] ? '_donations' : '_cart';
-
-		$payonline_addr  = $this->getArraysFromType( $fields, 'address' )[0]['address1'];
-		$payonline_addr .= ( trim( $this->getArraysFromType( $fields, 'address' )[0]['address2'] ) === '' ) ? '' : ' / ' . $this->getArraysFromType( $fields, 'address' )[0]['address2'];
+		// $items       = wpforms_get_payment_items( $fields );
+		// $redirect    = 'https://payonline.epfl.ch/cgi-bin/commande/?';
+		// $id_inst     = empty( $payment_settings['id_inst'] ) ? '1234567890' : $payment_settings['id_inst']; // 1234567890 is the test instance
+		// $cancel_url  = ! empty( $payment_settings['cancel_url'] ) ? esc_url_raw( $payment_settings['cancel_url'] ) : home_url();
+		// $transaction = ! empty( $payment_settings['transaction'] ) && 'donation' === $payment_settings['transaction'] ? '_donations' : '_cart';
+		// 
+		// $payonline_addr  = $this->getArraysFromType( $fields, 'address' )[0]['address1'];
+		// $payonline_addr .= ( trim( $this->getArraysFromType( $fields, 'address' )[0]['address2'] ) === '' ) ? '' : ' / ' . $this->getArraysFromType( $fields, 'address' )[0]['address2'];
 		// Setup EPFL Payonline arguments.
-		$payonline_args = array(
-			'id_inst'        => $id_inst,
-			'Currency'       => strtoupper( wpforms_setting( 'currency', 'USD' ) ),
-			// @TODO: Get real entry
-			'LastName'       => $this->getArraysFromType( $fields, 'name' )[0]['last'],
-			'FirstName'      => $this->getArraysFromType( $fields, 'name' )[0]['first'],
-			'Addr'           => $payonline_addr,
-			'ZipCode'        => $this->getArraysFromType( $fields, 'address' )[0]['postal'],
-			'City'           => $this->getArraysFromType( $fields, 'address' )[0]['city'],
-			'Country'        => $this->getArraysFromType( $fields, 'address' )[0]['country'],
-			'Email'          => $this->getFieldsFromType( $fields, 'email' )[0],
-			'id_transact'    => absint( $entry_id ),
-			// 'URL'           => "http://localhost:8080/index.php?commande=OK",
-			// 'url'           => "http://localhost:8080/index.php?commande=OK",
-			'Total'          => 0, // defined below...
-			'wpforms_return' => base64_encode( $query_args ), // Test for return var
-			// WPForms default...
-			'bn'             => 'WPForms_SP',
-			'business'       => trim( $payment_settings['email'] ),
-			'cancel_return'  => $cancel_url,
-			'cbt'            => get_bloginfo( 'name' ),
-			'charset'        => get_bloginfo( 'charset' ),
-			'cmd'            => $transaction,
-			'currency_code'  => strtoupper( wpforms_setting( 'currency', 'USD' ) ),
-			'custom'         => absint( $form_data['id'] ),
-			'invoice'        => absint( $entry_id ),
-			'no_note'        => isset( $payment_settings['note'] ) ? absint( $payment_settings['note'] ) : null,
-			'no_shipping'    => isset( $payment_settings['shipping'] ) ? absint( $payment_settings['shipping'] ) : null,
-			'notify_url'     => add_query_arg( 'wpforms-listener', '', home_url( '/' ) ),
-			'return'         => $return_url,
-			'rm'             => '2',
-			'tax'            => 0,
-			'upload'         => '1',
-		);
+		// $payonline_args = array(
+		// 	'id_inst'        => $id_inst,
+		// 	'Currency'       => strtoupper( wpforms_setting( 'currency', 'USD' ) ),
+		// 	// @TODO: Get real entry
+		// 	'LastName'       => $this->getArraysFromType( $fields, 'name' )[0]['last'],
+		// 	'FirstName'      => $this->getArraysFromType( $fields, 'name' )[0]['first'],
+		// 	'Addr'           => $payonline_addr,
+		// 	'ZipCode'        => $this->getArraysFromType( $fields, 'address' )[0]['postal'],
+		// 	'City'           => $this->getArraysFromType( $fields, 'address' )[0]['city'],
+		// 	'Country'        => $this->getArraysFromType( $fields, 'address' )[0]['country'],
+		// 	'Email'          => $this->getFieldsFromType( $fields, 'email' )[0],
+		// 	'id_transact'    => absint( $entry_id ),
+		// 	// 'URL'           => "http://localhost:8080/index.php?commande=OK",
+		// 	// 'url'           => "http://localhost:8080/index.php?commande=OK",
+		// 	'Total'          => 0, // defined below...
+		// 	'wpforms_return' => base64_encode( $query_args ), // Test for return var
+		// 	// WPForms default...
+		// 	'bn'             => 'WPForms_SP',
+		// 	'business'       => trim( $payment_settings['email'] ),
+		// 	'cancel_return'  => $cancel_url,
+		// 	'cbt'            => get_bloginfo( 'name' ),
+		// 	'charset'        => get_bloginfo( 'charset' ),
+		// 	'cmd'            => $transaction,
+		// 	'currency_code'  => strtoupper( wpforms_setting( 'currency', 'USD' ) ),
+		// 	'custom'         => absint( $form_data['id'] ),
+		// 	'invoice'        => absint( $entry_id ),
+		// 	'no_note'        => isset( $payment_settings['note'] ) ? absint( $payment_settings['note'] ) : null,
+		// 	'no_shipping'    => isset( $payment_settings['shipping'] ) ? absint( $payment_settings['shipping'] ) : null,
+		// 	'notify_url'     => add_query_arg( 'wpforms-listener', '', home_url( '/' ) ),
+		// 	'return'         => $return_url,
+		// 	'rm'             => '2',
+		// 	'tax'            => 0,
+		// 	'upload'         => '1',
+		// );
 
-		$this->debug( $payonline_args, 'payonline_args' );
-
-		// Add cart items.
-		if ( '_cart' === $transaction ) {
-
-			// Product/service.
-			$i = 1;
-			foreach ( $items as $item ) {
-
-				$item_amount = wpforms_sanitize_amount( $item['amount'] );
-
-				if (
-					! empty( $item['value_choice'] ) &&
-					in_array( $item['type'], array( 'payment-multiple', 'payment-select' ), true )
-				) {
-					$item_name = $item['name'] . ' - ' . $item['value_choice'];
-				} else {
-					$item_name = $item['name'];
-				}
-				$payonline_args[ 'item_name_' . $i ] = stripslashes_deep( html_entity_decode( $item_name, ENT_COMPAT, 'UTF-8' ) );
-				$payonline_args[ 'amount_' . $i ]    = $item_amount;
-				$payonline_args['Total']            += $item_amount;
-				$i ++;
-			}
-		} else {
-
-			// Combine a donation name from all payment fields names.
-			$item_names = array();
-
-			foreach ( $items as $item ) {
-
-				if (
-					! empty( $item['value_choice'] ) &&
-					in_array( $item['type'], array( 'payment-multiple', 'payment-select' ), true )
-				) {
-					$item_name = $item['name'] . ' - ' . $item['value_choice'];
-				} else {
-					$item_name = $item['name'];
-				}
-
-				$item_names[] = stripslashes_deep( html_entity_decode( $item_name, ENT_COMPAT, 'UTF-8' ) );
-			}
-
-			$payonline_args['item_name'] = implode( '; ', $item_names );
-			$payonline_args['amount']    = $amount;
-			$payonline_args['Total']     = $amount;
-		}
-
-		$payonline_args['Total'] = number_format( $payonline_args['Total'], 2, '.', '' );
+		//$this->debug( $payonline_args, 'payonline_args' );
+		//$payonline_args['Total'] = number_format( $payonline_args['Total'], 2, '.', '' );
 		// Last change to filter args.
 		$payonline_args = apply_filters( 'wpforms_payonline_redirect_args', $payonline_args, $fields, $form_data, $entry_id );
 
+		#
+		# INITIALIZE WORDLINE PAYMENT
+		#
+		$payment_data = array(
+			'amount'    => $amount,
+			'currency'  => strtolower( wpforms_setting( 'currency', 'CHF' )),
+			'FirstName' => $this->getArraysFromType( $fields, 'name' )[0]['first'],
+			'LastName'  => $this->getArraysFromType( $fields, 'name' )[0]['last'],
+			'Email'     => $this->getFieldsFromType( $fields, 'email' )[0]
+		);
+		$wpforms_data = array(
+			"items" => wpforms_get_payment_items( $fields ),
+			"entry_id" => absint( $entry_id ),
+			"blog_info" => get_bloginfo( 'name' )
+		);
+		
+		$payment = new SaferpayPayment(/*settings*/$payment_settings, /*data, total and user info*/$payment_data, $wpforms_data);
+		$payment_init_result = $payment->paymentPageInitialize();
+		
+		$this->debug( $payment_init_result->RedirectUrl, 'preparing redirection to saferpay' );
+
+
 		// Build query.
-		$redirect .= http_build_query( $payonline_args );
-		$redirect  = str_replace( '&amp;', '&', $redirect );
+		// $redirect .= http_build_query( $payonline_args );
+		// $redirect  = str_replace( '&amp;', '&', $redirect );
 
 		// Redirect to EPFL Payonline.
-		if ( wp_safe_redirect( $redirect ) ) {
-			$this->debug( $redirect, 'redirecting to payonline' );
+		if ( wp_http_validate_url($payment_init_result->RedirectUrl) ) {
+			// Update entry to include payment details.
+			$entry_data = array(
+				'status' => 'pending',
+				'type'   => 'payment',
+				'meta'   => wp_json_encode(
+					array(
+						'payment_type'      => $this->slug,
+						'payment_recipient' => sanitize_email( trim( $payment_settings['email'] ) ),
+						'payment_total'     => $amount,
+						'payment_currency'  => strtolower( wpforms_setting( 'currency', 'CHF' ) ),
+						//'payment_saferpay'  => $payment_init_result,
+						// 'payment_mode'      => esc_html( $payment_settings['mode'] ),
+					)
+				)
+			);
+			wpforms()->entry->update( $entry_id, $entry_data, '', '', array( 'cap' => false ) );
+			$this->debug( $payment_init_result->RedirectUrl, 'redirecting to saferpay' );
+			wp_redirect( $payment_init_result->RedirectUrl );
 			exit;
 		} else {
-			$this->log( $redirect, 'Error redirecting to payonline' );
+			$this->log( $payment_init_result->RedirectUrl, 'Error redirecting to saferpay' );
 			exit;
 		}
+		
+		/*
+			NOTE: from here there is now way to know what happens with the payment.
+			      The buyer might stop the process, or go though it completly.
+		*/
 	}
+
 
 	/**
 	 * Verify SSHA hash
@@ -736,7 +676,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			sprintf(
 				wp_kses(
 					/* translators: %s - Addons page URL in admin area. */
-					__( 'This addon allows to use <a href="%1$s">EPFL Payonline</a> with the <a href="%2$s">WPForms plugin</a>. Please read <a href="%3$s">Payonline Help</a> in order to create a payment instance.', 'wpforms-epfl-payonline' ),
+					__( 'This addon allows to use <a href="%1$s">EPFL WordLine SaferPay</a> with the <a href="%2$s">WPForms plugin</a>. Please read <a href="%3$s">XXX Help</a> in order to create a payment instance.', 'wpforms-epfl-payonline' ),
 					array(
 						'a' => array(
 							'href' => array(),
@@ -776,12 +716,61 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		wpforms_panel_field(
 			'text',
 			$this->slug,
-			'id_inst',
+			'saferpay_customer_id',
 			$this->form_data,
-			esc_html__( 'EPFL Payonline instance ID', 'wpforms-epfl-payonline' ),
+			esc_html__( 'SaferPay Customer ID', 'wpforms-epfl-payonline' ),
 			array(
 				'parent'  => 'payments',
-				'tooltip' => esc_html__( 'You must create a payment instance (entity that identifies your conference in the Payonline service) by using the "New Instance" link in the main menu on <a href="https://payonline.epfl.ch" target="_blank">payonline.epfl.ch</a>', 'wpforms-epfl-payonline' ),
+				'tooltip' => esc_html__( 'saferpay_customer_id', 'wpforms-epfl-payonline' ),
+				'default' => '265887',
+			)
+		);
+		wpforms_panel_field(
+			'text',
+			$this->slug,
+			'saferpay_api_url',
+			$this->form_data,
+			esc_html__( 'SaferPay API URL', 'wpforms-epfl-payonline' ),
+			array(
+				'parent'  => 'payments',
+				'tooltip' => esc_html__( 'saferpay_api_url', 'wpforms-epfl-payonline' ),
+				'default' => 'https://test.saferpay.com',
+			)
+		);
+		wpforms_panel_field(
+			'text',
+			$this->slug,
+			'saferpay_api_username',
+			$this->form_data,
+			esc_html__( 'SaferPay API Username', 'wpforms-epfl-payonline' ),
+			array(
+				'parent'  => 'payments',
+				'tooltip' => esc_html__( 'saferpay_api_username, starting with API_...', 'wpforms-epfl-payonline' ),
+				'default' => 'API_265887_09805965',
+			)
+		);
+		wpforms_panel_field(
+			'text',
+			$this->slug,
+			'saferpay_api_password',
+			$this->form_data,
+			esc_html__( 'SaferPay API Password', 'wpforms-epfl-payonline' ),
+			array(
+				'parent'  => 'payments',
+				'tooltip' => esc_html__( 'saferpay_api_password', 'wpforms-epfl-payonline' ),
+				'default' => 'apiAPI_265887_24207501',
+			)
+		);
+		wpforms_panel_field(
+			'text',
+			$this->slug,
+			'saferpay_terminal_id',
+			$this->form_data,
+			esc_html__( 'SaferPay Terminal ID', 'wpforms-epfl-payonline' ),
+			array(
+				'parent'  => 'payments',
+				'tooltip' => esc_html__( 'saferpay_terminal_id', 'wpforms-epfl-payonline' ),
+				'default' => '17755543',
 			)
 		);
 		wpforms_panel_field(
@@ -789,45 +778,45 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			$this->slug,
 			'email',
 			$this->form_data,
-			esc_html__( 'WPForms EPFL Payonline Email Address', 'wpforms-epfl-payonline' ),
+			esc_html__( 'WPForms Admin Notification Email Address', 'wpforms-epfl-payonline' ),
 			array(
 				'parent'  => 'payments',
-				'tooltip' => esc_html__( 'Enter an email address for payments notification', 'wpforms-epfl-payonline' ),
+				'tooltip' => esc_html__( 'Enter an email address for payments notification, please use a group', 'wpforms-epfl-payonline' ),
 			)
 		);
 
-		if ( function_exists( 'wpforms_conditional_logic' ) ) {
-			wpforms_conditional_logic()->builder_block(
-			// DEPRECATED wpforms_conditional_logic()->conditionals_block( → removed.
-				array(
-					'form'        => $this->form_data,
-					'type'        => 'panel',
-					'panel'       => 'epfl_payonline',
-					'parent'      => 'payments',
-					'actions'     => array(
-						'go'   => esc_html__( 'Process', 'wpforms-epfl-payonline' ),
-						'stop' => esc_html__( 'Don\'t process', 'wpforms-epfl-payonline' ),
-					),
-					'action_desc' => esc_html__( 'this charge if', 'wpforms-epfl-payonline' ),
-					'reference'   => esc_html__( 'EPFL Payonline Standard payment', 'wpforms-epfl-payonline' ),
-				)
-			);
-		} else {
-			echo '<p class="note">' .
-				sprintf(
-					wp_kses(
-						/* translators: %s - Addons page URL in admin area. */
-						__( 'Install the <a href="%s">Conditional Logic addon</a> to enable conditional logic for EPFL Payonline payments.', 'wpforms-epfl-payonline' ),
-						array(
-							'a' => array(
-								'href' => array(),
-							),
-						)
-					),
-					admin_url( 'admin.php?page=wpforms-addons' )
-				) .
-				'</p>';
-		}
+		// if ( function_exists( 'wpforms_conditional_logic' ) ) {
+		// 	wpforms_conditional_logic()->builder_block(
+		// 	// DEPRECATED wpforms_conditional_logic()->conditionals_block( → removed.
+		// 		array(
+		// 			'form'        => $this->form_data,
+		// 			'type'        => 'panel',
+		// 			'panel'       => 'epfl_payonline',
+		// 			'parent'      => 'payments',
+		// 			'actions'     => array(
+		// 				'go'   => esc_html__( 'Process', 'wpforms-epfl-payonline' ),
+		// 				'stop' => esc_html__( 'Don\'t process', 'wpforms-epfl-payonline' ),
+		// 			),
+		// 			'action_desc' => esc_html__( 'this charge if', 'wpforms-epfl-payonline' ),
+		// 			'reference'   => esc_html__( 'EPFL Payonline Standard payment', 'wpforms-epfl-payonline' ),
+		// 		)
+		// 	);
+		// } else {
+		// 	echo '<p class="note">' .
+		// 		sprintf(
+		// 			wp_kses(
+		// 				/* translators: %s - Addons page URL in admin area. */
+		// 				__( 'Install the <a href="%s">Conditional Logic addon</a> to enable conditional logic for EPFL Payonline payments.', 'wpforms-epfl-payonline' ),
+		// 				array(
+		// 					'a' => array(
+		// 						'href' => array(),
+		// 					),
+		// 				)
+		// 			),
+		// 			admin_url( 'admin.php?page=wpforms-addons' )
+		// 		) .
+		// 		'</p>';
+		// }
 	}
 
 	/**
