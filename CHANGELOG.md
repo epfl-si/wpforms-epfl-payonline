@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.8.0
+* New EPFL Form Template
+* Minors fixes
+
 ## v1.7.3
 * Renew the EPFL Conference Form Template
 
