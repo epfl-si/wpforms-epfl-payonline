@@ -1,9 +1,6 @@
-/* Hide PayPal and Stripe default payment addon */
-a[data-name="PayPal Standard addon"], a[data-slug="paypal-standard"],
-a[data-name="Stripe addon"], a[data-slug="stripe"],
-a[data-name="Authorize.Net addon"], a[data-slug="authorize-net"],
-a[data-name="Square addon"], a[data-slug="square"] {
-  visibility: hidden;
+/* Hide all but EPFL Payonline */
+a.wpforms-panel-sidebar-section:not([data-section="epfl_payonline"]) {
+	visibility: hidden;
   display: none;
 }
 
