@@ -91,6 +91,9 @@ pot: check-wp check-gettext languages/$(PROJECT_NAME).pot
 .PHONY: zip
 ## Create the plugin's zip file and link it as ./builds/latest.zip
 zip: check-zip builds/$(PROJECT_NAME)-$(VERSION).zip
+	@echo "Zip for version $(VERSION) is available here: ./builds/$(PROJECT_NAME).zip or ./builds/$(PROJECT_NAME)-$(VERSION).zip"
+
+builds/$(PROJECT_NAME)-$(VERSION).zip:
 	@mkdir -p builds || true
 	@rm -f ./builds/$(PROJECT_NAME)-$(VERSION).zip
 	cd ..; zip -r -FS $(PROJECT_NAME)/builds/$(PROJECT_NAME)-$(VERSION).zip $(PROJECT_NAME) \
@@ -115,7 +118,6 @@ zip: check-zip builds/$(PROJECT_NAME)-$(VERSION).zip
 		ln -s $(PROJECT_NAME)-$(VERSION).zip ./$(PROJECT_NAME).zip; \
 		ln -s $(PROJECT_NAME)-$(VERSION).zip ./latest.zip; \
 	fi
-	@echo "Zip for version $(VERSION) is now available in ./builds/$(PROJECT_NAME).zip"
 
 .PHONY: commit
 ## Interactive automated commit for new release
