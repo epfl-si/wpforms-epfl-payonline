@@ -79,10 +79,10 @@ add_action( 'wpforms_loaded', 'wpforms_epfl_payonline' );
 // WordPress' autodetection fails. This is equivalent to setting the
 // `FS_METHOD` constant in `wp-confing.php`.
 add_filter(
-    'filesystem_method',
-    function() {
-        return 'direct';
-    },
-    10,
-    3
+	'filesystem_method',
+	function() {
+		return 'direct';
+	},
+	10,
+	3
 );
