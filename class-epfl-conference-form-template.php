@@ -188,12 +188,12 @@ if ( class_exists( 'WPForms_Template', false ) ) :
 						'label'       => 'GDPR Agreement',
 						'choices'     => array(
 							1 => array(
-								'label'      => 'By checking this box, I consent to the use of my personal data by EPFL for the purpose of processing my application for this conference (<a href="https://go.epfl.ch/lpd">https://go.epfl.ch/lpd</a>)',
+								'label'      => 'By checking this box, I consent to the use of my personal data by EPFL for the purpose of processing my application for this conference (https://go.epfl.ch/lpd).',
 								'icon'       => 'face-smile',
 								'icon_style' => 'regular',
 							),
 						),
-						'description' => 'EPFL is required to respect the principles of data protection (<a href="https://go.epfl.ch/privacy-policy">https://go.epfl.ch/privacy-policy</a>).',
+						'description' => 'EPFL is required to respect the principles of data protection (https://go.epfl.ch/privacy-policy).',
 					),
 				),
 				'field_id' => 10,
@@ -221,7 +221,7 @@ if ( class_exists( 'WPForms_Template', false ) ) :
 						1 => array(
 							'name'                        => 'Default Confirmation',
 							'type'                        => 'message',
-							'message'                     => '<p>Thanks for contacting us! We will be in touch with you shortly.</p>',
+							'message'                     => 'Thanks for contacting us! We will be in touch with you shortly.',
 							'message_scroll'              => '1',
 							'page'                        => '10',
 							'message_entry_preview_style' => 'basic',
@@ -243,7 +243,7 @@ if ( class_exists( 'WPForms_Template', false ) ) :
 				'payments' => array(
 					'epfl_payonline' => array(
 						'enable'  => '1',
-						'id_inst' => '0123456789',
+						'id_inst' => '1234567890',
 						'email'   => 'conference.admin@groupes.epfl.ch',
 					),
 				),
