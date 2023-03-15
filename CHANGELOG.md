@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.7.3
+* Renew the EPFL Conference Form Template
+
 ## v1.7.2
 * Hide all forms payment methods but EPFL Payonline
 

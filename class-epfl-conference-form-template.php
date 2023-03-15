@@ -21,18 +21,12 @@
  * @copyright  Copyright (c) 2019, EPFL
  */
 
-// Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 if ( class_exists( 'WPForms_Template', false ) ) :
 	/**
-	 * Conference Form (EPFL Payonline)
+	 * EPFL Conference Form Template
 	 * Template for WPForms.
 	 */
 	class EPFL_Conference_Form_Template extends WPForms_Template {
-
 
 		/**
 		 * Primary class constructor.
@@ -40,17 +34,14 @@ if ( class_exists( 'WPForms_Template', false ) ) :
 		 * @since 1.0.0
 		 */
 		public function init() {
-			// Allow to add this template in the top part of the template page.
-			$this->core = true;
-
 			// Template name.
-			$this->name = 'Conference Form (EPFL Payonline)';
+			$this->name = 'EPFL Conference Form Template';
 
 			// Template slug.
-			$this->slug = 'conference_form_epfl_payonline';
+			$this->slug = 'conference_form_new_template';
 
 			// Template description.
-			$this->description = 'Collect Payments via EPFL Payonline for conferences payments with this ready-made form template. You can add and remove fields as needed.';
+			$this->description = 'Template for EPFL conferences with payments (via EPFL Payonline).';
 
 			// Template field and settings.
 			$this->data = array(
@@ -64,9 +55,18 @@ if ( class_exists( 'WPForms_Template', false ) ) :
 						'size'     => 'large',
 					),
 					1 => array(
-						'id'       => '1',
-						'type'     => 'email',
-						'label'    => 'Email',
+						'id'            => '1',
+						'type'          => 'email',
+						'label'         => 'Email',
+						'required'      => '1',
+						'size'          => 'large',
+						'default_value' => false,
+					),
+					2 => array(
+						'id'       => '2',
+						'type'     => 'phone',
+						'label'    => 'Phone',
+						'format'   => 'international',
 						'required' => '1',
 						'size'     => 'large',
 					),
@@ -79,38 +79,38 @@ if ( class_exists( 'WPForms_Template', false ) ) :
 						'size'            => 'large',
 						'country_default' => 'CH',
 					),
-					2 => array(
-						'id'       => '2',
-						'type'     => 'phone',
-						'label'    => 'Phone',
-						'format'   => 'smart',
-						'required' => '1',
-						'size'     => 'large',
-					),
 					8 => array(
 						'id'                   => '8',
 						'type'                 => 'checkbox',
 						'label'                => 'Diets',
 						'choices'              => array(
 							1 => array(
-								'label' => 'Gluten-Free',
+								'label'      => 'Gluten-Free',
+								'icon'       => 'face-smile',
+								'icon_style' => 'regular',
 							),
 							2 => array(
-								'label' => 'Lactose-Free',
-							),
-							3 => array(
-								'label' => 'Semi-vegetarian',
+								'label'      => 'Lactose-Free',
+								'icon'       => 'face-smile',
+								'icon_style' => 'regular',
 							),
 							4 => array(
-								'label' => 'Vegetarian',
+								'label'      => 'Vegetarian',
+								'icon'       => 'face-smile',
+								'icon_style' => 'regular',
 							),
 							5 => array(
-								'label' => 'Veganism',
+								'label'      => 'Veganism',
+								'icon'       => 'face-smile',
+								'icon_style' => 'regular',
 							),
 						),
-						'description'          => 'Please indicate your food preferences and we will do our best to offer adapted meals at the conference.',
 						'choices_images_style' => 'modern',
-						'input_columns'        => 'inline',
+						'choices_icons_color'  => '#0399ed',
+						'choices_icons_size'   => 'large',
+						'choices_icons_style'  => 'default',
+						'description'          => 'Please indicate your food preferences and we will do our best to offer adapted meals at the conference.',
+						'input_columns'        => '2',
 					),
 					4 => array(
 						'id'                      => '4',
@@ -118,22 +118,31 @@ if ( class_exists( 'WPForms_Template', false ) ) :
 						'label'                   => 'Conference fees',
 						'choices'                 => array(
 							1 => array(
-								'label' => 'Student',
-								'value' => '100.00',
+								'label'      => 'Students',
+								'value'      => '100.00',
+								'icon'       => 'face-smile',
+								'icon_style' => 'regular',
 							),
 							2 => array(
-								'label' => 'Speakers',
-								'value' => '200.00',
+								'label'      => 'Speakers',
+								'value'      => '200.00',
+								'icon'       => 'face-smile',
+								'icon_style' => 'regular',
 							),
 							3 => array(
-								'label' => 'Other attendees',
-								'value' => '250.00',
+								'label'      => 'Other attendees',
+								'value'      => '250.00',
+								'icon'       => 'face-smile',
+								'icon_style' => 'regular',
 							),
 						),
 						'show_price_after_labels' => '1',
+						'choices_images_style'    => 'modern',
+						'choices_icons_color'     => '#0399ed',
+						'choices_icons_size'      => 'large',
+						'choices_icons_style'     => 'default',
 						'description'             => 'Students will be asked to show their card at the conference check-in.',
 						'required'                => '1',
-						'choices_images_style'    => 'modern',
 					),
 					7 => array(
 						'id'                      => '7',
@@ -141,16 +150,23 @@ if ( class_exists( 'WPForms_Template', false ) ) :
 						'label'                   => 'Evenning events',
 						'choices'                 => array(
 							1 => array(
-								'label' => 'Conference dinner (Wednesday evenning)',
-								'value' => '100.00',
+								'label'      => 'Conference dinner (Wednesday evenning)',
+								'value'      => '100.00',
+								'icon'       => 'face-smile',
+								'icon_style' => 'regular',
 							),
 							2 => array(
-								'label' => 'Conference event (Thursday evenning)',
-								'value' => '100.00',
+								'label'      => 'Conference event (Thursday evenning)',
+								'value'      => '100.00',
+								'icon'       => 'face-smile',
+								'icon_style' => 'regular',
 							),
 						),
 						'show_price_after_labels' => '1',
 						'choices_images_style'    => 'modern',
+						'choices_icons_color'     => '#0399ed',
+						'choices_icons_size'      => 'large',
+						'choices_icons_style'     => 'default',
 					),
 					5 => array(
 						'id'    => '5',
@@ -161,39 +177,44 @@ if ( class_exists( 'WPForms_Template', false ) ) :
 						'id'          => '6',
 						'type'        => 'textarea',
 						'label'       => 'Comment or Message',
-						'required'    => '1',
 						'size'        => 'small',
 						'limit_count' => '1',
 						'limit_mode'  => 'characters',
 					),
 					9 => array(
-						'id'       => '9',
-						'type'     => 'gdpr-checkbox',
-						'required' => '1',
-						'label'    => 'GDPR Agreement',
-						'choices'  => array(
+						'id'          => '9',
+						'type'        => 'gdpr-checkbox',
+						'required'    => '1',
+						'label'       => 'GDPR Agreement',
+						'choices'     => array(
 							1 => array(
-								'label' => 'I consent to having this website store my submitted information so they can respond to my inquiry. Head to <a href="https://www.epfl.ch/about/presidency/presidents-team/legal-affairs/epfl-privacy-policy/">EPFL Privacy Policy (https://www.epfl.ch/about/presidency/presidents-team/legal-affairs/epfl-privacy-policy/</a>) for details.',
+								'label'      => 'By checking this box, I consent to the use of my personal data by EPFL for the purpose of processing my application for this conference (<a href="https://go.epfl.ch/lpd">https://go.epfl.ch/lpd</a>)',
+								'icon'       => 'face-smile',
+								'icon_style' => 'regular',
 							),
 						),
+						'description' => 'EPFL is required to respect the principles of data protection (<a href="https://go.epfl.ch/privacy-policy">https://go.epfl.ch/privacy-policy</a>).',
 					),
 				),
 				'field_id' => 10,
 				'settings' => array(
-					'form_title'             => 'Conference Form (EPFL Payonline)',
-					'form_desc'              => 'Collect Payments via EPFL Payonline for conferences payments with this ready-made form template. You can add and remove fields as needed.',
+					'form_title'             => 'EPFL Conference Form Template',
 					'submit_text'            => 'Submit',
 					'submit_text_processing' => 'Sending...',
-					'honeypot'               => '1',
 					'notification_enable'    => '1',
 					'notifications'          => array(
 						1 => array(
 							'notification_name' => 'Default Notification',
-							'email'             => '{admin_email}',
-							'subject'           => 'New Entry: Billing / Order Form with Payonline',
-							'sender_name'       => 'EPFL ISAS FSD',
-							'sender_address'    => '{admin_email}',
+							'email'             => 'your.email@epfl.ch',
+							'carboncopy'        => 'another.email@epfl.ch',
+							'subject'           => 'Someone just submitted your form...',
+							'sender_name'       => 'Demo conference',
+							'sender_address'    => 'demo.conference@epfl.ch',
+							'replyto'           => 'demo.conference@epfl.ch',
 							'message'           => '{all_fields}',
+							'file_upload_attachment_fields' => array(),
+							'entry_csv_attachment_entry_information' => array(),
+							'entry_csv_attachment_file_name' => 'entry-details',
 						),
 					),
 					'confirmations'          => array(
@@ -202,23 +223,36 @@ if ( class_exists( 'WPForms_Template', false ) ) :
 							'type'                        => 'message',
 							'message'                     => '<p>Thanks for contacting us! We will be in touch with you shortly.</p>',
 							'message_scroll'              => '1',
-							'page'                        => '2',
+							'page'                        => '10',
 							'message_entry_preview_style' => 'basic',
 						),
 					),
+					'honeypot'               => '1',
+					'anti_spam'              => array(
+						'country_filter' => array(
+							'action'        => 'allow',
+							'country_codes' => array(),
+							'message'       => 'Sorry, this form does not accept submissions from your country.',
+						),
+						'keyword_filter' => array(
+							'message' => 'Sorry, your message can\'t be submitted because it contains prohibited words.',
+						),
+					),
+					'form_tags'              => array(),
 				),
 				'payments' => array(
 					'epfl_payonline' => array(
 						'enable'  => '1',
-						'id_inst' => '1234567890',
-						'email'   => '',
+						'id_inst' => '0123456789',
+						'email'   => 'conference.admin@groupes.epfl.ch',
 					),
 				),
 				'meta'     => array(
-					'template' => 'conference_form_epfl_payonline',
+					'template' => 'conference_form_new_template',
 				),
 			);
 		}
 	}
+
 	new EPFL_Conference_Form_Template();
 endif;
