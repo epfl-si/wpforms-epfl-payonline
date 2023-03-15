@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the WPForms EPFL Payonline plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: WPForms EPFL Payonline 1.8.0\n"
+"Project-Id-Version: WPForms EPFL Payonline 1.8.1\n"
 "Report-Msgid-Bugs-To: https://github.com/wp-cli/i18n-command/issues\n"
 "POT-Creation-Date: 2023-03-15T19:10:32+01:00\n"
 "PO-Revision-Date: 2019-12-11 18:32+0100\n"
