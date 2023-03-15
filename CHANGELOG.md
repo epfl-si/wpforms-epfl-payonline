@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.7.2
+* Hide all forms payment methods but EPFL Payonline
+
 ## v1.7.1
 * Fix for Force WP_Filesystem autodetection (`FS_METHOD`)
 
