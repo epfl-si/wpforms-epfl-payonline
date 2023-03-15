@@ -6,7 +6,7 @@
  * Author:      EPFL ISAS-FSD
  * Author URI:  https://go.epfl.ch/idev-fsd
  * Contributor: Nicolas Borboën <nicolas.borboen@epfl.ch>
- * Version:     1.7.0
+ * Version:     1.7.1
  * Text Domain: wpforms-epfl-payonline
  * Domain Path: languages
  * License:     GPL-2.0+
@@ -37,7 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin version.
-define( 'WPFORMS_EPFL_PAYONLINE_VERSION', '1.7.0' );
+define( 'WPFORMS_EPFL_PAYONLINE_VERSION', '1.7.1' );
 // Plugin name.
 define( 'WPFORMS_EPFL_PAYONLINE_NAME', 'WPForms EPFL Payonline' );
 // Latest WP version tested with this plugin.
@@ -74,19 +74,30 @@ function wpforms_epfl_payonline() {
 
 add_action( 'wpforms_loaded', 'wpforms_epfl_payonline' );
 
-add_action(
-	'wp_ajax_wpforms_tools_entries_export_step',
-	function() {
-		// WPForms requires WP_Filesystem() to be of ->method === "direct".
-		// For some reason (likely pertaining to our symlink scheme),
-		// WordPress' autodetection fails.
-		add_filter(
-			'filesystem_method',
-			function() {
-				return 'direct';
-			},
-			10,
-			3
-		);
-	}
+// WPForms requires WP_Filesystem() to be of ->method === "direct".
+// For some reason (likely pertaining to our symlink scheme),
+// WordPress' autodetection fails. This is equivalent to setting the
+// `FS_METHOD` constant in `wp-confing.php`.
+add_filter(
+    'filesystem_method',
+    function() {
+        return 'direct';
+    },
+    10,
+    3
+);
+
+// 
+add_filter(
+    'wpforms_save_form_args',
+    function($arr) {
+        $decoded_post_content = wpforms_decode(wp_unslash($arr['post_content']));
+
+        $decode_arr_ori = wpforms_decode(wp_unslash($_POST['data']));
+
+        $arr['post_content'] = wpforms_encode($decoded_post_content);
+        return $arr;
+    },
+    10,
+    4
 );
