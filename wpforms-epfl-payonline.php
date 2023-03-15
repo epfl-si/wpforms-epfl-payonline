@@ -69,6 +69,7 @@ function wpforms_epfl_payonline() {
 
 	require_once plugin_dir_path( __FILE__ ) . 'class-wpforms-epfl-payonline.php';
 	require_once plugin_dir_path( __FILE__ ) . 'class-epfl-conference-form-template.php';
+	require_once plugin_dir_path( __FILE__ ) . 'class-epfl-donation-form-template.php';
 
 }
 
