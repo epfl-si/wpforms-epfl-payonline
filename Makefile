@@ -98,14 +98,14 @@ builds/$(PROJECT_NAME)-$(VERSION).zip:
 	@rm -f ./builds/$(PROJECT_NAME)-$(VERSION).zip
 	cd ..; zip -r -FS $(PROJECT_NAME)/builds/$(PROJECT_NAME)-$(VERSION).zip $(PROJECT_NAME) \
 		--exclude "$(PROJECT_NAME)/.*"                   \
-		--exclude "$(PROJECT_NAME)/*.po.bak"             \
+		--exclude "$(PROJECT_NAME)/*.bak"                \
 		--exclude "$(PROJECT_NAME)/*.*~"                 \
 		--exclude "$(PROJECT_NAME)/*.orig"               \
 		--exclude "$(PROJECT_NAME)/builds/*"             \
 		--exclude "$(PROJECT_NAME)/doc/*"                \
 		--exclude "$(PROJECT_NAME)/vendor/*"             \
 		--exclude "$(PROJECT_NAME)/composer.json"        \
-		--exclude "$(PROJECT_NAME)/compose.lock"         \
+		--exclude "$(PROJECT_NAME)/composer.lock"        \
 		--exclude "$(PROJECT_NAME)/Makefile"             \
 		--exclude "$(PROJECT_NAME)/create-gh-release.sh" \
 		--exclude "$(PROJECT_NAME)/bump-version.sh"; cd $(PROJECT_NAME)
