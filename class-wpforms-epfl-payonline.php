@@ -207,6 +207,8 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 		// Check required payment settings.
 		$payment_settings = $form_data['payments'][ $this->slug ];
+		$this->debug( $payment_settings, "PAYMENT SETTINGS" );
+
 		if (
 			empty( $payment_settings['enable'] ) ||
 			empty( $payment_settings['email'] ) ||
@@ -309,7 +311,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			"entry_id" => absint( $entry_id ),
 			"blog_info" => get_bloginfo( 'name' )
 		);
-		
+
 		$payment = new SaferpayPayment(/*settings*/$payment_settings, /*data, total and user info*/$payment_data, $wpforms_data);
 		$payment_init_result = $payment->paymentPageInitialize();
 		
@@ -329,9 +331,10 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 				'meta'   => wp_json_encode(
 					array(
 						'payment_type'      => $this->slug,
-						'payment_recipient' => sanitize_email( trim( $payment_settings['email'] ) ),
+						'payment_recipient' => sanitize_email( trim( $payment_settings['email'] ) ), // ????
 						'payment_total'     => $amount,
 						'payment_currency'  => strtolower( wpforms_setting( 'currency', 'CHF' ) ),
+						'wordline_specifics' => $payment_init_result,
 						//'payment_saferpay'  => $payment_init_result,
 						// 'payment_mode'      => esc_html( $payment_settings['mode'] ),
 					)
@@ -345,7 +348,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			$this->log( $payment_init_result->RedirectUrl, 'Error redirecting to saferpay' );
 			exit;
 		}
-		
+
 		/*
 			NOTE: from here there is now way to know what happens with the payment.
 			      The buyer might stop the process, or go though it completly.
@@ -388,41 +391,31 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	 */
 	public function process_return_from_epfl_payonline() {
 		// Anything like wp_url/index.php?EPFLPayonline.
-		if ( ! isset( $_GET['EPFLPayonline'] ) || ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' !== $_SERVER['REQUEST_METHOD'] ) ) {
+		if ( ! isset( $_GET['EPFLPayonline'] ) || ! isset( $_GET['entry_id'] ) ) {
 			return;
 		} else {
-			$this->debug( "process_return_from_epfl_payonline: Get hit on '/?EPFLPayonline'" );
+			$this->debug( "process_return_from_epfl_payonline: Get hit on '/?EPFLPayonline' for  " . $_GET['entry_id'] );
 		}
-
-		$data = array();
-		// Loop through each POST.
-		$posted_data = filter_var_array( $_POST );
-		foreach ( $posted_data as $key => $value ) {
-			$data[ $key ] = $value;
-		}
-
-		// Check if $post_data_array has been populated.
-		if ( ! is_array( $data ) || empty( $data ) || empty( $data['invoice'] ) || empty( $data['token'] ) || empty( $data['id_transact'] ) || empty( $data['id_inst'] ) ) {
-			$this->log( 'Error: Missing $data in process_return_from_epfl_payonline()', 'process_return_from_epfl_payonline' );
-			return;
-		}
-
+		$entry_id = absint( $_GET['entry_id'] );
 		// Verify that the returned hash is legit.
-		if ( ! $this->ssha_password_verify( $data['token'], $data['id_transact'] . ':' . $data['id_inst'] ) ) {
-			$this->log( 'Error: Hash can not be verified', 'process_return_from_epfl_payonline' );
-			return;
-		}
+		// if ( ! $this->ssha_password_verify( $data['token'], $data['id_transact'] . ':' . $data['id_inst'] ) ) {
+		// 	$this->log( 'Error: Hash can not be verified', 'process_return_from_epfl_payonline' );
+		// 	return;
+		// }
 
-		$error          = '';
-		$entry_id       = absint( $data['id_transact'] );
-		$entry          = wpforms()->entry->get( absint( $entry_id ) );
-		$payment_status = intval( $data['result'] );
-		$form_data      = wpforms()->form->get(
+		// TODO: do something clever here.
+		$entry = wpforms()->entry->get( $entry_id );
+		$this->debug( $entry_id, "Trying to get info for..." );
+
+		$form_data = wpforms()->form->get(
 			$entry->form_id,
 			array(
 				'content_only' => true,
 			)
 		);
+
+		$this->debug( $form_data, "Trying to get info for..." );
+		$payment_settings = $form_data['payments'][ $this->slug ];
 
 		// If payment or form doesn't exist, bail.
 		if ( empty( $entry ) || empty( $form_data ) ) {
@@ -431,66 +424,137 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		}
 
 		$entry_meta = json_decode( $entry->meta, true );
+		$this->debug( $entry_meta, "entry_meta" );
+		$this->debug( $entry_meta['wordline_specifics'], "entry_meta->wordline_specifics" );
+		$this->debug( $entry_meta['wordline_specifics']['Token'], "entry_meta->wordline_specifics->token" );
 
 		// Verify payment recipient emails match.
-		if ( empty( $form_data['payments'][ $this->slug ]['email'] ) || strtolower( $data['business'] ) !== strtolower( trim( $form_data['payments'][ $this->slug ]['email'] ) ) ) {
-			$error = esc_html__( 'Payment failed: recipient emails do not match', 'wpforms-epfl-payonline' );
-		}
-		if ( 0 === $payment_status ) {
-			$error = esc_html__( 'Payment failed: Payonline returned 0', 'wpforms-epfl-payonline' );
-		}
+		// if ( empty( $form_data['payments'][ $this->slug ]['email'] ) || strtolower( $data['business'] ) !== strtolower( trim( $form_data['payments'][ $this->slug ]['email'] ) ) ) {
+		// 	$error = esc_html__( 'Payment failed: recipient emails do not match', 'wpforms-epfl-payonline' );
+		// }
+		// if ( 0 === $payment_status ) {
+		// 	$error = esc_html__( 'Payment failed: Payonline returned 0', 'wpforms-epfl-payonline' );
+		// }
 
-		// If there was an error, log and update the payment status.
-		if ( ! empty( $error ) || 0 === $payment_status ) {
-			$entry_meta['payment_note'] = $error;
+		$payment = new SaferpayPayment(/*settings*/$payment_settings, /*data, total and user info*/null, null);
+		$assert = $payment->paymentPageAssert($entry_meta['wordline_specifics']['Token'], $entry_meta['wordline_specifics']['ResponseHeader']['RequestId']);
+
+		if ( $assert && $assert->Transaction->Status !== 'AUTHORIZED' && $assert->Transaction->Status !== 'CAPTURED' ) { // && $assert->Transaction->Type === 'PAYMENT'
+			$this->debug( $assert, "ASSERT" );
+			$this->debug( $assert->Transaction->Status, "ASSERT" ); // AUTHORIZED
+			$this->debug( $assert->Transaction->Type, "ASSERT" ); // PAYMENT
+
+			// THE PAYMENT HAS FAILED
 			wpforms_log(
-				esc_html__( 'EPFL Payonline Return Error', 'wpforms-epfl-payonline' ),
-				sprintf( '%s - Payonline data: %s', $error, '<pre>' . print_r( $data, true ) . '</pre>' ),
+				esc_html__( 'EPFL Wordline Return Error', 'wpforms-epfl-payonline' ),
+				sprintf( 'Error - Wordline data: %s', '<pre>' . var_export( $assert, true ) . '</pre>' ),
 				array(
 					'parent'  => $entry_id,
 					'type'    => array( 'error', 'payment' ),
 					'form_id' => $entry->form_id,
 				)
 			);
-			$this->log( $error, 'process_return_from_epfl_payonline (error)' );
-			$this->debug( $data, 'process_return_from_epfl_payonline (data)' );
-			wpforms()->entry->update(
-				$entry_id,
-				array(
-					'status' => 'failed',
-					'meta'   => wp_json_encode( $entry_meta ),
-				),
-				'',
-				'',
-				array( 'cap' => false )
+			$array_assert = (array) $assert; // was an object array
+			$entry_meta['wordline_assert'] = $array_assert;
+			$entry_data = array(
+				'status' => 'failed',
+				// 'type'   => 'payment',
+				'meta'   => wp_json_encode(
+					$entry_meta
+				)
 			);
+			wpforms()->entry->update( $entry_id, $entry_data, '', '', array( 'cap' => false ) );
+			// $entry = wpforms()->entry->get( $entry_id );
+			// $entry_meta = json_decode( $entry->meta, true );
+			// $this->debug( $entry_meta, "XXXentry_meta" );
 			return;
 		}
 
-		// Completed payment.
-		if ( 1 === $payment_status ) {
-			$entry_meta['payment_id_inst']     = $data['id_inst'];      // Payonline instance ID.
-			$entry_meta['payment_id_trans']    = $data['id_trans'];     // Payonline transaction ID.
-			$entry_meta['payment_id_transact'] = $data['id_transact'];  // WPForms EPFL Payonline transaction ID.
-			$entry_meta['payment_transaction'] = $data['PaymentID'];    // PostFinance/Payonline transaction ID.
-			$entry_meta['payment_paymode']     = $data['paymode'];      // Master Card, etc...
-			$entry_meta['payonline']           = $data;                 // Save the returned value by payonline.
-			$this->log( $data, 'process_return_from_epfl_payonline (success)' );
-
+		if ( $assert && $assert->Transaction->Type === 'PAYMENT' && $assert->Transaction->Status === 'AUTHORIZED' ) {
+			// Completed payment.
+			// $entry_meta['payment_id_inst']     = $data['id_inst'];      // Payonline instance ID.
+			// $entry_meta['payment_id_trans']    = $data['id_trans'];     // Payonline transaction ID.
+			// $entry_meta['payment_id_transact'] = $data['id_transact'];  // WPForms EPFL Payonline transaction ID.
+			// $entry_meta['payment_transaction'] = $data['PaymentID'];    // PostFinance/Payonline transaction ID.
+			// $entry_meta['payment_paymode']     = $data['paymode'];      // Master Card, etc...
+			// $entry_meta['payonline']           = $data;                 // Save the returned value by payonline.
+			$this->log( $assert, 'wordline assert success' );
 			// Set the payment status to completed.
-			wpforms()->entry->update(
-				$entry_id,
-				array(
-					'status' => 'completed',
-					'meta'   => wp_json_encode( $entry_meta ),
-				),
-				'',
-				'',
-				array( 'cap' => false )
+			$array_assert = (array) $assert; // was an object array
+			$entry_meta['wordline_assert'] = $array_assert;
+			$entry_data = array(
+				'status' => 'authorized',
+				// 'type'   => 'payment',
+				'meta'   => wp_json_encode(
+					$entry_meta
+				)
 			);
+		} else if ( $assert && $assert->Transaction->Type === 'PAYMENT' && $assert->Transaction->Status === 'CAPTURED' ) {
+			$this->log( $assert, 'wordline assert (captured) success' );
+			// Set the payment status to completed.
+			$array_assert = (array) $assert; // was an object array
+			$entry_meta['wordline_assert'] = $array_assert;
+			$entry_data = array(
+				'status' => 'completed (captured)',
+				// 'type'   => 'payment',
+				'meta'   => wp_json_encode(
+					$entry_meta
+				)
+			);
+			return;
+		}
+		
+		// CAPTURE PAYMENT — actual money
+		
+		
+		$capture = $payment->paymentCapture($assert->Transaction->Id, $entry_meta['wordline_specifics']['ResponseHeader']['RequestId']);
+		$this->debug( $capture, "CAPTURE" );
 
+		if ( $capture && $capture->Status !== 'CAPTURED' ) { 
+			// THE PAYMENT HAS FAILED
+			wpforms_log(
+				esc_html__( 'EPFL Wordline capture Error', 'wpforms-epfl-payonline' ),
+				sprintf( 'Error - Wordline data: %s', '<pre>' . var_export( $capture, true ) . '</pre>' ),
+				array(
+					'parent'  => $entry_id,
+					'type'    => array( 'error', 'payment' ),
+					'form_id' => $entry->form_id,
+				)
+			);
+			$array_capture = (array) $capture; // was an object array
+			$entry_meta['wordline_capture'] = $array_capture;
+			$entry_data = array(
+				'status' => 'capture failed',
+				// 'type'   => 'payment',
+				'meta'   => wp_json_encode(
+					$entry_meta
+				)
+			);
+			wpforms()->entry->update( $entry_id, $entry_data, '', '', array( 'cap' => false ) );
+			// $entry = wpforms()->entry->get( $entry_id );
+			// $entry_meta = json_decode( $entry->meta, true );
+			// $this->debug( $entry_meta, "XXXentry_meta" );
+			return;
+		}
+
+		// TODO check $capture->ResponseHeader->RequestId
+		if ( $capture && $capture->Status === 'CAPTURED' ) {
+
+			$this->log( $capture, 'wordline capture success' );
+			// Set the payment status to completed.
+			$array_capture = (array) $capture; // was an object array
+			$entry_meta['wordline_capture'] = $array_capture;
+			$entry_data = array(
+				'status' => 'completed',
+				// 'type'   => 'payment',
+				'meta'   => wp_json_encode(
+					$entry_meta
+				)
+			);
+		}
+/*
 			// Send email to benificiary (payment proof).
-			/* translators: %1$s blog's name, %2$s form's name */
+			// translators: %1$s blog's name, %2$s form's name
 			$email['subject']        = sprintf( esc_html__( '[%1$s] Payment confirmation for "%2$s"', 'wpforms-epfl-payonline' ), get_bloginfo( 'name' ), $form_data['settings']['form_title'] );
 			$email['address']        = $this->getFieldsFromType( $entry->fields, 'email' );
 			$email['address']        = array_map( 'sanitize_email', $email['address'] );
@@ -502,7 +566,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			// @TODO: Template this
 			$email['message'] .= '<p>' . __( 'Thanks for your payment!', 'wpforms-epfl-payonline' ) . '</p>';
 			$email['message'] .= '<p>' . __( 'Please find below your order details.', 'wpforms-epfl-payonline' ) . '</p>';
-			/* @TODO learn how to use custom notification for that... ! empty( $notification['message'] ) ? $notification['message'] : '{all_fields}'; */
+			// @TODO learn how to use custom notification for that... ! empty( $notification['message'] ) ? $notification['message'] : '{all_fields}'; 
 			$email['message'] .= '{all_fields}';
 
 			// Create new email.
@@ -520,17 +584,18 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			}
 			// Send a copy to WPForms EPFL Payonline notification email.
 			$emails->send( trim( $form_data['payments'][ $this->slug ]['email'] ), __( '[COPY]', 'wpforms-epfl-payonline' ) . $email['subject'], $email['message'] );
-		}
+*/
 
-		// Just in case something elese is needed...
-		do_action( 'wpforms_epfl_payonline_process_complete', wpforms_decode( $entry->fields ), $form_data, $entry_id, $data );
+		// Just in case something else is needed...
+		do_action( 'wpforms_epfl_payonline_process_complete', wpforms_decode( $entry->fields ), $form_data, $entry_id, $capture );
 
 		// Debug process_return_from_epfl_payonline.
-		$this->debug( $_POST, 'process_return_from_epfl_payonline: POST:' );
-		$this->debug( $_GET, 'process_return_from_epfl_payonline: GET:' );
-		$this->debug( $_SERVER, 'process_return_from_epfl_payonline: SERVER:' );
+		// $this->debug( $_POST, 'process_return_from_epfl_payonline: POST:' );
+		// $this->debug( $_GET, 'process_return_from_epfl_payonline: GET:' );
+		// $this->debug( $_SERVER, 'process_return_from_epfl_payonline: SERVER:' );
 
-		die();
+		return;
+		// die();
 	}
 
 	/**

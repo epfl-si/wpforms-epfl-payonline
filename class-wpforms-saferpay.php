@@ -65,7 +65,7 @@ class SaferpayPayment { // extends WPForms_Payment
 		if ($json_result !== false) {
 			$result = json_decode($json_result);
 			//error_log(var_export($result, true));
-			if ($result->ErrorName) {
+			if (property_exists( $result, 'ErrorName' ) ) {
 				// Something has failed
 				error_log('POSTING DATA TO SAFERPAY FAILED!');
 				foreach ($result->ErrorDetail as $msg) {
@@ -92,6 +92,8 @@ class SaferpayPayment { // extends WPForms_Payment
 	public function paymentPageInitialize() {
 
 		// TODO: validate URL ?
+		
+		$my_entry_id = str_pad($this->wpforms_data['entry_id'], 6, "0", STR_PAD_LEFT);
 		$data = array(
 			// mandatory
 			"RequestHeader" => array(
@@ -122,7 +124,7 @@ class SaferpayPayment { // extends WPForms_Payment
 				"Description" => "THIS IS THE DESCRIPTION OF THE PAYMENT"
 			),
 			"ReturnUrl" => array(
-				"Url" => "https://wp-httpd.epfl.ch/conf/?RETURN_FROM_SAFERPAY"
+				"Url" => "https://wp-httpd.epfl.ch/conf/?EPFLPayonline&entry_id=" . $my_entry_id
 			),
 			// Information about the caller (merchant host)
 			"ClientInfo" => array(
@@ -175,12 +177,46 @@ class SaferpayPayment { // extends WPForms_Payment
 	 *
 	 * https://saferpay.github.io/jsonapi/#Payment_v1_PaymentPage_Assert
 	 */
-	public function paymentPageAssert() {
-		// The test URL is https://test.saferpay.com/api//Payment/v1/PaymentPage/Assert
-		$url = $this->payment_settings['saferpay_api_url'] . '/api//Payment/v1/PaymentPage/Assert';
-		$redirect_url = self::postJSONData($url, $data);
-		if ($redirect_url) {
-			return $redirect_url;
+	public function paymentPageAssert($token, $request_id) {
+		// https://test.saferpay.com/api//Payment/v1/PaymentPage/Assert
+		$url = $this->payment_settings['saferpay_api_url'] . '/api/Payment/v1/PaymentPage/Assert';
+		$data = array( 
+			"RequestHeader" => array(
+				"SpecVersion" => self::SpecVersion,
+				"CustomerId" => $this->payment_settings['saferpay_customer_id'],
+				"RequestId" => $request_id,
+				"RetryIndicator" => 0
+			),
+			"Token" => $token
+		);
+		$assert = self::postJSONData($url, $data);
+		if ($assert) {
+			return $assert;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Not sure yet (https://docs.saferpay.com/home/integration-guide/licences-and-interfaces/capture-and-daily-closing)
+	 */
+	public function paymentCapture($transaction_id, $request_id) {
+		// https://saferpay.github.io/jsonapi/index.html#Payment_v1_Transaction_Capture
+		$url = $this->payment_settings['saferpay_api_url'] . '/api/Payment/v1/Transaction/Capture';
+		$data = array(
+			"RequestHeader" => array(
+				"SpecVersion" => self::SpecVersion,
+				"CustomerId" => $this->payment_settings['saferpay_customer_id'],
+				"RequestId" => $request_id,
+				"RetryIndicator" => 0
+			),
+			"TransactionReference" => array(
+				"TransactionId" => $transaction_id
+			)
+		);
+		$capture = self::postJSONData($url, $data);
+		if ($capture) {
+			return $capture;
 		} else {
 			return false;
 		}
