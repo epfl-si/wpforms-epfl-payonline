@@ -789,7 +789,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			array(
 				'parent'  => 'payments',
 				'tooltip' => esc_html__( 'saferpay_customer_id', 'wpforms-epfl-payonline' ),
-				'default' => '265887',
+				'default' => '',
 			)
 		);
 		wpforms_panel_field(
@@ -813,7 +813,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			array(
 				'parent'  => 'payments',
 				'tooltip' => esc_html__( 'saferpay_api_username, starting with API_...', 'wpforms-epfl-payonline' ),
-				'default' => 'API_265887_09805965',
+				'default' => '',
 			)
 		);
 		wpforms_panel_field(
@@ -825,7 +825,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			array(
 				'parent'  => 'payments',
 				'tooltip' => esc_html__( 'saferpay_api_password', 'wpforms-epfl-payonline' ),
-				'default' => 'apiAPI_265887_24207501',
+				'default' => '',
 			)
 		);
 		wpforms_panel_field(
@@ -837,7 +837,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			array(
 				'parent'  => 'payments',
 				'tooltip' => esc_html__( 'saferpay_terminal_id', 'wpforms-epfl-payonline' ),
-				'default' => '17755543',
+				'default' => '',
 			)
 		);
 		wpforms_panel_field(
