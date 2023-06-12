@@ -21,28 +21,71 @@
  * @copyright  Copyright (c) 2019, EPFL
  */
 
- 
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+/**
+ * This saferpay add-on need some "wp_options" values to be set in order that
+ * the "payment mode" Test and Production work.
+ * It can be done with :
+ * $ wp option add wpforms-epfl-payonline-saferpay-apiusername-test API_123456_12345678
+ * $ wp option add wpforms-epfl-payonline-saferpay-apipassword-test AverySecretPassword
+ * $ wp option add wpforms-epfl-payonline-saferpay-customerid-test 123456
+ * $ wp option add wpforms-epfl-payonline-saferpay-terminalid-test 12345678
+ *
+ * The "Production" is similar with `-prod` at the end.
+ *
+ **/
 
 class SaferpayPayment { // extends WPForms_Payment 
 
 	const SpecVersion = '1.32';
 
 	public $payment_settings;
+	public $payonline_mode;
 	public $payment_data;
 	public $wpforms_data;
+	public $payonline_saferpay_apiusername;
+	public $payonline_saferpay_apipassword;
+	public $payonline_saferpay_customerid;
+	public $payonline_saferpay_terminalid;
 
 	public function __construct($payment_settings, $payment_data, $wpforms_data) {
 		$this->payment_settings = $payment_settings;
 		$this->payment_data = $payment_data;
 		$this->wpforms_data = $wpforms_data;
+		$this->payonline_mode = $payment_settings['payonline_mode'];
+		$this->payment_reconciliation_code = $payment_settings['payment_reconciliation_code'];
+		$this->payment_description = $payment_settings['payment_description'];
+
+		error_log("XXX PAYONLINE MODE IS " . $this->payonline_mode);
+		error_log(var_export($payment_settings, true));
+		error_log("\n\n xxxxxxxxxxxxxxxxxxxxxxxxxx");
+
+		if ( $this->payonline_mode === 'manual' ) {
+			$this->payonline_saferpay_apiusername = $payment_settings['saferpay_api_username'];
+			$this->payonline_saferpay_apipassword = $payment_settings['saferpay_api_password'];
+			$this->payonline_saferpay_customerid = $payment_settings['saferpay_customer_id'];
+			$this->payonline_saferpay_terminalid = $payment_settings['saferpay_terminal_id'];
+		} else if ( $this->payonline_mode === 'test' ) {
+			$this->payonline_saferpay_apiusername = get_option( 'wpforms-epfl-payonline-saferpay-apiusername-test' );
+			$this->payonline_saferpay_apipassword = get_option( 'wpforms-epfl-payonline-saferpay-apipassword-test' );
+			$this->payonline_saferpay_customerid = get_option( 'wpforms-epfl-payonline-saferpay-customerid-test' );
+			$this->payonline_saferpay_terminalid = get_option( 'wpforms-epfl-payonline-saferpay-terminalid-test' );
+		} else if ( $this->payonline_mode === 'production' ) {
+			$this->payonline_saferpay_apiusername = get_option( 'wpforms-epfl-payonline-saferpay-apiusername-prod' );
+			$this->payonline_saferpay_apipassword = get_option( 'wpforms-epfl-payonline-saferpay-apipassword-prod' );
+			$this->payonline_saferpay_customerid = get_option( 'wpforms-epfl-payonline-saferpay-customerid-prod' );
+			$this->payonline_saferpay_terminalid = get_option( 'wpforms-epfl-payonline-saferpay-terminalid-prod' );
+		}
+
 	}
 
 	private function postJSONData($url, $data) {
-		$basic_auth = base64_encode($this->payment_settings['saferpay_api_username'] . ":" . $this->payment_settings['saferpay_api_password']);
+		$basic_auth = base64_encode($this->payonline_saferpay_apiusername . ":" . $this->payonline_saferpay_apipassword );
 		// error_log("POST AUTH");
 		// error_log(var_export($basic_auth, true));
 		// error_log("POST DATA");
@@ -100,14 +143,14 @@ class SaferpayPayment { // extends WPForms_Payment
 				// mandatory
 				"SpecVersion" => self::SpecVersion,
 				// mandatory
-				"CustomerId" => $this->payment_settings['saferpay_customer_id'],
+				"CustomerId" => $this->payonline_saferpay_customerid,
 				// mandatory
-				"RequestId" => $this->wpforms_data['blog_info'] . ':' . $this->wpforms_data['entry_id'] . ':' . date("Y-m-d_H:i:s"), // TODO test a better payment identifier (should be unique)
+				"RequestId" => $this->wpforms_data['entry_id'] . ':' . date("Y-m-d_H:i:s"), // TODO test a better payment identifier (should be unique)
 				// mandatory
 				"RetryIndicator" => 0
 			),
 			// mandatory
-			"TerminalId" => $this->payment_settings['saferpay_terminal_id'],
+			"TerminalId" => $this->payonline_saferpay_terminalid,
 			// mandatory
 			"Payment" => array (
 				// mandatory
@@ -118,10 +161,10 @@ class SaferpayPayment { // extends WPForms_Payment
 					"CurrencyCode" => strtoupper($this->payment_data['currency']), // TODO: use the wproms settings
 				),
 				// recommanded Unambiguous order identifier defined by the merchant / shop. This identifier might be used as reference later on. Max 80
-				"OrderId" => "NoSpaceOrSpecial" . bin2hex(openssl_random_pseudo_bytes(32)), // "wpf-" . $this->wpforms_data['entry_id'],
+				"OrderId" => $this->payment_reconciliation_code, // "NoSpaceOrSpecial" . bin2hex(openssl_random_pseudo_bytes(32)), // "wpf-" . $this->wpforms_data['entry_id'],
 				"PayerNote" => "EPFL WPFORMS 50 " . bin2hex(openssl_random_pseudo_bytes(17)), // Max 50 // TODO: change me
 				// mandatory A human readable description provided by the merchant that will be displayed in Payment Page.
-				"Description" => "THIS IS THE DESCRIPTION OF THE PAYMENT"
+				"Description" => $this->payment_description
 			),
 			"ReturnUrl" => array(
 				"Url" => "https://wp-httpd.epfl.ch/conf/?EPFLPayonline&entry_id=" . $my_entry_id
@@ -183,7 +226,7 @@ class SaferpayPayment { // extends WPForms_Payment
 		$data = array( 
 			"RequestHeader" => array(
 				"SpecVersion" => self::SpecVersion,
-				"CustomerId" => $this->payment_settings['saferpay_customer_id'],
+					"CustomerId" => $this->payonline_saferpay_customerid,
 				"RequestId" => $request_id,
 				"RetryIndicator" => 0
 			),
@@ -206,7 +249,7 @@ class SaferpayPayment { // extends WPForms_Payment
 		$data = array(
 			"RequestHeader" => array(
 				"SpecVersion" => self::SpecVersion,
-				"CustomerId" => $this->payment_settings['saferpay_customer_id'],
+				"CustomerId" => $this->payonline_saferpay_customerid,
 				"RequestId" => $request_id,
 				"RetryIndicator" => 0
 			),

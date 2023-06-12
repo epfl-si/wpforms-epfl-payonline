@@ -19,6 +19,20 @@ var WPFormsEPFLPayonline = window.WPFormsEPFLPayonline || ( function( document, 
 		$( '.wpforms-epfl_payonline-payment-settings-container' ).toggle();
 	});
 
+	// Display fields in function of the payment mode
+	if ( $( '#wpforms-epfl-payonline-payment-mode' ).val() === 'manual' ) {
+		$( '.wpforms-epfl-payonline-payment-mode-manual-container' ).show();
+	} else {
+		$( '.wpforms-epfl-payonline-payment-mode-manual-container' ).hide();
+	}
+	$( '#wpforms-epfl-payonline-payment-mode' ).on( "change", function() {
+		if ( $( '#wpforms-epfl-payonline-payment-mode' ).val() === 'manual' ) {
+			$( '.wpforms-epfl-payonline-payment-mode-manual-container' ).show();
+		} else {
+			$( '.wpforms-epfl-payonline-payment-mode-manual-container' ).hide();
+		}
+	});
+
 }( document, window, jQuery ) );
 
 // Initialize.

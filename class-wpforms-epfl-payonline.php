@@ -780,6 +780,29 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		);
 
 		echo '<div class="wpforms-epfl_payonline-payment-settings-container">';
+		
+		wpforms_panel_field(
+			'select',
+			$this->slug,
+			'payonline_mode',
+			$this->form_data,
+			esc_html__( 'Payonline Payment Mode', 'wpforms' ),
+			[
+				'default'     => 'Test',
+				'options'     => [
+					'test'  => esc_html__( 'Test', 'wpforms-epfl-payonline' ),
+					'production'     => esc_html__( 'Production', 'wpforms-epfl-payonline' ),
+					'manual' => esc_html__( 'Manual', 'wpforms-epfl-payonline' ),
+				],
+				'class'       => 'wpforms-epfl-payonline-payment-mode-wrap',
+				'input_id'    => 'wpforms-epfl-payonline-payment-mode',
+				'input_class' => 'wpforms-epfl-payonline-payment-mode',
+				'parent'      => 'payments',
+				'tooltip' => esc_html__( 'Payonline payment mode : <ul><li>• Select "Test" for testing pupose. Payments will not be charged.</li><li>• Select "Production" to actually charge payments.</li><li>• Manual: only if you know what you are doing!</li></ul>', 'wpforms-epfl-payonline' ),
+			]
+		);
+
+		echo '<div class="wpforms-epfl-payonline-payment-mode-manual-container">';
 		wpforms_panel_field(
 			'text',
 			$this->slug,
@@ -840,6 +863,34 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 				'default' => '',
 			)
 		);
+		echo '</div><br>';
+
+		echo '<div class="wpforms-epfl-payonline-payment-sf-code-container">';
+		wpforms_panel_field(
+			'text',
+			$this->slug,
+			'payment_reconciliation_code',
+			$this->form_data,
+			esc_html__( 'Payment Reconciliation Code', 'wpforms-epfl-payonline' ),
+			array(
+				'parent'  => 'payments',
+				'tooltip' => esc_html__( 'Payment reconciliation code provided by the accountings (SF)', 'wpforms-epfl-payonline' ),
+			)
+		);
+		echo '</div><br>';
+
+		wpforms_panel_field(
+			'text',
+			$this->slug,
+			'payment_description',
+			$this->form_data,
+			esc_html__( 'A description of the payment for the end-user', 'wpforms-epfl-payonline' ),
+			array(
+				'parent'  => 'payments',
+				'tooltip' => esc_html__( 'The description is shown in the payment page', 'wpforms-epfl-payonline' ),
+				'default' => 'EPFL payment'
+			)
+		);
 		wpforms_panel_field(
 			'text',
 			$this->slug,
@@ -848,7 +899,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			esc_html__( 'WPForms Admin Notification Email Address', 'wpforms-epfl-payonline' ),
 			array(
 				'parent'  => 'payments',
-				'tooltip' => esc_html__( 'Enter an email address for payments notification, please use a group', 'wpforms-epfl-payonline' ),
+				'tooltip' => esc_html__( 'Enter an email address for payments notification: it is recommanded to create a <a href="https://groups.epfl.ch">groups</a> to easily add more than one person.', 'wpforms-epfl-payonline' ),
 			)
 		);
 		echo '</div>';
