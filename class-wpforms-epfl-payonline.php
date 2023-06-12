@@ -853,38 +853,6 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		);
 		echo '</div>';
 
-		// if ( function_exists( 'wpforms_conditional_logic' ) ) {
-		// 	wpforms_conditional_logic()->builder_block(
-		// 	// DEPRECATED wpforms_conditional_logic()->conditionals_block( → removed.
-		// 		array(
-		// 			'form'        => $this->form_data,
-		// 			'type'        => 'panel',
-		// 			'panel'       => 'epfl_payonline',
-		// 			'parent'      => 'payments',
-		// 			'actions'     => array(
-		// 				'go'   => esc_html__( 'Process', 'wpforms-epfl-payonline' ),
-		// 				'stop' => esc_html__( 'Don\'t process', 'wpforms-epfl-payonline' ),
-		// 			),
-		// 			'action_desc' => esc_html__( 'this charge if', 'wpforms-epfl-payonline' ),
-		// 			'reference'   => esc_html__( 'EPFL Payonline Standard payment', 'wpforms-epfl-payonline' ),
-		// 		)
-		// 	);
-		// } else {
-		// 	echo '<p class="note">' .
-		// 		sprintf(
-		// 			wp_kses(
-		// 				/* translators: %s - Addons page URL in admin area. */
-		// 				__( 'Install the <a href="%s">Conditional Logic addon</a> to enable conditional logic for EPFL Payonline payments.', 'wpforms-epfl-payonline' ),
-		// 				array(
-		// 					'a' => array(
-		// 						'href' => array(),
-		// 					),
-		// 				)
-		// 			),
-		// 			admin_url( 'admin.php?page=wpforms-addons' )
-		// 		) .
-		// 		'</p>';
-		// }
 	}
 
 	/**
