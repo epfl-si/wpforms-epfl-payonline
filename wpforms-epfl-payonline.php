@@ -68,6 +68,7 @@ function wpforms_epfl_payonline() {
 	load_plugin_textdomain( 'wpforms-epfl-payonline', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
 	require_once plugin_dir_path( __FILE__ ) . 'class-wpforms-epfl-payonline.php';
+	require_once plugin_dir_path( __FILE__ ) . 'class-wpforms-saferpay.php';
 	require_once plugin_dir_path( __FILE__ ) . 'class-epfl-conference-form-template.php';
 	require_once plugin_dir_path( __FILE__ ) . 'class-epfl-donation-form-template.php';
 
