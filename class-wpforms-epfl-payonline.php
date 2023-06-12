@@ -768,7 +768,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			</p>';
 
 		wpforms_panel_field(
-			'checkbox',
+			'toggle',
 			$this->slug,
 			'enable',
 			$this->form_data,
@@ -778,6 +778,8 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 				'default' => '0',
 			)
 		);
+
+		echo '<div class="wpforms-epfl_payonline-payment-settings-container">';
 		wpforms_panel_field(
 			'text',
 			$this->slug,
@@ -849,6 +851,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 				'tooltip' => esc_html__( 'Enter an email address for payments notification, please use a group', 'wpforms-epfl-payonline' ),
 			)
 		);
+		echo '</div>';
 
 		// if ( function_exists( 'wpforms_conditional_logic' ) ) {
 		// 	wpforms_conditional_logic()->builder_block(

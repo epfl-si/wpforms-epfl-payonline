@@ -76,6 +76,15 @@ function wpforms_epfl_payonline() {
 
 add_action( 'wpforms_loaded', 'wpforms_epfl_payonline' );
 
+/* Load JS */
+wp_enqueue_script(
+	'wpforms-builder-paypal-standard',
+	WPFORMS_EPFL_PAYONLINE_PLUGIN_URL . "assets/js/wpforms-epfl-payonline.js",
+	[ 'wpforms-builder' ],
+	WPFORMS_EPFL_PAYONLINE_VERSION,
+	true
+);
+
 // WPForms requires WP_Filesystem() to be of ->method === "direct".
 // For some reason (likely pertaining to our symlink scheme),
 // WordPress' autodetection fails. This is equivalent to setting the
