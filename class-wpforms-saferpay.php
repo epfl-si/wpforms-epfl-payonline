@@ -167,34 +167,39 @@ class SaferpayPayment { // extends WPForms_Payment
 				"Description" => $this->payment_description
 			),
 			"ReturnUrl" => array(
-				"Url" => "https://wp-httpd.epfl.ch/conf/?EPFLPayonline&entry_id=" . $my_entry_id
+				"Url" => get_site_url() . "?EPFLPayonline&entry_id=" . $my_entry_id
+			),
+			"RedirectNotifyUrls" => array(
+				"Success" => get_site_url() . "?EPFLPayonline&status=Success&entry_id=" . $my_entry_id,
+				"Fail" => get_site_url() . "?EPFLPayonline&status=Fail&entry_id=" . $my_entry_id
 			),
 			// Information about the caller (merchant host)
 			"ClientInfo" => array(
 				"ShopInfo" => "epfl_wpforms v" . WPFORMS_EPFL_PAYONLINE_VERSION ?: "epfl_wpforms", // Name and version of the shop software
 				"OsInfo" => "epfl_wp_base" //Information on the operating system
 			),
-			// "Payer" => array(
-			// 	"BillingAddress" => array(
-			// 		"FirstName" => $this->payment_data['FirstName'], // The payer's first name
-			// 		"LastName" => $this->payment_data['LastName'] // The payer's last name
-			// 		// // "Company" => '', // The payer's company
-			// 		// // "LegalForm" => '', //The payer's legal form (AG, GmbH, Misc.)
-			// 		// // "Gender" => '', // The payer's gender
-			// 		// "Street" => '', // The payer's street
-			// 		// "Street2" => '', // The payer's street, second line. Only use this, if you need two lines. It may not be supported by all acquirers.
-			// 		// "Zip" => '', // The payer's zip code
-			// 		// "City" => '', // The payer's city
-			// 		// "CountrySubdivisionCode" => '', // The payer's country subdivision code (Canton)
-			// 		// "CountryCode" => '', // The payer's country code (ISO 3166-1 alpha-2 country code)
-			// 		// "Email" => '', // The payer's email address
-			// 		// "DateOfBirth" => '', // The payer's date of birth in ISO 8601 extended date notation (YYYY-MM-DD)
-			// 		// "Phone" => '', // The payer's phone number
-			// 		// // "VatNumber" => '', // The company's vat number
-			// 		// // "Id" => '', // Payer identifier defined by the merchant / shop. Use a unique id for your customer (a UUID is highly recommended). For GDPR reasons, we don't recommend using an id which contains personal data (eg. no name).
-			// 		// // "DeliveryAddress" => array()
-			// 	),
-			// ),
+			"Payer" => array(
+				"LanguageCode" => "en",
+				"BillingAddress" => array(
+					"FirstName" => $this->payment_data['FirstName'], // The payer's first name
+					"LastName" => $this->payment_data['LastName'], // The payer's last name
+					// // "Company" => '', // The payer's company
+					// // "LegalForm" => '', //The payer's legal form (AG, GmbH, Misc.)
+					// // "Gender" => '', // The payer's gender
+					"Street" => $this->payment_data['Street'] ?? 'no address1', // The payer's street
+					"Street2" => $this->payment_data['Street2'] ?? 'no address2', // The payer's street, second line. Only use this, if you need two lines. It may not be supported by all acquirers.
+					"Zip" => $this->payment_data['Zip'] ?? '0000', // The payer's zip code
+					"City" => $this->payment_data['City'] ?? 'no city', // The payer's city
+					//"CountrySubdivisionCode" => $this->payment_data['CountrySubdivisionCode'] ?? 'no state', // The payer's country subdivision code (Canton)
+					"CountryCode" => $this->payment_data['CountryCode'] ?? 'XX', // The payer's country code (ISO 3166-1 alpha-2 country code)
+					"Email" => $this->payment_data['Email'] ?? 'no email', // The payer's email address
+					// "DateOfBirth" => '', // The payer's date of birth in ISO 8601 extended date notation (YYYY-MM-DD)
+					// "Phone" => '', // The payer's phone number
+					// // "VatNumber" => '', // The company's vat number
+					// // "Id" => '', // Payer identifier defined by the merchant / shop. Use a unique id for your customer (a UUID is highly recommended). For GDPR reasons, we don't recommend using an id which contains personal data (eg. no name).
+					// // "DeliveryAddress" => array()
+				),
+			),
 			// "Notification" => array(
 			// 	"MerchantEmails" => array('nicolas.borboen+merchantEmail@epfl.ch'),
 			// 	"PayerEmail" => $this->payment_data['Email']

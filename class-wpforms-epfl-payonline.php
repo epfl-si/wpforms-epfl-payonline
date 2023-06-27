@@ -300,11 +300,17 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		# INITIALIZE WORDLINE PAYMENT
 		#
 		$payment_data = array(
-			'amount'    => $amount,
-			'currency'  => strtolower( wpforms_setting( 'currency', 'CHF' )),
-			'FirstName' => $this->getArraysFromType( $fields, 'name' )[0]['first'],
-			'LastName'  => $this->getArraysFromType( $fields, 'name' )[0]['last'],
-			'Email'     => $this->getFieldsFromType( $fields, 'email' )[0]
+			'amount'                 => $amount,
+			'currency'               => strtolower( wpforms_setting( 'currency', 'CHF' )),
+			'FirstName'              => $this->getArraysFromType( $fields, 'name' )[0]['first'],
+			'LastName'               => $this->getArraysFromType( $fields, 'name' )[0]['last'],
+			'Street'                 => $this->getArraysFromType( $fields, 'address' )[0]['address1'],
+			'Street2'                => $this->getArraysFromType( $fields, 'address' )[0]['address2'],
+			'Zip'                    => $this->getArraysFromType( $fields, 'address' )[0]['postal'],
+			'City'                   => $this->getArraysFromType( $fields, 'address' )[0]['city'],
+			'CountrySubdivisionCode' => $this->getArraysFromType( $fields, 'address' )[0]['state'],
+			'CountryCode'            => $this->getArraysFromType( $fields, 'address' )[0]['country'],
+			'Email'                  => $this->getFieldsFromType( $fields, 'email' )[0]
 		);
 		$wpforms_data = array(
 			"items" => wpforms_get_payment_items( $fields ),
