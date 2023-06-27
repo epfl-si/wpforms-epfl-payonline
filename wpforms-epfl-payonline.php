@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: WPForms EPFL Payonline
+ * Plugin Name: WPForms EPFL Payonline (saferpay)
  * Plugin URI:  https://github.com/epfl-si/wpforms-epfl-payonline
  * Description: EPFL Payonline integration with WPForms.
  * Author:      EPFL ISAS-FSD
