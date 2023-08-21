@@ -910,28 +910,23 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	/**
 	 * Add additional links for WPForms EPFL Payonline in the plugins list.
 	 *
-	 * @param String $plugin_meta ...
-	 * @param String $plugin_file ...
-	 * @param Array  $plugin_data ...
-	 * @param String $status ...
+	 * @access  public
+	 * @param   array       $links_array            An array of the plugin's metadata
+	 * @param   string      $plugin_file_name       Path to the plugin file
+	 * @param   array       $plugin_data            An array of plugin data
+	 * @param   string      $status                 Status of the plugin
+	 * @return  array       $links_array
 	 */
-	public function add_links_to_plugin_row( $plugin_meta, $plugin_file, $plugin_data, $status ) {
+	public function add_links_to_plugin_row( $links_array, $plugin_file_name, $plugin_data, $status ) {
+
 		if ( $this->plugin_name === $plugin_data['Name'] ) {
 			$row_meta = array(
-				'view-details'   => sprintf(
-					'<a href="%s" class="thickbox" aria-label="%s" data-title="%s">%s</a>',
-					esc_url( network_admin_url( 'plugin-install.php?tab=plugin-information&plugin=' . $this->slug . '&TB_iframe=true&width=600&height=550' ) ),
-					/* translators: %s plugin name */
-					esc_attr( sprintf( __( 'More information about %s' ), $this->name ) ),
-					esc_attr( $this->name ),
-					__( 'View details' )
-				),
 				'payonline'      => '<a href="' . esc_url( 'https://payonline.epfl.ch' ) . '" target="_blank" aria-label="' . esc_attr__( 'Plugin Additional Links', 'wpforms-epfl-payonline' ) . '">' . esc_html__( 'Payonline', 'wpforms-epfl-payonline' ) . '</a>',
 				'help-payonline' => '<a href="' . esc_url( 'https://wiki.epfl.ch/payonline-help' ) . '" target="_blank" aria-label="' . esc_attr__( 'Plugin Additional Links', 'wpforms-epfl-payonline' ) . '">' . esc_html__( 'Help Payonline', 'wpforms-epfl-payonline' ) . '</a>',
 			);
-			return array_merge( $plugin_meta, $row_meta );
+			return array_merge( $links_array, $row_meta );
 		}
-		return (array) $plugin_meta;
+		return (array) $links_array;
 	}
 
 }

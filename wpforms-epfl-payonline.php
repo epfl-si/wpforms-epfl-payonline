@@ -39,7 +39,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Plugin version.
 define( 'WPFORMS_EPFL_PAYONLINE_VERSION', '2.0.0' );
 // Plugin name.
-define( 'WPFORMS_EPFL_PAYONLINE_NAME', 'WPForms EPFL Payonline' );
+define( 'WPFORMS_EPFL_PAYONLINE_NAME', 'WPForms EPFL Payonline (saferpay)' );
 // Latest WP version tested with this plugin.
 define( 'WP_LATEST_VERSION_WPFORMS_EPFL_PAYONLINE', '6.1.1' );
 // Minimal WP version required for this plugin.
