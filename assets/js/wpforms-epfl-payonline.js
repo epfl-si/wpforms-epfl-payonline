@@ -1,7 +1,7 @@
 /* global wpforms_builder, wpforms_epfl_payonline */
 
 /**
- * WPForms Paypal Standard function.
+ * WPForms EPFL Standard function.
  *
  * @since 1.5.0
  */

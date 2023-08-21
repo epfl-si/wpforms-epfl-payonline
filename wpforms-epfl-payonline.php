@@ -73,17 +73,20 @@ function wpforms_epfl_payonline() {
 	require_once plugin_dir_path( __FILE__ ) . 'class-epfl-donation-form-template.php';
 
 }
-
 add_action( 'wpforms_loaded', 'wpforms_epfl_payonline' );
 
 /* Load JS */
-wp_enqueue_script(
-	'wpforms-builder-paypal-standard',
-	WPFORMS_EPFL_PAYONLINE_PLUGIN_URL . "assets/js/wpforms-epfl-payonline.js",
-	[ 'wpforms-builder' ],
-	WPFORMS_EPFL_PAYONLINE_VERSION,
-	true
-);
+function load_epflpayonline_js() {
+	wp_enqueue_script(
+		'wpforms-epfl-payonline',
+		WPFORMS_EPFL_PAYONLINE_PLUGIN_URL . "assets/js/wpforms-epfl-payonline.js",
+		[ 'wpforms-builder' ],
+		WPFORMS_EPFL_PAYONLINE_VERSION,
+		true
+	);
+}
+add_action( 'admin_enqueue_scripts', 'load_epflpayonline_js' );
+
 
 // WPForms requires WP_Filesystem() to be of ->method === "direct".
 // For some reason (likely pertaining to our symlink scheme),

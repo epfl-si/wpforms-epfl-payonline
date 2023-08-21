@@ -40,9 +40,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  **/
 
-class SaferpayPayment { // extends WPForms_Payment 
+class SaferpayPayment {
 
-	const SpecVersion = '1.32';
+	/* Saferpay API Version (https://docs.saferpay.com/home/interfaces/payment-api) */
+	const SpecVersion = '1.35';
 
 	public $payment_settings;
 	public $payonline_mode;
@@ -54,22 +55,40 @@ class SaferpayPayment { // extends WPForms_Payment
 	public $payonline_saferpay_terminalid;
 
 	public function __construct($payment_settings, $payment_data, $wpforms_data) {
+
+		/* Add-on settings */
 		$this->payment_settings = $payment_settings;
-		$this->payment_data = $payment_data;
+		$this->payonline_mode = $this->payment_settings['payonline_mode'];
+		$this->payment_reconciliation_code = $this->payment_settings['payment_reconciliation_code'];
+		$this->payment_description = $this->payment_settings['payment_description'];
+
+		/* Form data */
 		$this->wpforms_data = $wpforms_data;
-		$this->payonline_mode = $payment_settings['payonline_mode'];
-		$this->payment_reconciliation_code = $payment_settings['payment_reconciliation_code'];
-		$this->payment_description = $payment_settings['payment_description'];
+		$this->form_title = $this->wpforms_data['form_title'];
 
-		error_log("XXX PAYONLINE MODE IS " . $this->payonline_mode);
+		/* Payment data */
+		$this->payment_data = $payment_data;
+		/* Payment ID */
+		$this->padded_entry_id = str_pad($this->wpforms_data['entry_id'], 6, "0", STR_PAD_LEFT);
+
+		error_log(static::class . "::" . __FUNCTION__ . " : payonline_mode = " . $this->payonline_mode);
 		error_log(var_export($payment_settings, true));
-		error_log("\n\n xxxxxxxxxxxxxxxxxxxxxxxxxx");
 
+		/**
+		 * According to the mode, settings are fetched either from the settings
+		 * or from the DB.
+		 *  - manual:     this mode is used if user want to use its own SaferPay configuration.
+		 *                Data are set from the add-on settings.
+		 *  - test:       use the mutualized "ISAS-FSD" test account
+		 *                Data are set from the DB.
+		 *  - production: use the mutualized "EPFL-WPforms" account
+		 *                Data are set from the DB.
+		 **/
 		if ( $this->payonline_mode === 'manual' ) {
-			$this->payonline_saferpay_apiusername = $payment_settings['saferpay_api_username'];
-			$this->payonline_saferpay_apipassword = $payment_settings['saferpay_api_password'];
-			$this->payonline_saferpay_customerid = $payment_settings['saferpay_customer_id'];
-			$this->payonline_saferpay_terminalid = $payment_settings['saferpay_terminal_id'];
+			$this->payonline_saferpay_apiusername = $this->payment_settings['saferpay_api_username'];
+			$this->payonline_saferpay_apipassword = $this->payment_settings['saferpay_api_password'];
+			$this->payonline_saferpay_customerid = $this->payment_settings['saferpay_customer_id'];
+			$this->payonline_saferpay_terminalid = $this->payment_settings['saferpay_terminal_id'];
 		} else if ( $this->payonline_mode === 'test' ) {
 			$this->payonline_saferpay_apiusername = get_option( 'wpforms-epfl-payonline-saferpay-apiusername-test' );
 			$this->payonline_saferpay_apipassword = get_option( 'wpforms-epfl-payonline-saferpay-apipassword-test' );
@@ -84,6 +103,9 @@ class SaferpayPayment { // extends WPForms_Payment
 
 	}
 
+	/**
+	 * Function to post data to the SaferPay API
+	 **/
 	private function postJSONData($url, $data) {
 		$basic_auth = base64_encode($this->payonline_saferpay_apiusername . ":" . $this->payonline_saferpay_apipassword );
 		// error_log("POST AUTH");
@@ -99,15 +121,15 @@ class SaferpayPayment { // extends WPForms_Payment
 				'content' => json_encode($data)
 			)
 		);
-		error_log("POST OPTIONS");
+		error_log(static::class . "::" . __FUNCTION__ . " : Posted Data ");
 		error_log(var_export(json_encode($data), true));
+
 		$context  = stream_context_create($options);
 		$json_result = file_get_contents($url, false, $context);
 
-
 		if ($json_result !== false) {
 			$result = json_decode($json_result);
-			//error_log(var_export($result, true));
+			error_log(var_export($result, true));
 			if (property_exists( $result, 'ErrorName' ) ) {
 				// Something has failed
 				error_log('POSTING DATA TO SAFERPAY FAILED!');
@@ -136,7 +158,6 @@ class SaferpayPayment { // extends WPForms_Payment
 
 		// TODO: validate URL ?
 		
-		$my_entry_id = str_pad($this->wpforms_data['entry_id'], 6, "0", STR_PAD_LEFT);
 		$data = array(
 			// mandatory
 			"RequestHeader" => array(
@@ -161,17 +182,17 @@ class SaferpayPayment { // extends WPForms_Payment
 					"CurrencyCode" => strtoupper($this->payment_data['currency']), // TODO: use the wproms settings
 				),
 				// recommanded Unambiguous order identifier defined by the merchant / shop. This identifier might be used as reference later on. Max 80
-				"OrderId" => $this->payment_reconciliation_code, // "NoSpaceOrSpecial" . bin2hex(openssl_random_pseudo_bytes(32)), // "wpf-" . $this->wpforms_data['entry_id'],
-				"PayerNote" => "EPFL WPFORMS 50 " . bin2hex(openssl_random_pseudo_bytes(17)), // Max 50 // TODO: change me
+				"OrderId" => $this->payment_reconciliation_code . "-" . $this->payonline_saferpay_terminalid . "-" . $this->padded_entry_id . "-" . $this->payonline_mode, // "NoSpaceOrSpecial" . bin2hex(openssl_random_pseudo_bytes(32)), // "wpf-" . $this->wpforms_data['entry_id'],
+				"PayerNote" => substr( "EPFL — " . $this->form_title, 0, 50 ), // Max 50 // TODO: change me
 				// mandatory A human readable description provided by the merchant that will be displayed in Payment Page.
 				"Description" => $this->payment_description
 			),
 			"ReturnUrl" => array(
-				"Url" => get_site_url() . "?EPFLPayonline&entry_id=" . $my_entry_id
+				"Url" => get_site_url() . "?EPFLPayonline&entry_id=" . $this->padded_entry_id
 			),
 			"RedirectNotifyUrls" => array(
-				"Success" => get_site_url() . "?EPFLPayonline&status=Success&entry_id=" . $my_entry_id,
-				"Fail" => get_site_url() . "?EPFLPayonline&status=Fail&entry_id=" . $my_entry_id
+				"Success" => get_site_url() . "?EPFLPayonline&status=Success&entry_id=" . $this->padded_entry_id,
+				"Fail" => get_site_url() . "?EPFLPayonline&status=Fail&entry_id=" . $this->padded_entry_id
 			),
 			// Information about the caller (merchant host)
 			"ClientInfo" => array(
