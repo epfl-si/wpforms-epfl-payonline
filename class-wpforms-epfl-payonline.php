@@ -48,7 +48,6 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		$this->slug              = 'epfl_payonline';
 		$this->priority          = 10;
 		$this->icon              = plugins_url( 'assets/images/EPFL-Payonline-trans.png', __FILE__ );
-		$this->cache_seconds     = 3600; // 43200 = 12 hours cache
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_wp_admin_style' ) );
 
@@ -69,10 +68,6 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 		// Add additional link to the plugin row.
 		add_filter( 'plugin_row_meta', array( $this, 'add_links_to_plugin_row' ), 10, 4 );
-
-		// Plugin updater (https://rudrastyh.com/wordpress/self-hosted-plugin-update.html).
-		add_filter( 'site_transient_update_plugins', array( $this, 'wpforms_epfl_payonline_push_update' ), 20, 1 );
-		add_action( 'upgrader_process_complete', array( $this, 'wpforms_epfl_payonline_after_update' ), 10, 2 );
 
 		// Plugin details.
 		add_filter( 'plugins_api', array( $this, 'wpforms_epfl_payonline_plugin_info' ), 20, 3 );
@@ -937,181 +932,6 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			return array_merge( $plugin_meta, $row_meta );
 		}
 		return (array) $plugin_meta;
-	}
-
-	/**
-	 * Allow plugin to offer an update link to update itself
-	 *
-	 * @param unknown $transient ...
-	 */
-	public function wpforms_epfl_payonline_push_update( $transient ) {
-		if ( empty( $transient->checked ) ) {
-			return $transient;
-		}
-
-		// trying to get from cache first, to disable cache comment 10,20,21,22,24.
-		$remote = get_transient( 'upgrade_wpforms_epfl_payonline' );
-		if ( false === $remote ) {
-			// info.json is the file with the actual plugin information on your server.
-			$remote = wp_remote_get(
-				'https://api.github.com/repos/epfl-si/wpforms-epfl-payonline/releases/latest',
-				array(
-					'timeout' => 10,
-					'headers' => array(
-						'Accept' => 'application/json',
-					),
-				)
-			);
-
-			if ( ! is_wp_error( $remote ) && isset( $remote['response']['code'] ) && 200 === $remote['response']['code'] && ! empty( $remote['body'] ) ) {
-				set_transient( 'upgrade_wpforms_epfl_payonline', $remote, $this->cache_seconds ); // 43200 ? 12 hours cache.
-			}
-		}
-
-		if ( $remote ) {
-			$remote         = json_decode( $remote['body'] );
-			$latest_version = ltrim( $remote->tag_name, 'v' );
-
-			if ( $remote && version_compare( $this->version, $latest_version, '<' ) && version_compare( $this->wp_min_version, get_bloginfo( 'version' ), '<' ) ) {
-				$res                                 = new stdClass();
-				$res->slug                           = $this->slug;
-				$res->plugin                         = dirname( plugin_basename( __FILE__ ) ) . '/wpforms-epfl-payonline.php';
-				$res->new_version                    = $latest_version;
-				$res->tested                         = $this->wp_tested_version;
-				$res->package                        = 'https://github.com/epfl-si/wpforms-epfl-payonline/releases/latest/download/wpforms-epfl-payonline.zip';
-				$transient->response[ $res->plugin ] = $res;
-			}
-		}
-		return $transient;
-	}
-
-	/**
-	 * Delete plugin transcient when updated
-	 *
-	 * @param Object $upgrader_object ...
-	 * @param Array  $options ...
-	 *
-	 * @TODO: Try to auto reactivate plugin
-	 */
-	public function wpforms_epfl_payonline_after_update( $upgrader_object, $options ) {
-		if ( 'update' === $options['action'] && 'plugin' === $options['type'] ) {
-			// just clean the cache when new plugin version is installed.
-			delete_transient( 'upgrade_wpforms_epfl_payonline' );
-		}
-	}
-
-	/**
-	 * Add the "View Details" link with differents tab
-	 *  - Description: information from README.md
-	 *  - Installation: information from INSTALL.md
-	 *  - Changelog: information from CHANGELOG.md on github
-	 *
-	 * @param Object $res contains information for plugins with custom update server.
-	 * @param String $action 'plugin_information'.
-	 * @param Object $args stdClass Object ( [slug] => woocommerce [is_ssl] => [fields] => Array ( [banners] => 1 [reviews] => 1 [downloaded] => [active_installs] => 1 ) [per_page] => 24 [locale] => en_US ).
-	 */
-	public function wpforms_epfl_payonline_plugin_info( $res, $action, $args ) {
-
-		// do nothing if this is not about getting plugin information.
-		if ( 'plugin_information' !== $action ) {
-			return false;
-		}
-
-		// do nothing if it is not our plugin.
-		if ( $this->slug !== $args->slug ) {
-			return $res;
-		}
-
-		// trying to get from cache first, to disable cache comment 18,28,29,30,32.
-		$remote = get_transient( 'upgrade_wpforms_epfl_payonline' );
-		if ( false === $remote ) {
-
-			// info.json is the file with the actual plugin information on your server.
-			$remote = wp_remote_get(
-				'https://api.github.com/repos/epfl-si/wpforms-epfl-payonline/releases/latest',
-				array(
-					'timeout' => 10,
-					'headers' => array(
-						'Accept' => 'application/json',
-					),
-				)
-			);
-
-			if ( ! is_wp_error( $remote ) && isset( $remote['response']['code'] ) && 200 === $remote['response']['code'] && ! empty( $remote['body'] ) ) {
-				set_transient( 'upgrade_wpforms_epfl_payonline', $remote, $this->cache_seconds ); // 43200 = 12 hours cache.
-			}
-		}
-
-		if ( $remote ) {
-			$remote              = json_decode( $remote['body'] );
-			$latest_version      = ltrim( $remote->tag_name, 'v' );
-			$res                 = new stdClass();
-			$res->name           = $this->plugin_name;
-			$res->slug           = $this->slug;
-			$res->version        = $latest_version;
-			$res->tested         = $this->wp_tested_version;
-			$res->requires       = $this->wp_min_version;
-			$res->author         = '<a href="https://search.epfl.ch/browseunit.do?unit=13030">EPFL ISAS-FSD</a>'; // I decided to write it directly in the plugin.
-			$res->author_profile = 'https://profiles.wordpress.org/ponsfrilus/'; // WordPress.org profile.
-			$res->download_link  = $remote->zipball_url;
-			$res->trunk          = $remote->html_url;
-			$res->last_updated   = $remote->published_at;
-			$res->sections       = array(
-				'description'  => $this->getReadMe(), // description tab.
-				'installation' => $this->getInstall(), // installation tab.
-				'changelog'    => $this->getChangelog(), // changelog tab.
-				// you can add your custom sections (tabs) here.
-			);
-
-			// in case you want the screenshots tab, use the following HTML format for its content:
-			// <ol><li><a href="IMG_URL" target="_blank" rel="noopener noreferrer"><img src="IMG_URL" alt="CAPTION" /></a><p>CAPTION</p></li></ol>.
-			if ( ! empty( $remote->sections->screenshots ) ) {
-				$res->sections['screenshots'] = $remote->sections->screenshots;
-			}
-			$res->banners = array(
-				'low'  => plugin_dir_url( __FILE__ ) . 'assets/banners/banner-772x250.png',
-				'high' => plugin_dir_url( __FILE__ ) . 'assets/banners/banner-1544x500.png',
-			);
-			return $res;
-		}
-		return false;
-	}
-
-	/**
-	 * Retrieve and parse markdown of the README.md file.
-	 *
-	 * See http://localhost:8089/wp-admin/plugin-install.php?tab=plugin-information&plugin=epfl_payonline&section=changelog&TB_iframe=true&width=600&height=800
-	 */
-	private function getReadMe() {
-		$readme_path    = plugin_dir_path( __FILE__ ) . '/README.md';
-		$readme_content = file_get_contents( $readme_path, true );
-		require_once plugin_dir_path( __FILE__ ) . '/lib/Parsedown.php';
-		$parsedown      = new Parsedown();
-		$readme_content = $parsedown->text( $readme_content );
-		return 'See README.md on <a href="https://github.com/epfl-si/wpforms-epfl-payonline/blob/master/README.md">GitHub</a>.<br><div class="epfl_payonline_readme">' . $readme_content . '</div>';
-	}
-
-	/**
-	 * Retrieve and parse markdown of the INSTALL.md file.
-	 */
-	private function getInstall() {
-		$install_path    = plugin_dir_path( __FILE__ ) . '/INSTALL.md';
-		$install_content = file_get_contents( $install_path, true );
-		require_once plugin_dir_path( __FILE__ ) . '/lib/Parsedown.php';
-		$parsedown       = new Parsedown();
-		$install_content = $parsedown->text( $install_content );
-		return 'See INSTALL.md on <a href="https://github.com/epfl-si/wpforms-epfl-payonline/blob/master/INSTALL.md">GitHub</a>.<br><div class="epfl_payonline_install">' . $install_content . '</div>';
-	}
-
-	/**
-	 * Retrieve CHANGELOG.md on github and parse markdown.
-	 */
-	private function getChangelog() {
-		$changelog_content = file_get_contents( 'https://raw.githubusercontent.com/epfl-si/wpforms-epfl-payonline/master/CHANGELOG.md', true );
-		require_once plugin_dir_path( __FILE__ ) . '/lib/Parsedown.php';
-		$parsedown         = new parsedown();
-		$changelog_content = $parsedown->text( $changelog_content );
-		return 'See CHANGELOG.md on <a href="https://github.com/epfl-si/wpforms-epfl-payonline/blob/master/CHANGELOG.md">GitHub</a>.<br><div class="epfl_payonline_changelog">' . $changelog_content . '</div>';
 	}
 
 }
