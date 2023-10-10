@@ -69,8 +69,8 @@ function wpforms_epfl_payonline() {
 
 	require_once plugin_dir_path( __FILE__ ) . 'class-wpforms-epfl-payonline.php';
 	require_once plugin_dir_path( __FILE__ ) . 'class-wpforms-saferpay.php';
-	require_once plugin_dir_path( __FILE__ ) . 'class-epfl-conference-form-template.php';
-	require_once plugin_dir_path( __FILE__ ) . 'class-epfl-donation-form-template.php';
+	require_once plugin_dir_path( __FILE__ ) . 'templates/class-epfl-conference-form-template.php';
+	require_once plugin_dir_path( __FILE__ ) . 'templates/class-epfl-donation-form-template.php';
 
 }
 add_action( 'wpforms_loaded', 'wpforms_epfl_payonline' );
