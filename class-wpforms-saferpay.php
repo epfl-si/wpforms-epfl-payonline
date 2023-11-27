@@ -60,19 +60,18 @@ class SaferpayPayment {
 		$this->payment_settings = $payment_settings;
 		$this->payonline_mode = $this->payment_settings['payonline_mode'];
 		$this->payment_reconciliation_code = $this->payment_settings['payment_reconciliation_code'];
-		$this->payment_description = $this->payment_settings['payment_description'];
+		// $this->payment_description = $this->payment_settings['payment_description'];
 
 		/* Form data */
 		$this->wpforms_data = $wpforms_data;
-		$this->form_title = $this->wpforms_data['form_title'];
+		$this->form_title = $this->payment_description = $this->wpforms_data['form_title'];
 
 		/* Payment data */
 		$this->payment_data = $payment_data;
 		/* Payment ID */
 		$this->padded_entry_id = str_pad($this->wpforms_data['entry_id'], 6, "0", STR_PAD_LEFT);
 
-		error_log(static::class . "::" . __FUNCTION__ . " : payonline_mode = " . $this->payonline_mode);
-		error_log(var_export($payment_settings, true));
+		error_log(static::class . "::" . __FUNCTION__ . ": payonline_mode = " . $this->payonline_mode);
 
 		/**
 		 * According to the mode, settings are fetched either from the settings
@@ -94,12 +93,19 @@ class SaferpayPayment {
 			$this->payonline_saferpay_apipassword = get_option( 'wpforms-epfl-payonline-saferpay-apipassword-test' );
 			$this->payonline_saferpay_customerid = get_option( 'wpforms-epfl-payonline-saferpay-customerid-test' );
 			$this->payonline_saferpay_terminalid = get_option( 'wpforms-epfl-payonline-saferpay-terminalid-test' );
+			$this->payment_settings['saferpay_api_url'] = 'https://test.saferpay.com';
 		} else if ( $this->payonline_mode === 'production' ) {
 			$this->payonline_saferpay_apiusername = get_option( 'wpforms-epfl-payonline-saferpay-apiusername-prod' );
 			$this->payonline_saferpay_apipassword = get_option( 'wpforms-epfl-payonline-saferpay-apipassword-prod' );
 			$this->payonline_saferpay_customerid = get_option( 'wpforms-epfl-payonline-saferpay-customerid-prod' );
 			$this->payonline_saferpay_terminalid = get_option( 'wpforms-epfl-payonline-saferpay-terminalid-prod' );
+			$this->payment_settings['saferpay_api_url'] = 'https://www.saferpay.com';
 		}
+		error_log("-- Saferpay secrets ---------------------------------------------
+\tCredentials: $this->payonline_saferpay_apiusername / $this->payonline_saferpay_apipassword
+\tCustomerID: $this->payonline_saferpay_customerid
+\tTerminalID: $this->payonline_saferpay_terminalid
+\tAPI URL: $this->payment_settings['saferpay_api_url']\n");
 
 	}
 
@@ -123,6 +129,7 @@ class SaferpayPayment {
 		);
 		error_log(static::class . "::" . __FUNCTION__ . " : Posted Data ");
 		error_log(var_export(json_encode($data), true));
+		error_log(var_export("Authorization: Basic $basic_auth", true));
 
 		$context  = stream_context_create($options);
 		$json_result = file_get_contents($url, false, $context);
@@ -149,7 +156,7 @@ class SaferpayPayment {
 	}
 
 	/**
-	 * PaymentPageInitialize — This method can be used to start a transaction with 
+	 * PaymentPageInitialize — This method can be used to start a transaction with
 	 * the Payment Page which may involve either DCC and / or 3d-secure
 	 *
 	 * https://saferpay.github.io/jsonapi/#Payment_v1_PaymentPage_Initialize
@@ -157,7 +164,7 @@ class SaferpayPayment {
 	public function paymentPageInitialize() {
 
 		// TODO: validate URL ?
-		
+
 		$data = array(
 			// mandatory
 			"RequestHeader" => array(
@@ -221,10 +228,10 @@ class SaferpayPayment {
 					// // "DeliveryAddress" => array()
 				),
 			),
-			// "Notification" => array(
-			// 	"MerchantEmails" => array('nicolas.borboen+merchantEmail@epfl.ch'),
-			// 	"PayerEmail" => $this->payment_data['Email']
-			// )
+			"Notification" => array(
+				"MerchantEmails" => array($this->payment_settings['email'], 'wp-saferpay@groupes.epfl.ch'),
+				"PayerEmail" => $this->payment_data['Email']
+			)
 		);
 
 		// The test URL is https://test.saferpay.com/api/Payment/v1/PaymentPage/Initialize
@@ -241,7 +248,7 @@ class SaferpayPayment {
 	}
 
 	/**
-	 * PaymentPage_Assert — Call this function to safely check the status of the 
+	 * PaymentPage_Assert — Call this function to safely check the status of the
 	 * transaction from your server.
 	 *
 	 * https://saferpay.github.io/jsonapi/#Payment_v1_PaymentPage_Assert
@@ -249,7 +256,7 @@ class SaferpayPayment {
 	public function paymentPageAssert($token, $request_id) {
 		// https://test.saferpay.com/api//Payment/v1/PaymentPage/Assert
 		$url = $this->payment_settings['saferpay_api_url'] . '/api/Payment/v1/PaymentPage/Assert';
-		$data = array( 
+		$data = array(
 			"RequestHeader" => array(
 				"SpecVersion" => self::SpecVersion,
 					"CustomerId" => $this->payonline_saferpay_customerid,
