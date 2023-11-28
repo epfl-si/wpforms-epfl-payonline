@@ -214,13 +214,12 @@ class SaferpayPayment {
 					// // "Company" => '', // The payer's company
 					// // "LegalForm" => '', //The payer's legal form (AG, GmbH, Misc.)
 					// // "Gender" => '', // The payer's gender
-					'Street'      => $this->payment_data['Street'] ?? 'no address1', // The payer's street
-					'Street2'     => $this->payment_data['Street2'] ?? 'no address2', // The payer's street, second line. Only use this, if you need two lines. It may not be supported by all acquirers.
-					'Zip'         => $this->payment_data['Zip'] ?? '0000', // The payer's zip code
-					'City'        => $this->payment_data['City'] ?? 'no city', // The payer's city
+					'Street'      => $this->payment_data['Street'], // The payer's street
+					'Zip'         => $this->payment_data['Zip'], // The payer's zip code
+					'City'        => $this->payment_data['City'], // The payer's city
 					// "CountrySubdivisionCode" => $this->payment_data['CountrySubdivisionCode'] ?? 'no state', // The payer's country subdivision code (Canton)
-					'CountryCode' => $this->payment_data['CountryCode'] ?? 'XX', // The payer's country code (ISO 3166-1 alpha-2 country code)
-					'Email'       => $this->payment_data['Email'] ?? 'no email', // The payer's email address
+					'CountryCode' => $this->payment_data['CountryCode'], // The payer's country code (ISO 3166-1 alpha-2 country code)
+					'Email'       => $this->payment_data['Email'], // The payer's email address
 					// "DateOfBirth" => '', // The payer's date of birth in ISO 8601 extended date notation (YYYY-MM-DD)
 					// "Phone" => '', // The payer's phone number
 					// // "VatNumber" => '', // The company's vat number
@@ -233,6 +232,10 @@ class SaferpayPayment {
 				'PayerEmail'     => $this->payment_data['Email'],
 			),
 		);
+
+		if ( ! empty( trim( $this->payment_data['Street2'] ) ) ) {
+			$data['Payer']['BillingAddress']['Street2'] = trim( $this->payment_data['Street'] ); // The payer's street, second line. Only use this, if you need two lines. It may not be supported by all acquirers.
+		}
 
 		// The test URL is https://test.saferpay.com/api/Payment/v1/PaymentPage/Initialize
 		$url                 = $this->payment_settings['saferpay_api_url'] . '/api/Payment/v1/PaymentPage/Initialize';
