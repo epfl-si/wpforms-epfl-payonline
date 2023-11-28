@@ -41,7 +41,7 @@ define( 'WPFORMS_EPFL_PAYONLINE_VERSION', '2.0.0' );
 // Plugin name.
 define( 'WPFORMS_EPFL_PAYONLINE_NAME', 'WPForms EPFL Payonline (saferpay)' );
 // Latest WP version tested with this plugin.
-define( 'WP_LATEST_VERSION_WPFORMS_EPFL_PAYONLINE', '6.1.1' );
+define( 'WP_LATEST_VERSION_WPFORMS_EPFL_PAYONLINE', '6.3' );
 // Minimal WP version required for this plugin.
 define( 'WP_MIN_VERSION_WPFORMS_EPFL_PAYONLINE', '6.0.0' );
 
@@ -71,7 +71,6 @@ function wpforms_epfl_payonline() {
 	require_once plugin_dir_path( __FILE__ ) . 'class-wpforms-saferpay.php';
 	require_once plugin_dir_path( __FILE__ ) . 'templates/class-epfl-conference-form-template.php';
 	require_once plugin_dir_path( __FILE__ ) . 'templates/class-epfl-donation-form-template.php';
-
 }
 add_action( 'wpforms_loaded', 'wpforms_epfl_payonline' );
 
@@ -79,8 +78,8 @@ add_action( 'wpforms_loaded', 'wpforms_epfl_payonline' );
 function load_epflpayonline_js() {
 	wp_enqueue_script(
 		'wpforms-epfl-payonline',
-		WPFORMS_EPFL_PAYONLINE_PLUGIN_URL . "assets/js/wpforms-epfl-payonline.js",
-		[ 'wpforms-builder' ],
+		WPFORMS_EPFL_PAYONLINE_PLUGIN_URL . 'assets/js/wpforms-epfl-payonline.js',
+		array( 'wpforms-builder' ),
 		WPFORMS_EPFL_PAYONLINE_VERSION,
 		true
 	);
@@ -94,7 +93,7 @@ add_action( 'admin_enqueue_scripts', 'load_epflpayonline_js' );
 // `FS_METHOD` constant in `wp-confing.php`.
 add_filter(
 	'filesystem_method',
-	function() {
+	function () {
 		return 'direct';
 	},
 	10,
