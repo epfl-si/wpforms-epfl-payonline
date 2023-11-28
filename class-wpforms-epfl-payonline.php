@@ -377,12 +377,21 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		// $this->debug( $payment_data, 'payment_data' );
 		// $this->debug( $form_data, 'form_data' );
 
-		// If payment has not been cleared for processing, return.
-		/*if ( ! $this->allowed_to_process ) {
-			return $payment_data;
-		}*/
+		$payonline_mode = $form_data['payments'][ $this->slug ]['payonline_mode'];
+		if ( $payonline_mode === 'manual' ) {
+			$payonline_saferpay_terminalid = $form_data['payments'][ $this->slug ]['saferpay_terminal_id'];
+		} else if ( $payonline_mode === 'test' ) {
+			$payonline_saferpay_terminalid = get_option( 'wpforms-epfl-payonline-saferpay-terminalid-test' );
+		} else if ( $payonline_mode === 'production' ) {
+			$payonline_saferpay_terminalid = get_option( 'wpforms-epfl-payonline-saferpay-terminalid-prod' );
+		}
+		$payment_reconciliation_code = $form_data['payments'][ $this->slug ]['payment_reconciliation_code'];
+		$padded_entry_id = str_pad($payment_data['entry_id'], 6, "0", STR_PAD_LEFT);
+
+		$OrderId = $payment_reconciliation_code . "-" . $payonline_saferpay_terminalid . "-" . $padded_entry_id . "-" . $payonline_mode;
 
 		$payment_data['status']  = 'pending';
+		$payment_data['title']   = $OrderId;
 		$payment_data['gateway'] = sanitize_key( $this->slug );
 		$payment_settings        = $form_data['payments'][ sanitize_key( $this->slug ) ];
 		$payment_data['mode']    = ($payment_settings['payonline_mode'] === 'production') ? 'live' : 'test';
