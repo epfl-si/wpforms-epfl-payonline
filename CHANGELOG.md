@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.1.0
+* Error messages instead of white page
+* Ability to provide merchant emails (comma separated list)
+
+## v2.0.0
+* SaferPay
+
 ## v1.8.0
 * New EPFL Form Template
 * Minors fixes
