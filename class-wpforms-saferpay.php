@@ -69,6 +69,8 @@ class SaferpayPayment {
 		$this->payment_data = $payment_data;
 		/* Payment ID */
 		$this->padded_entry_id = str_pad( $this->wpforms_data['entry_id'], 6, '0', STR_PAD_LEFT );
+		/* Merchant Emails */
+		$this->merchantEmails = $this->parseEmail($this->payment_settings['email']);
 
 		error_log( static::class . '::' . __FUNCTION__ . ': payonline_mode = ' . $this->payonline_mode );
 
@@ -167,6 +169,18 @@ class SaferpayPayment {
 	}
 
 	/**
+	 * parseEmail — This method split a string on comma(s) and return an array
+	 */
+	public function parseEmail($emailString) {
+		// Split the email list into an array using comma as the delimiter
+		$emailArray = explode(",", $emailString);
+		// Trim whitespace from each email in the array
+		$emailArray = array_map('trim', $emailArray);
+		// Display the resulting array
+		return $emailArray;
+	}
+
+	/**
 	 * PaymentPageInitialize — This method can be used to start a transaction with
 	 * the Payment Page which may involve either DCC and / or 3d-secure
 	 *
@@ -239,7 +253,7 @@ class SaferpayPayment {
 				),
 			),
 			'Notification'       => array(
-				'MerchantEmails' => array( $this->payment_settings['email'], 'wp-saferpay@groupes.epfl.ch' ),
+				'MerchantEmails' => array( ...$this->merchantEmails, 'wp-saferpay@groupes.epfl.ch' ),
 				'PayerEmail'     => $this->payment_data['Email'],
 			),
 		);
