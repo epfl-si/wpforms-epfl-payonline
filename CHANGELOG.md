@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.1.1
+* Fix amount in float instead of string
+
 ## v2.1.0
 * Error messages instead of white page
 * Ability to provide merchant emails (comma separated list)
