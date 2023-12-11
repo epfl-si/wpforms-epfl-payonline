@@ -189,7 +189,7 @@ class SaferpayPayment {
 	public function paymentPageInitialize() {
 
 		// TODO: validate URL ?
-		$amount100 = (stirng) $this->payment_data['amount'] * 100;
+		$amount100 = (string) $this->payment_data['amount'] * 100;
 		$data = array(
 			// mandatory
 			'RequestHeader'      => array(
