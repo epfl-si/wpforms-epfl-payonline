@@ -189,7 +189,7 @@ class SaferpayPayment {
 	public function paymentPageInitialize() {
 
 		// TODO: validate URL ?
-
+		$amount100 = (stirng) $this->payment_data['amount'] * 100;
 		$data = array(
 			// mandatory
 			'RequestHeader'      => array(
@@ -209,7 +209,7 @@ class SaferpayPayment {
 				// mandatory
 				'Amount'      => array(
 					// mandatory Amount in minor unit (CHF 1.00 ⇒ Value=100). Only Integer values will be accepted!
-					'Value'        => $this->payment_data['amount'] * 100,
+					'Value'        => "$amount100",
 					// mandatory ISO 4217 3-letter currency code
 					'CurrencyCode' => strtoupper( $this->payment_data['currency'] ), // TODO: use the wproms settings
 				),
