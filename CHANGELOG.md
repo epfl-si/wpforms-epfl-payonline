@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 ## v2.1.3
 * Check price limit at 5000
 
+## v2.1.3
+* Check price limit at 5000
+
+## v2.1.1 + v2.1.2
+* Fix amount in float instead of string
+
+## v2.1.0
+* Error messages instead of white page
+* Ability to provide merchant emails (comma separated list)
+
+## v2.0.0
+* SaferPay
+
 ## v1.8.0
 * New EPFL Form Template
 * Minors fixes

@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: WPForms EPFL Payonline
+ * Plugin Name: WPForms EPFL Payonline (saferpay)
  * Plugin URI:  https://github.com/epfl-si/wpforms-epfl-payonline
  * Description: EPFL Payonline integration with WPForms.
  * Author:      EPFL ISAS-FSD
@@ -39,11 +39,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Plugin version.
 define( 'WPFORMS_EPFL_PAYONLINE_VERSION', '2.1.3' );
 // Plugin name.
-define( 'WPFORMS_EPFL_PAYONLINE_NAME', 'WPForms EPFL Payonline' );
+define( 'WPFORMS_EPFL_PAYONLINE_NAME', 'WPForms EPFL Payonline (saferpay)' );
 // Latest WP version tested with this plugin.
-define( 'WP_LATEST_VERSION_WPFORMS_EPFL_PAYONLINE', '6.1.1' );
+define( 'WP_LATEST_VERSION_WPFORMS_EPFL_PAYONLINE', '6.3' );
 // Minimal WP version required for this plugin.
-define( 'WP_MIN_VERSION_WPFORMS_EPFL_PAYONLINE', '5.0' );
+define( 'WP_MIN_VERSION_WPFORMS_EPFL_PAYONLINE', '6.0.0' );
 
 // Plugin Folder Path.
 if ( ! defined( 'WPFORMS_EPFL_PAYONLINE_PLUGIN_DIR' ) ) {
@@ -68,12 +68,24 @@ function wpforms_epfl_payonline() {
 	load_plugin_textdomain( 'wpforms-epfl-payonline', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
 	require_once plugin_dir_path( __FILE__ ) . 'class-wpforms-epfl-payonline.php';
-	require_once plugin_dir_path( __FILE__ ) . 'class-epfl-conference-form-template.php';
-	require_once plugin_dir_path( __FILE__ ) . 'class-epfl-donation-form-template.php';
-
+	require_once plugin_dir_path( __FILE__ ) . 'class-wpforms-saferpay.php';
+	require_once plugin_dir_path( __FILE__ ) . 'templates/class-epfl-conference-form-template.php';
+	require_once plugin_dir_path( __FILE__ ) . 'templates/class-epfl-donation-form-template.php';
 }
-
 add_action( 'wpforms_loaded', 'wpforms_epfl_payonline' );
+
+/* Load JS */
+function load_epflpayonline_js() {
+	wp_enqueue_script(
+		'wpforms-epfl-payonline',
+		WPFORMS_EPFL_PAYONLINE_PLUGIN_URL . 'assets/js/wpforms-epfl-payonline.js',
+		array( 'wpforms-builder' ),
+		WPFORMS_EPFL_PAYONLINE_VERSION,
+		true
+	);
+}
+add_action( 'admin_enqueue_scripts', 'load_epflpayonline_js' );
+
 
 // WPForms requires WP_Filesystem() to be of ->method === "direct".
 // For some reason (likely pertaining to our symlink scheme),
@@ -81,7 +93,7 @@ add_action( 'wpforms_loaded', 'wpforms_epfl_payonline' );
 // `FS_METHOD` constant in `wp-confing.php`.
 add_filter(
 	'filesystem_method',
-	function() {
+	function () {
 		return 'direct';
 	},
 	10,
