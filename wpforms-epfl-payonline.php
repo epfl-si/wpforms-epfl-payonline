@@ -1,12 +1,16 @@
 <?php
 /**
- * Plugin Name: WPForms EPFL Payonline
+ * Plugin Name: WPForms EPFL Payonline (saferpay)
  * Plugin URI:  https://github.com/epfl-si/wpforms-epfl-payonline
  * Description: EPFL Payonline integration with WPForms.
  * Author:      EPFL ISAS-FSD
  * Author URI:  https://go.epfl.ch/idev-fsd
  * Contributor: Nicolas Borboën <nicolas.borboen@epfl.ch>
- * Version:     2.1.3
+<<<<<<< feature/FADP-checkbox
+ * Version:     2.11.0
+=======
+ * Version:     2.10.3
+>>>>>>> master
  * Text Domain: wpforms-epfl-payonline
  * Domain Path: languages
  * License:     GPL-2.0+
@@ -37,13 +41,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin version.
-define( 'WPFORMS_EPFL_PAYONLINE_VERSION', '2.1.3' );
+<<<<<<< feature/FADP-checkbox
+define( 'WPFORMS_EPFL_PAYONLINE_VERSION', '2.11.0' );
+=======
+define( 'WPFORMS_EPFL_PAYONLINE_VERSION', '2.10.3' );
+>>>>>>> master
 // Plugin name.
-define( 'WPFORMS_EPFL_PAYONLINE_NAME', 'WPForms EPFL Payonline' );
+define( 'WPFORMS_EPFL_PAYONLINE_NAME', 'WPForms EPFL Payonline (saferpay)' );
 // Latest WP version tested with this plugin.
-define( 'WP_LATEST_VERSION_WPFORMS_EPFL_PAYONLINE', '6.1.1' );
+define( 'WP_LATEST_VERSION_WPFORMS_EPFL_PAYONLINE', '6.9' );
 // Minimal WP version required for this plugin.
-define( 'WP_MIN_VERSION_WPFORMS_EPFL_PAYONLINE', '5.0' );
+define( 'WP_MIN_VERSION_WPFORMS_EPFL_PAYONLINE', '6.0.0' );
 
 // Plugin Folder Path.
 if ( ! defined( 'WPFORMS_EPFL_PAYONLINE_PLUGIN_DIR' ) ) {
@@ -65,15 +73,27 @@ function wpforms_epfl_payonline() {
 		return;
 	}
 
-	load_plugin_textdomain( 'wpforms-epfl-payonline', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+	load_textdomain( 'wpforms-epfl-payonline', plugin_dir_path( __FILE__ ) . 'languages/wpforms-epfl-payonline-fr_FR.mo' );
 
 	require_once plugin_dir_path( __FILE__ ) . 'class-wpforms-epfl-payonline.php';
-	require_once plugin_dir_path( __FILE__ ) . 'class-epfl-conference-form-template.php';
-	require_once plugin_dir_path( __FILE__ ) . 'class-epfl-donation-form-template.php';
-
+	require_once plugin_dir_path( __FILE__ ) . 'class-wpforms-saferpay.php';
+	require_once plugin_dir_path( __FILE__ ) . 'templates/class-epfl-conference-form-template.php';
+	require_once plugin_dir_path( __FILE__ ) . 'templates/class-epfl-donation-form-template.php';
 }
-
 add_action( 'wpforms_loaded', 'wpforms_epfl_payonline' );
+
+/* Load JS */
+function load_epflpayonline_js() {
+	wp_enqueue_script(
+		'wpforms-epfl-payonline',
+		WPFORMS_EPFL_PAYONLINE_PLUGIN_URL . 'assets/js/wpforms-epfl-payonline.js',
+		array( 'wpforms-builder' ),
+		WPFORMS_EPFL_PAYONLINE_VERSION,
+		true
+	);
+}
+add_action( 'admin_enqueue_scripts', 'load_epflpayonline_js' );
+
 
 // WPForms requires WP_Filesystem() to be of ->method === "direct".
 // For some reason (likely pertaining to our symlink scheme),
@@ -81,7 +101,7 @@ add_action( 'wpforms_loaded', 'wpforms_epfl_payonline' );
 // `FS_METHOD` constant in `wp-confing.php`.
 add_filter(
 	'filesystem_method',
-	function() {
+	function () {
 		return 'direct';
 	},
 	10,
@@ -89,39 +109,138 @@ add_filter(
 );
 
 /**
- * Limit number range allowed for a Numbers field
- * Apply the class "wpf-num-limit" to the field to enable.
- *
- * @link https://wpforms.com/developers/how-to-limit-range-allowed-in-numbers-field/
- */
+* Change the error text message that appears.
+*
+* @link https://wpforms.com/developers/how-to-change-the-error-text-for-failed-submissions/
+*/
+function translate_message_failed_submission($translated_text, $text, $domain) {
+	// Bail early if it's not a WPForms string.
+	if ($domain !== 'wpforms-lite') {
+		return $translated_text;
+	}
 
-function max_donation_limit() {
-    ?>
-    <script type="text/javascript">
-        jQuery(function(){
-            // Limit the maximum amount (maximum (4999) amount for the number field
-            jQuery( '.limit-donation-4999-en input' ).attr({ 'min': 0, 'max': 4999 } );
-	        // Message to be displayed if the min and or max is not met
-            jQuery('.limit-donation-4999-en input').on('change', function() {
-                jQuery.extend(jQuery.validator.messages, {
-                    max: jQuery.validator.format("For any gift starting CHF 5,000, we kindly ask you to contact the Philanthropy team (<a href='mailto:philanthropy@epfl.ch'>philanthropy@epfl.ch</a>) who will be happy to assist you in formalizing your donation."),
-                    min: jQuery.validator.format("For any gift starting CHF 5,000, we kindly ask you to contact the Philanthropy team (<a href='mailto:philanthropy@epfl.ch'>philanthropy@epfl.ch</a>) who will be happy to assist you in formalizing your donation.")
-                });
-            });
-        });
-       
-        jQuery(function(){
-            // Limit the maximum amount (maximum (4999) amount for the number field
-	        jQuery( '.limit-donation-4999-fr input' ).attr({ 'min': 0, 'max': 4999 } );
-            // Message to be displayed if the min and or max is not met
-            jQuery('.limit-donation-4999-fr input').on('change', function() {
-                jQuery.extend(jQuery.validator.messages, {
-                    max: jQuery.validator.format("Pour toute donation dès CHF 5'000.- nous vous invitons à contacter la Philanthropie (<a href='mailto:philanthropy@epfl.ch'>philanthropy@epfl.ch</a>) qui vous accompagnera avec plaisir pour formaliser votre contribution."),
-                    min: jQuery.validator.format("Pour toute donation dès CHF 5'000.- nous vous invitons à contacter la Philanthropie (<a href='mailto:philanthropy@epfl.ch'>philanthropy@epfl.ch</a>) qui vous accompagnera avec plaisir pour formaliser votre contribution.")
-                });
-            });
-        });
-    </script>
-    <?php
+	// Compare against the original string (in English).
+	if (pll_current_language() == 'fr' & $text === 'Form has not been submitted, please see the errors below.') {
+		$translated_text = __('Le formulaire n\'a pas été envoyé, veuillez consulter les erreurs ci-dessous.', 'wpforms');
+	}
+<<<<<<< feature/FADP-checkbox
+
+	return $translated_text;
 }
-add_action( 'wpforms_wp_footer_end', 'max_donation_limit', 30 );
+add_filter('gettext', 'translate_message_failed_submission', 10, 3);
+
+/**
+ * This function customizes the default label, description, and consent text of the
+ * GDPR checkbox field to align with EPFL data protection compliance.
+ *
+ * @link https://wpforms.com/developers/wpforms_field_new_default/
+ */
+function epfl_gdpr_checkbox_text( $field ) {
+
+    if ( $field['type'] !== 'gdpr-checkbox' ) {
+        return $field;
+    }
+
+    // default values
+    $text = esc_html( 'By submitting this form, I consent to the processing of my personal data in compliance with the Federal Act on Data Protection (FADP) and, when applicable, with any other relevant legislation.' );
+    $field['label'] = esc_html( 'FADP Agreement' );
+    $field['description'] = esc_html( 'EPFL is required to respect the principles of data protection (https://go.epfl.ch/privacy-policy).' );
+    $field['required'] = 1;
+    if ( empty( $field['choices'] ) || ! is_array( $field['choices'] ) ) {
+        $field['choices'] = [
+            [
+                'label' => $text,
+            ]
+        ];
+    }
+
+    return $field;
+}
+add_filter( 'wpforms_field_new_default', 'epfl_gdpr_checkbox_text' );
+
+
+/**
+ * This function translates all field elements (labels, descriptions, sub-labels, choices, and countries) into French.
+ * All the translations are in the wpforms-epfl-payonline-fr_FR.po file
+ */
+function epfl_translate_form_field( $properties, $field, $form_data ) {
+    if ( function_exists( 'pll_current_language' ) && pll_current_language() !== 'fr' ) {
+        return $properties;
+    }
+
+    // Translate field title
+    if ( ! empty( $properties['label']['value'] ) ) {
+        $properties['label']['value'] = esc_html__( trim( $properties['label']['value'] ), 'wpforms-epfl-payonline' );
+    }
+
+    if ( ! empty( $properties['description']['value'] ) ) {
+        $properties['description']['value'] = esc_html__( trim( $properties['description']['value'] ), 'wpforms-epfl-payonline' );
+    }
+
+    if ( ! empty( $properties['inputs'] ) ) {
+        foreach ( $properties['inputs'] as $key => $input ) {
+
+       		// Translate checkbox options into French
+            if ( ! empty( $input['label']['text'] ) ) {
+                $properties['inputs'][$key]['label']['text'] = esc_html__( trim( $input['label']['text'] ), 'wpforms-epfl-payonline' );
+            }
+
+            if ( ! empty( $input['sublabel']['value'] ) ) {
+                $properties['inputs'][$key]['sublabel']['value'] = esc_html__( trim( $input['sublabel']['value'] ), 'wpforms-epfl-payonline' );
+            }
+
+            // Translate dropdown country list
+            if ( $key === 'country' && ! empty( $input['options'] ) ) {
+                foreach ( $input['options'] as $iso => $name ) {
+                    $translated = esc_html__( $name, 'wpforms-epfl-payonline' );
+                    $properties['inputs']['country']['options'][$iso] = $translated;
+                }
+            }
+        }
+    }
+    return $properties;
+}
+add_filter( 'wpforms_field_properties', 'epfl_translate_form_field', 20, 3 );
+
+/**
+ * This function translates the submit button text into French.
+ */
+function epfl_translate_submit_button( $form_data ) {
+    if ( ! empty( $form_data['settings']['submit_text'] ) && pll_current_language() === 'fr' ) {
+        $form_data['settings']['submit_text'] = esc_html__( trim( $form_data['settings']['submit_text']), 'wpforms-epfl-payonline' );
+    }
+    return $form_data;
+}
+add_filter( 'wpforms_frontend_form_data', 'epfl_translate_submit_button', 20, 1);
+
+/**
+ * This function translates form validation and error messages into French.
+ */
+function epfl_translate_error_messages ( $strings ) {
+
+    if ( function_exists( 'pll_current_language' ) && pll_current_language() === 'fr' ) {
+        $keys = [
+            'val_required', 'val_email', 'val_email_suggestion', 'val_email_restricted',
+            'val_number', 'val_number_positive', 'val_confirm', 'val_inputmask_incomplete',
+            'val_checklimit', 'val_limit_characters', 'val_limit_words', 'val_url',
+            'val_phone', 'val_fileextension', 'val_filesize', 'maxfilenumber',
+            'val_time12h', 'val_time24h', 'val_time_limit', 'val_requiredpayment',
+            'val_creditcard', 'val_post_max_size', 'val_password_strength',
+            'val_unique', 'val_recaptcha_fail_msg'
+        ];
+
+        foreach ( $keys as $key ) {
+            if ( isset( $strings[$key] ) ) {
+                $strings[$key] = esc_html__( $strings[$key], 'wpforms-epfl-payonline' );
+            }
+        }
+    }
+    return $strings;
+}
+add_filter( 'wpforms_frontend_strings', 'epfl_translate_error_messages', 20, 1);
+=======
+
+	return $translated_text;
+}
+add_filter('gettext', 'translate_message_failed_submission', 10, 3);
+>>>>>>> master

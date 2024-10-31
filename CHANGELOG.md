@@ -2,8 +2,53 @@
 
 All notable changes to this project will be documented in this file.
 
+<<<<<<< feature/FADP-checkbox
+## v2.11.*
+* Customize GDPR checkbox text and defaults to comply with EPFL data protection requirements.
+* Full French translation support for all form elements (Field labels, descriptions sub-label, 
+	submit button, validation and error messages)
+* Fix translation loading issues.
+=======
+>>>>>>> master
+
+## v2.10.*
+* Add validation for custom limit forms
+* Add contact email for custom error message whenever the 
+  amount exceed the limit
+
+## v2.9.0
+* Add parameter for custom limit amount in forms
+
+## v2.8.0
+* (re)Fix max total amount to 5000
+
+## v2.6.0
+* Remove error_log in the SaferpayPayment constructor
+
+## v2.5.0
+* Fix deprecated stuff
+
+## v2.4.0
+* Fix potential missing trailing slash in return URL
+
+## v2.3.0
+* Fix errors appearing on PHP 8
+
 ## v2.1.3
 * Check price limit at 5000
+
+## v2.1.3
+* Check price limit at 5000
+
+## v2.1.1 + v2.1.2
+* Fix amount in float instead of string
+
+## v2.1.0
+* Error messages instead of white page
+* Ability to provide merchant emails (comma separated list)
+
+## v2.0.0
+* SaferPay
 
 ## v1.8.0
 * New EPFL Form Template
