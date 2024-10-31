@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.1.3
+* Check price limit at 5000
+
 ## v1.8.0
 * New EPFL Form Template
 * Minors fixes
