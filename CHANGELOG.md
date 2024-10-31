@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## v2.1.3
 * Check price limit at 5000
 
+## v2.1.3
+* Check price limit at 5000
+
 ## v2.1.1 + v2.1.2
 * Fix amount in float instead of string
 
