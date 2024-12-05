@@ -31,6 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @package WPFormsEPFLPayonline
  */
+#[AllowDynamicProperties]
 class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 	const WPFEP_DEBUG = true;
