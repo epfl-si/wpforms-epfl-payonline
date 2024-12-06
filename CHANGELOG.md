@@ -2,8 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
-## v2.1.3
-* Check price limit at 5000
+## v2.2.0
+* PHP 8.2: Dynamic Properties are deprecated
 
 ## v2.1.3
 * Check price limit at 5000
