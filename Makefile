@@ -138,8 +138,8 @@ commit:
 	read -p "Would you like to git add and commit all? [Yy]: " -n 1 -r; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
 		git commit -am "[ARE] Automated releasing change" ; \
-		@git push ; \
-		@git status ; \
+		git push ; \
+		git status ; \
 	else \
 		echo -e "\nAborting....\n"; \
 		exit 1; \
