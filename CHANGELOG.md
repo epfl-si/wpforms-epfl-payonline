@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.3.0
+* Fix errors appearing on PHP 8
+
 ## v2.1.3
 * Check price limit at 5000
 

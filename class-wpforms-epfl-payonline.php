@@ -31,6 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @package WPFormsEPFLPayonline
  */
+#[AllowDynamicProperties]
 class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 	const WPFEP_DEBUG = true;
@@ -55,7 +56,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		add_filter( 'wpforms_forms_submission_prepare_payment_data', array( $this, 'prepare_payment_data' ), 10, 3 );
 		add_filter( 'wpforms_forms_submission_prepare_payment_meta', array( $this, 'prepare_payment_meta' ), 10, 3 );
 		add_action( 'init', array( $this, 'check_return_from_saferpay' ) );
-		add_action( 'wpforms_process_payment_saved', array( $this, 'process_payment_saved' ), 10, 3 );
+		// add_action( 'wpforms_process_payment_saved', array( $this, 'process_payment_saved' ), 10, 3 );
 
 		// (see wpforms/pro/includes/payments/functions.php)
 		add_filter( 'wpforms_currencies', array( $this, 'filter_currencies' ), 10, 1 );
@@ -474,7 +475,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		$assert           = $saferpay_payment->paymentPageAssert( $entry_meta['wordline_specifics']['Token'], $entry_meta['wordline_specifics']['ResponseHeader']['RequestId'] );
 
 		error_log( "\n\nASSERT\n" );
-		error_log( var_export( json_decode( $assert, true ), true ) );
+		error_log( var_export( $assert, true ) );
 		error_log( "\n\nEND ASSERT\n" );
 
 		if ( $assert->Transaction->AcquirerName !== '' ) {
