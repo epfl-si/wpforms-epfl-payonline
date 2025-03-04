@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.6.0
+* Remove error_log in the SaferpayPayment constructor
+
 ## v2.5.0
 * Fix deprecated stuff
 

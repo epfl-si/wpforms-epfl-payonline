@@ -115,13 +115,6 @@ class SaferpayPayment {
 			$this->payonline_saferpay_terminalid        = get_option( 'wpforms-epfl-payonline-saferpay-terminalid-prod' );
 			$this->payment_settings['saferpay_api_url'] = 'https://www.saferpay.com';
 		}
-		error_log(
-			"-- Saferpay secrets ---------------------------------------------
-\tCredentials: $this->payonline_saferpay_apiusername / $this->payonline_saferpay_apipassword
-\tCustomerID: $this->payonline_saferpay_customerid
-\tTerminalID: $this->payonline_saferpay_terminalid
-\tAPI URL: $this->payment_settings['saferpay_api_url']\n"
-		);
 	}
 
 	/**
