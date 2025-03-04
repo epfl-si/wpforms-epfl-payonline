@@ -180,6 +180,30 @@ class SaferpayPayment {
 		return $emailArray;
 	}
 
+	public function ensureTrailingSlash($url) {
+		// Parsing the URL into components
+		$parts = parse_url($url);
+
+		// Check if the path exists and add a trailing slash if necessary
+		if (!isset($parts['path'])) {
+			$parts['path'] = '/';
+		} elseif (substr($parts['path'], -1) !== '/') {
+			$parts['path'] .= '/';
+		}
+
+		// Rebuild the URL
+		$resultUrl = (isset($parts['scheme']) ? $parts['scheme'] . '://' : '')
+					. (isset($parts['user']) ? $parts['user']
+					. (isset($parts['pass']) ? ':' . $parts['pass'] : '') . '@' : '')
+					. (isset($parts['host']) ? $parts['host'] : '')
+					. (isset($parts['port']) ? ':' . $parts['port'] : '')
+					. $parts['path']
+					. (isset($parts['query']) ? '?' . $parts['query'] : '')
+					. (isset($parts['fragment']) ? '#' . $parts['fragment'] : '');
+
+		return $resultUrl;
+	}
+
 	/**
 	 * PaymentPageInitialize — This method can be used to start a transaction with
 	 * the Payment Page which may involve either DCC and / or 3d-secure
@@ -220,11 +244,11 @@ class SaferpayPayment {
 				'Description' => $this->payment_description,
 			),
 			'ReturnUrl'          => array(
-				'Url' => get_site_url() . '?EPFLPayonline&entry_id=' . $this->padded_entry_id,
+				'Url' => $this->ensureTrailingSlash(get_site_url()) . '?EPFLPayonline&entry_id=' . $this->padded_entry_id,
 			),
 			'RedirectNotifyUrls' => array(
-				'Success' => get_site_url() . '?EPFLPayonline&status=Success&entry_id=' . $this->padded_entry_id,
-				'Fail'    => get_site_url() . '?EPFLPayonline&status=Fail&entry_id=' . $this->padded_entry_id,
+				'Success' => $this->ensureTrailingSlash(get_site_url()) . '?EPFLPayonline&status=Success&entry_id=' . $this->padded_entry_id,
+				'Fail'    => $this->ensureTrailingSlash(get_site_url()) . '?EPFLPayonline&status=Fail&entry_id=' . $this->padded_entry_id,
 			),
 			// Information about the caller (merchant host)
 			'ClientInfo'         => array(
