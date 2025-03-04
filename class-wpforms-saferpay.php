@@ -48,6 +48,12 @@ class SaferpayPayment {
 	public $payonline_mode;
 	public $payment_data;
 	public $wpforms_data;
+	public $payment_reconciliation_code;
+	public $payment_description;
+	public $form_title;
+	public $padded_entry_id;
+	public $merchantEmails;
+
 	public $payonline_saferpay_apiusername;
 	public $payonline_saferpay_apipassword;
 	public $payonline_saferpay_customerid;
@@ -63,6 +69,13 @@ class SaferpayPayment {
 
 		/* Form data */
 		$this->wpforms_data = $wpforms_data;
+		if (!$this->wpforms_data) {
+			$this->wpforms_data = array(
+				'entry_id'   => 0,
+				'form_title' => 'PHONY',
+			);
+		}
+
 		$this->form_title   = $this->payment_description = $this->wpforms_data['form_title'];
 
 		/* Payment data */
