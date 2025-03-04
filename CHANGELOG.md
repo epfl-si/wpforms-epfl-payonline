@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.5.0
+* Fix deprecated stuff
+
 ## v2.4.0
 * Fix potential missing trailing slash in return URL
 
