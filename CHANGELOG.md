@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.4.0
+* Fix potential missing trailing slash in return URL
+
 ## v2.3.0
 * Fix errors appearing on PHP 8
 
