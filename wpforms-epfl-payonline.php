@@ -6,7 +6,7 @@
  * Author:      EPFL ISAS-FSD
  * Author URI:  https://go.epfl.ch/idev-fsd
  * Contributor: Nicolas Borboën <nicolas.borboen@epfl.ch>
- * Version:     2.6.0
+ * Version:     2.6.1
  * Text Domain: wpforms-epfl-payonline
  * Domain Path: languages
  * License:     GPL-2.0+
@@ -37,7 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin version.
-define( 'WPFORMS_EPFL_PAYONLINE_VERSION', '2.6.0' );
+define( 'WPFORMS_EPFL_PAYONLINE_VERSION', '2.6.1' );
 // Plugin name.
 define( 'WPFORMS_EPFL_PAYONLINE_NAME', 'WPForms EPFL Payonline (saferpay)' );
 // Latest WP version tested with this plugin.
@@ -101,38 +101,53 @@ add_filter(
 );
 
 /**
- * Limit number range allowed for a Numbers field
- * Apply the class "wpf-num-limit" to the field to enable.
+ * Limit maximum allowed to 4999 for a field using the class "set-maximum-to-4999".
  *
- * @link https://wpforms.com/developers/how-to-limit-range-allowed-in-numbers-field/
+ * @link https://wpforms.com/fr/developers/how-to-set-minimum-amount-for-a-price-field/
  */
-function max_donation_limit() {
-	?>
-	<script type="text/javascript">
-		jQuery(function(){
-			// Limit the maximum amount (maximum (4999) amount for the number field
-			jQuery( '.limit-donation-4999-en input' ).attr({ 'min': 0, 'max': 4999 } );
-			// Message to be displayed if the min and or max is not met
-			jQuery('.limit-donation-4999-en input').on('change', function() {
-				jQuery.extend(jQuery.validator.messages, {
-					max: jQuery.validator.format("For any gift starting CHF 5,000, we kindly ask you to contact the Philanthropy team (<a href='mailto:philanthropy@epfl.ch'>philanthropy@epfl.ch</a>) who will be happy to assist you in formalizing your donation."),
-					min: jQuery.validator.format("For any gift starting CHF 5,000, we kindly ask you to contact the Philanthropy team (<a href='mailto:philanthropy@epfl.ch'>philanthropy@epfl.ch</a>) who will be happy to assist you in formalizing your donation.")
-				});
-			});
-		});
 
-		jQuery(function(){
-			// Limit the maximum amount (maximum (4999) amount for the number field
-			jQuery( '.limit-donation-4999-fr input' ).attr({ 'min': 0, 'max': 4999 } );
-			// Message to be displayed if the min and or max is not met
-			jQuery('.limit-donation-4999-fr input').on('change', function() {
-				jQuery.extend(jQuery.validator.messages, {
-					max: jQuery.validator.format("Pour toute donation dès CHF 5'000.- nous vous invitons à contacter la Philanthropie (<a href='mailto:philanthropy@epfl.ch'>philanthropy@epfl.ch</a>) qui vous accompagnera avec plaisir pour formaliser votre contribution."),
-					min: jQuery.validator.format("Pour toute donation dès CHF 5'000.- nous vous invitons à contacter la Philanthropie (<a href='mailto:philanthropy@epfl.ch'>philanthropy@epfl.ch</a>) qui vous accompagnera avec plaisir pour formaliser votre contribution.")
-				});
-			});
-		});
-	</script>
-	<?php
+function set_maximum_to_4999( $field_id, $field_submit, $form_data ) {
+
+	// This snippet will run for all forms
+	$form_id = $form_data[ 'id' ];
+
+	// And it will run for all fields with the CSS class of set-maximum-to-4999
+	$fields  = $form_data[ 'fields' ];
+
+	$maximum_amount = 4999;
+
+	// Check if field has custom CSS class configured
+	if ( !empty( $fields[ $field_id ][ 'css' ] ) ) {
+		$classes = explode( ' ', $fields[ $field_id ][ 'css' ] );
+		if ( in_array( 'set-maximum-to-4999', $classes ) ) {
+			if ( $maximum_amount < (float) wpforms_sanitize_amount( $field_submit ) ) {
+				$error_message = pll_current_language() == 'fr'
+					? "Pour toute donation dès CHF 5'000.- nous vous invitons à contacter la Philanthropie (philanthropy@epfl.ch) qui vous accompagnera avec plaisir pour formaliser votre contribution."
+					: "For any gift starting CHF 5,000, we kindly ask you to contact the Philanthropy team (philanthropy@epfl.ch) who will be happy to assist you in formalizing your donation.";
+				wpforms()->process->errors[ $form_id ][ $field_id ] = $error_message;
+				return;
+			}
+		}
+	}
 }
-add_action( 'wpforms_wp_footer_end', 'max_donation_limit', 30 );
+add_action( 'wpforms_process_validate_payment-single', 'set_maximum_to_4999', 10, 3 );
+
+/**
+* Change the error text message that appears.
+*
+* @link https://wpforms.com/developers/how-to-change-the-error-text-for-failed-submissions/
+*/
+function translate_message_failed_submission($translated_text, $text, $domain) {
+	// Bail early if it's not a WPForms string.
+	if ($domain !== 'wpforms-lite') {
+		return $translated_text;
+	}
+
+	// Compare against the original string (in English).
+	if (pll_current_language() == 'fr' & $text === 'Form has not been submitted, please see the errors below.') {
+		$translated_text = __('Le formulaire n\'a pas été envoyé, veuillez consulter les erreurs ci-dessous.', 'wpforms');
+	}
+
+	return $translated_text;
+}
+add_filter('gettext', 'translate_message_failed_submission', 10, 3);
