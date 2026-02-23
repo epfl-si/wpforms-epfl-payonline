@@ -51,7 +51,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		$this->icon              = plugins_url( 'assets/images/EPFL-Payonline-trans.png', __FILE__ );
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_wp_admin_style' ) );
-
+		add_action( 'wpforms_process', array( $this, 'wpforms_limit_total_amount' ), 10, 3 );
 		add_action( 'wpforms_process_complete', array( $this, 'process_payment_to_wordline_saferpay' ), 20, 4 );
 		add_filter( 'wpforms_forms_submission_prepare_payment_data', array( $this, 'prepare_payment_data' ), 10, 3 );
 		add_filter( 'wpforms_forms_submission_prepare_payment_meta', array( $this, 'prepare_payment_meta' ), 10, 3 );
@@ -227,6 +227,27 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		$hosts[] = 'payonline.epfl.ch';
 		$hosts[] = 'saferpay.com';
 		return $hosts;
+	}
+
+	// https://wpforms.com/developers/wpforms_process/
+	public function wpforms_limit_total_amount( $fields, $entry, $form_data )
+	{
+		foreach ( $fields as $field ) {
+			if ( $field["type"] === "payment-total" ) {
+				$raw_amount = $field["amount_raw"];
+
+				$maximum_amount = 5000;
+
+				if ( $raw_amount && $raw_amount > $maximum_amount ) {
+					$error_amount_above_limit = pll_current_language() == 'fr'
+						? 'Le montant total ne doit pas dépasser 5000 CHF'
+						: 'The total amount shouldn\'t be over 5000 CHF';
+					wpforms()->process->errors[ $form_data["id"] ][
+						$field["id"]
+					] = esc_html__( $error_amount_above_limit, );
+				}
+			}
+		}
 	}
 
 	/**
