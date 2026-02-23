@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.8.0
+* (re)Fix max total amount to 5000
+
 ## v2.6.0
 * Remove error_log in the SaferpayPayment constructor
 
