@@ -1,0 +1,11 @@
+/* Target the error message for the Total field */
+.totalError {
+	color: #ff0000 !important; /* Red text */
+	font-size: 14px !important;
+	font-weight: bold !important;
+	display: block !important;
+	margin-top: 5px !important;
+	border: 2px solid red !important;
+	background-color: #e58782 !important;
+	border-radius: 5px !important;
+}

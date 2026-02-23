@@ -40,6 +40,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'WPFORMS_EPFL_PAYONLINE_VERSION', '2.7.0' );
 // Plugin name.
 define( 'WPFORMS_EPFL_PAYONLINE_NAME', 'WPForms EPFL Payonline (saferpay)' );
+// Define the maximal amount for WPForms
+define( 'WPFORMS_EPFL_PAYONLINE_MAXIMAL_AMOUNT', 5000);
 // Latest WP version tested with this plugin.
 define( 'WP_LATEST_VERSION_WPFORMS_EPFL_PAYONLINE', '6.3' );
 // Minimal WP version required for this plugin.
@@ -114,16 +116,14 @@ function set_maximum_to_4999( $field_id, $field_submit, $form_data ) {
 	// And it will run for all fields with the CSS class of set-maximum-to-4999
 	$fields  = $form_data[ 'fields' ];
 
-	$maximum_amount = 4999;
-
 	// Check if field has custom CSS class configured
 	if ( !empty( $fields[ $field_id ][ 'css' ] ) ) {
 		$classes = explode( ' ', $fields[ $field_id ][ 'css' ] );
 		if ( in_array( 'set-maximum-to-4999', $classes ) ) {
-			if ( $maximum_amount < (float) wpforms_sanitize_amount( $field_submit ) ) {
+			if ( (float) wpforms_sanitize_amount( $field_submit ) >= WPFORMS_EPFL_PAYONLINE_MAXIMAL_AMOUNT ) {
 				$error_message = pll_current_language() == 'fr'
-					? "Pour toute donation dès CHF 5'000.- nous vous invitons à contacter la Philanthropie (philanthropy@epfl.ch) qui vous accompagnera avec plaisir pour formaliser votre contribution."
-					: "For any gift starting CHF 5,000, we kindly ask you to contact the Philanthropy team (philanthropy@epfl.ch) who will be happy to assist you in formalizing your donation.";
+					? "Pour toute donation dès CHF " . number_format(WPFORMS_EPFL_PAYONLINE_MAXIMAL_AMOUNT, 0, ',', '\'') . ".- nous vous invitons à contacter la Philanthropie (philanthropy@epfl.ch) qui vous accompagnera avec plaisir pour formaliser votre contribution."
+					: "For any gift starting CHF " . number_format(WPFORMS_EPFL_PAYONLINE_MAXIMAL_AMOUNT, 0, '.', ',') . ", we kindly ask you to contact the Philanthropy team (philanthropy@epfl.ch) who will be happy to assist you in formalizing your donation.";
 				wpforms()->process->errors[ $form_id ][ $field_id ] = $error_message;
 				return;
 			}
