@@ -236,12 +236,10 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			if ( $field["type"] === "payment-total" ) {
 				$raw_amount = $field["amount_raw"];
 
-				$maximum_amount = 5000;
-
-				if ( $raw_amount && $raw_amount > $maximum_amount ) {
+				if ( $raw_amount && $raw_amount > WPFORMS_EPFL_PAYONLINE_MAXIMAL_AMOUNT ) {
 					$error_amount_above_limit = pll_current_language() == 'fr'
-						? 'Le montant total ne doit pas dépasser 5000 CHF'
-						: 'The total amount shouldn\'t be over 5000 CHF';
+					? "Pour toute donation dès CHF " . number_format(WPFORMS_EPFL_PAYONLINE_MAXIMAL_AMOUNT, 0, ',', '\'') . ".- nous vous invitons à contacter la Philanthropie (philanthropy@epfl.ch) qui vous accompagnera avec plaisir pour formaliser votre contribution."
+					: "For any gift starting CHF " . number_format(WPFORMS_EPFL_PAYONLINE_MAXIMAL_AMOUNT, 0, '.', ',') . ", we kindly ask you to contact the Philanthropy team (philanthropy@epfl.ch) who will be happy to assist you in formalizing your donation.";
 					wpforms()->process->errors[ $form_data["id"] ][
 						$field["id"]
 					] = esc_html__( $error_amount_above_limit, );
