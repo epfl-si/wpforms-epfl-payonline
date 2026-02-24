@@ -69,10 +69,8 @@ class SaferpayPayment {
 		$this->payment_settings            = $payment_settings;
 		$this->payonline_mode              = $this->payment_settings['payonline_mode'];
 		$this->payment_reconciliation_code = $this->payment_settings['payment_reconciliation_code'];
-		$this->limit_payment_amount			   = $this->payment_settings['limit_payment_amount'];
-		$this->is_payment_limited			   = $this->payment_settings['is_payment_limited'];
-		$this->limit_payment_message_fr		= $this->payment_settings['limit_payment_message_fr'];
-		$this->limit_payment_message_en		= $this->payment_settings['limit_payment_message_en'];
+		$this->limit_payment_amount        = $this->payment_settings['limit_payment_amount'];
+		$this->is_payment_limited          = $this->payment_settings['is_payment_limited'];
 
 		// $this->payment_description = $this->payment_settings['payment_description'];
 
