@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.9.0
+* Add field for custom limit amount and custom error message
+
 ## v2.8.0
 * (re)Fix max total amount to 5000
 
