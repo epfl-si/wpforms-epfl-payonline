@@ -52,6 +52,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_wp_admin_style' ) );
 		add_action( 'wpforms_process', array( $this, 'wpforms_limit_total_amount' ), 10, 3 );
+		add_action( 'wpforms_process_validate_payment-single', array( $this, 'set_maximum_amount' ), 10, 3 );
 		add_action( 'wpforms_process_complete', array( $this, 'process_payment_to_wordline_saferpay' ), 20, 4 );
 		add_filter( 'wpforms_forms_submission_prepare_payment_data', array( $this, 'prepare_payment_data' ), 10, 3 );
 		add_filter( 'wpforms_forms_submission_prepare_payment_meta', array( $this, 'prepare_payment_meta' ), 10, 3 );
@@ -229,20 +230,61 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		return $hosts;
 	}
 
+	/**
+	 * Limit maximum allowed to 4999 for a field using the class "set-maximum-to-4999".
+	 *
+	 * @link https://wpforms.com/fr/developers/how-to-set-minimum-amount-for-a-price-field/
+	 */
+
+ 	public function set_maximum_amount( $field_id, $field_submit, $form_data ) {
+		// This snippet will run for all forms
+		$form_id = $form_data[ 'id' ];
+
+		// And it will run for all fields with the CSS class of set-maximum-to-4999
+		$fields  = $form_data[ 'fields' ];
+
+		$payment_settings = $form_data['payments'][ $this->slug ];
+
+		if( $payment_settings['is_payment_limited'] ) {
+
+			// Check if field has custom CSS class configured
+			if ( !empty( $fields[ $field_id ][ 'css' ] ) ) {
+
+				$classes = explode( ' ', $fields[ $field_id ][ 'css' ] );
+				if ( in_array( 'set-maximum-amount', $classes ) ) {
+
+					if ( (float) wpforms_sanitize_amount( $field_submit ) >= $payment_settings['limit_payment_amount'] ) {
+
+						$error_message = pll_current_language() == 'fr'
+							? "Pour toute donation dès CHF " . number_format($payment_settings['limit_payment_amount'], 0, ',', '\'') . ".- nous vous invitons à contacter la Philanthropie (philanthropy@epfl.ch) qui vous accompagnera avec plaisir pour formaliser votre contribution."
+							: "For any gift starting CHF " . number_format($payment_settings['limit_payment_amount'], 0, '.', ',') . ", we kindly ask you to contact the Philanthropy team (philanthropy@epfl.ch) who will be happy to assist you in formalizing your donation.";
+						wpforms()->process->errors[ $form_id ][ $field_id ] = $error_message;
+						return;
+					}
+				}
+			}
+		}
+  	}
+
 	// https://wpforms.com/developers/wpforms_process/
 	public function wpforms_limit_total_amount( $fields, $entry, $form_data )
 	{
-		foreach ( $fields as $field ) {
-			if ( $field["type"] === "payment-total" ) {
-				$raw_amount = $field["amount_raw"];
+		$payment_settings = $form_data['payments'][ $this->slug ];
+		if( $payment_settings['is_payment_limited'] ) {
+			foreach ( $fields as $field ) {
 
-				if ( $raw_amount && $raw_amount > WPFORMS_EPFL_PAYONLINE_MAXIMAL_AMOUNT ) {
-					$error_amount_above_limit = pll_current_language() == 'fr'
-					? "Pour toute donation dès CHF " . number_format(WPFORMS_EPFL_PAYONLINE_MAXIMAL_AMOUNT, 0, ',', '\'') . ".- nous vous invitons à contacter la Philanthropie (philanthropy@epfl.ch) qui vous accompagnera avec plaisir pour formaliser votre contribution."
-					: "For any gift starting CHF " . number_format(WPFORMS_EPFL_PAYONLINE_MAXIMAL_AMOUNT, 0, '.', ',') . ", we kindly ask you to contact the Philanthropy team (philanthropy@epfl.ch) who will be happy to assist you in formalizing your donation.";
-					wpforms()->process->errors[ $form_data["id"] ][
-						$field["id"]
-					] = esc_html__( $error_amount_above_limit, );
+				if ( $field["type"] === "payment-total" ) {
+					$raw_amount = $field["amount_raw"];
+
+					if ( $raw_amount && $raw_amount >= $payment_settings['limit_payment_amount'] ) {
+
+						$error_amount_above_limit = pll_current_language() == 'fr'
+						? $payment_settings['limit_payment_message_fr']
+						: $payment_settings['limit_payment_message_en'];
+						wpforms()->process->errors[ $form_data["id"] ][
+							$field["id"]
+						] = esc_html__( $error_amount_above_limit, );
+					}
 				}
 			}
 		}
@@ -957,6 +999,71 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			)
 		);
 		echo '</div><br>';
+
+		echo '<div class="wpforms-epfl-payonline-payment-sf-code-container">';
+		wpforms_panel_field(
+			'toggle',
+			$this->slug,
+			'is_payment_limited',
+			$this->form_data,
+			esc_html__( 'Payment limit', 'wpforms-epfl-payonline' ),
+			array(
+				'parent'  => 'payments',
+				'tooltip' => esc_html__( 'payment limit', 'wpforms-epfl-payonline' ),
+				'default' => false,
+			)
+		);
+		wpforms_panel_field(
+			'text',
+			$this->slug,
+			'limit_payment_amount',
+			$this->form_data,
+			esc_html__( 'Payment limit', 'wpforms-epfl-payonline' ),
+			array(
+				'parent'  => 'payments',
+				'type'	  => 'number',
+				'tooltip' => esc_html__( 'Set payment limit', 'wpforms-epfl-payonline' ),
+				'default' => '',
+				'class'   => 'wpforms-panel-field-payment-limit-target',
+        		'input_attrs' => array(      // Optionnel : restreindre les valeurs (min 0)
+            		'min'  => 0,
+              		'step' => 1,
+                ),
+			)
+		);
+		wpforms_panel_field(
+			'text',
+			$this->slug,
+			'limit_payment_message_en',
+			$this->form_data,
+			esc_html__( 'Payment limit message en', 'wpforms-epfl-payonline' ),
+			array(
+				'parent'  => 'payments',
+				'tooltip' => esc_html__( 'Set payment limit message en', 'wpforms-epfl-payonline' ),
+				'default' => '',
+			)
+		);
+		wpforms_panel_field(
+			'text',
+			$this->slug,
+			'limit_payment_message_fr',
+			$this->form_data,
+			esc_html__( 'Payment limit message fr', 'wpforms-epfl-payonline' ),
+			array(
+				'parent'  => 'payments',
+				'tooltip' => esc_html__( 'Set payment limit message fr', 'wpforms-epfl-payonline' ),
+				'default' => '',
+			)
+		);
+
+
+
+
+
+		echo '</div><br>';
+
+		echo '<div class="wpforms-epfl-payonline-payment-sf-code-container">';
+
 
 		// We decided that the form's name should be comprehensive enough for the
 		// end user. It is alors easier for "webmaster".
