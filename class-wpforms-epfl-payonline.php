@@ -239,12 +239,12 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		// This snippet will run for all forms
 		$form_id = $form_data[ 'id' ];
 
-		// And it will run for all fields with the CSS class of set-maximum-to-4999
+		// And it will run for all fields with the CSS class of set-maximum-amount
 		$fields  = $form_data[ 'fields' ];
 
 		$payment_settings = $form_data[ 'payments' ][ $this->slug ];
 
-		if ( isset( $payment_settings[ 'is_payment_limited '] ) && $payment_settings[ 'is_payment_limited '] ) {
+		if ( isset( $payment_settings[ 'is_payment_limited' ] ) && $payment_settings[ 'is_payment_limited' ] ) {
 
 			// Check if field has custom CSS class configured
 			if ( !empty( $fields[ $field_id ][ 'css' ] ) ) {
