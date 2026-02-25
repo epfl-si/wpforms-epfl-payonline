@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.10.0
+* Add validation for custom limit forms
+
 ## v2.9.0
 * Add parameter for custom limit amount in forms
 
