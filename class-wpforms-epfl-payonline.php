@@ -243,7 +243,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 				if ( empty( $payment_settings['limit_payment_amount'] ) || empty( $payment_settings['limit_payment_mail'] ) ) {
 
-					wp_send_json_error( 'Veuillez définir une limite de paiement et un email de contact si vous activez la limitation.' );
+					wp_send_json_error( 'Please set a payment limit and/or a contact email if you enable the limitation.' );
 				}
 			}
 		}
