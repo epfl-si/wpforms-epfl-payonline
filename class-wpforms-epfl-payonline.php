@@ -56,6 +56,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		add_action( 'wpforms_process_complete', array( $this, 'process_payment_to_wordline_saferpay' ), 20, 4 );
 		add_filter( 'wpforms_forms_submission_prepare_payment_data', array( $this, 'prepare_payment_data' ), 10, 3 );
 		add_filter( 'wpforms_forms_submission_prepare_payment_meta', array( $this, 'prepare_payment_meta' ), 10, 3 );
+		add_filter( 'wpforms_save_form_args', array( $this, 'validate_limit_field_params' ), 10, 2 );
 		add_action( 'init', array( $this, 'check_return_from_saferpay' ) );
 		// add_action( 'wpforms_process_payment_saved', array( $this, 'process_payment_saved' ), 10, 3 );
 
@@ -228,6 +229,25 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		$hosts[] = 'payonline.epfl.ch';
 		$hosts[] = 'saferpay.com';
 		return $hosts;
+	}
+
+	/**
+	 * Validate payment limit in the admin form.
+	 */
+	public function validate_limit_field_params( $args, $form_data ) {
+		if ( isset( $form_data[ 'payments' ][ $this->slug ] ) ) {
+
+			$payment_settings = &$form_data[ 'payments' ][ $this->slug ];
+
+			if( isset( $payment_settings['is_payment_limited']) && $payment_settings['is_payment_limited'] == '1' ) {
+
+				if ( empty( $payment_settings['limit_payment_amount'] ) || empty( $payment_settings['limit_payment_mail'] ) ) {
+
+					wp_send_json_error( 'Veuillez définir une limite de paiement et un email de contact si vous activez la limitation.' );
+				}
+			}
+		}
+		return $args;
 	}
 
 	/**
