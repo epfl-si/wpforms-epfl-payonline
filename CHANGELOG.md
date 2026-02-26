@@ -3,8 +3,10 @@
 All notable changes to this project will be documented in this file.
 
 
-## v2.10.1
+## v2.10.*
 * Add validation for custom limit forms
+* Add contact email for custom error message whenever the 
+  amount exceed the limit
 
 ## v2.9.0
 * Add parameter for custom limit amount in forms
