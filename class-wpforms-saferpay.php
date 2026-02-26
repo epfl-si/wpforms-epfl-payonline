@@ -55,8 +55,6 @@ class SaferpayPayment {
 	public $merchantEmails;
 	public $limit_payment_amount;
 	public $is_payment_limited;
-	public $limit_payment_message_fr;
-	public $limit_payment_message_en;
 
 	public $payonline_saferpay_apiusername;
 	public $payonline_saferpay_apipassword;
