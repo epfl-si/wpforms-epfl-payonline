@@ -2,7 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
-## v2.10.0
+
+## v2.10.1
 * Add validation for custom limit forms
 
 ## v2.9.0
