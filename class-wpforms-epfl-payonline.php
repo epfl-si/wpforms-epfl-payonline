@@ -272,7 +272,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 				$classes = explode( ' ', $fields[ $field_id ][ 'css' ] );
 				if ( in_array( 'set-maximum-amount', $classes ) ) {
 
-					if ( (float) wpforms_sanitize_amount( $field_submit ) >= $payment_settings[ 'limit_payment_amount' ] ) {
+					if ( (float) wpforms_sanitize_amount( $field_submit ) >= $payment_settings[ 'limit_payment_amount' ] && !empty( $payment_settings['limit_payment_mail'] ) ) {
 
 						$error_message = pll_current_language() == 'fr'
 							? "Le montant de ce champ est plafonné à CHF " . number_format( $payment_settings[ 'limit_payment_amount' ], 0, ',', '\'' ) . ". Nous vous invitons à nous contacter pour des informations complémentaires (" . $payment_settings['limit_payment_mail'] . ")."
@@ -299,7 +299,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 				if ( $field["type"] === "payment-total" ) {
 					$raw_amount = $field[ 'amount_raw' ];
 
-					if ( $raw_amount && $raw_amount >= $payment_settings[ 'limit_payment_amount' ] ) {
+					if ( $raw_amount && $raw_amount >= $payment_settings[ 'limit_payment_amount' ] && !empty( $payment_settings['limit_payment_mail'] ) ) {
 
 						$error_amount_above_limit = pll_current_language() == 'fr'
 							? "Le montant total est limité à CHF " . number_format( $payment_settings[ 'limit_payment_amount' ] , 0, ',', '\'' ) . ". Nous vous invitons à nous contacter pour des informations complémentaires (" . $payment_settings['limit_payment_mail'] . ")."
