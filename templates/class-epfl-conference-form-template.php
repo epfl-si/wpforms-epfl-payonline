@@ -185,10 +185,10 @@ if ( class_exists( 'WPForms_Template', false ) ) :
 						'id'          => '9',
 						'type'        => 'gdpr-checkbox',
 						'required'    => '1',
-						'label'       => 'GDPR Agreement',
+						'label'       => 'FADP Agreement',
 						'choices'     => array(
 							1 => array(
-								'label'      => 'By checking this box, I consent to the use of my personal data by EPFL for the purpose of processing my application for this conference (https://go.epfl.ch/lpd).',
+								'label'      => 'By submitting this form, I consent to the processing of my personal data in compliance with the Federal Act on Data Protection (FADP) and, when applicable, with any other relevant legislation.',
 								'icon'       => 'face-smile',
 								'icon_style' => 'regular',
 							),
