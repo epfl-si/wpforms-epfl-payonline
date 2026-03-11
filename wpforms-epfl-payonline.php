@@ -119,3 +119,32 @@ function translate_message_failed_submission($translated_text, $text, $domain) {
 	return $translated_text;
 }
 add_filter('gettext', 'translate_message_failed_submission', 10, 3);
+
+/**
+ * This function customizes the default label, description, and consent text of the
+ * GDPR checkbox field to align with EPFL data protection compliance.
+ *
+ * @link https://wpforms.com/developers/wpforms_field_new_default/
+ */
+function epfl_gdpr_checkbox_text( $field ) {
+
+    if ( $field['type'] !== 'gdpr-checkbox' ) {
+        return $field;
+    }
+
+    // default values
+    $text = 'By submitting this form, I consent to the processing of my personal data in compliance with the Federal Act on Data Protection (FADP) and, when applicable, with any other relevant legislation.';
+    $field['label'] = 'FADP Agreement';
+    $field['description'] = 'EPFL is required to respect the principles of data protection (https://go.epfl.ch/privacy-policy).';
+    $field['required'] = 1;
+    if ( empty( $field['choices'] ) || ! is_array( $field['choices'] ) ) {
+        $field['choices'] = [
+            [
+                'label' => $text,
+            ]
+        ];
+    }
+
+    return $field;
+}
+add_filter( 'wpforms_field_new_default', 'epfl_gdpr_checkbox_text');

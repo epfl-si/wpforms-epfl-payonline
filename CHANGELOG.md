@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.11.0
+* Customize GDPR checkbox text and defaults to comply with EPFL data protection requirements.
 
 ## v2.10.*
 * Add validation for custom limit forms
