@@ -2,8 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## v2.11.0
+## v2.11.*
 * Customize GDPR checkbox text and defaults to comply with EPFL data protection requirements.
+* Full French translation support for all form elements (Field labels, descriptions sub-label, 
+	submit button, validation and error messages)
+* Fix translation loading issues.
 
 ## v2.10.*
 * Add validation for custom limit forms
