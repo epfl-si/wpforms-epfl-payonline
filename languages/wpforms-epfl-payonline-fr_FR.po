@@ -197,6 +197,591 @@ msgstr "Liens additionnels du plugin"
 msgid "Help Payonline"
 msgstr "Aide Payonline"
 
+msgid "Name"
+msgstr "Nom"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Phone"
+msgstr "Téléphone"
+
+msgid "Address"
+msgstr "Adresse"
+
+msgid "Diets"
+msgstr "Régimes alimentaires"
+
+msgid "Gluten-Free"
+msgstr "Sans gluten"
+
+msgid "Lactose-Free"
+msgstr "Sans lactose"
+
+msgid "Vegetarian"
+msgstr "Végétarien"
+
+msgid "Veganism"
+msgstr "Végane"
+
+msgid "Please indicate your food preferences and we will do our best to offer adapted meals at the conference."
+msgstr "Veuillez indiquer vos préférences alimentaires et nous ferons de notre mieux pour proposer des repas adaptés lors de la conférence."
+
+msgid "Conference fees"
+msgstr "Frais de conférence"
+
+msgid "Students"
+msgstr "Étudiants"
+
+msgid "Speakers"
+msgstr "Intervenants"
+
+msgid "Other attendees"
+msgstr "Autres participants"
+
+msgid "Students will be asked to show their card at the conference check-in."
+msgstr "Les étudiants devront présenter leur carte lors de l'enregistrement à la conférence."
+
+msgid "Evenning events"
+msgstr "Événements du soir"
+
+msgid "Conference dinner (Wednesday evenning)"
+msgstr "Dîner de la conférence (Mercredi soir)"
+
+msgid "Conference event (Thursday evenning)"
+msgstr "Événement de la conférence (Jeudi soir)"
+
+msgid "Total Amount"
+msgstr "Montant total"
+
+msgid "Comment or Message"
+msgstr "Commentaire ou message"
+
+msgid "FADP Agreement"
+msgstr "Consentement LPD"
+
+msgid "By submitting this form, I consent to the processing of my personal data in compliance with the Federal Act on Data Protection (FADP) and, when applicable, with any other relevant legislation."
+msgstr "En soumettant ce formulaire, je consens au traitement de mes données personnelles conformément à la Loi fédérale sur la protection des données (LPD) et, le cas échéant, à toute autre législation applicable."
+
+msgid "EPFL is required to respect the principles of data protection (https://go.epfl.ch/privacy-policy)."
+msgstr "L'EPFL est tenue de respecter les principes de protection des données (https://go.epfl.ch/privacy-policy)."
+
+msgid "Submit"
+msgstr "Envoyer"
+
+msgid "Sending..."
+msgstr "Envoi en cours..."
+
+msgid "First"
+msgstr "Prénom"
+
+msgid "Last"
+msgstr "Nom"
+
+msgid "Address Line 1"
+msgstr "Rue et numéro"
+
+msgid "Address Line 2"
+msgstr "Complément d'adresse"
+
+msgid "City"
+msgstr "Ville"
+
+msgid "State / Province / Region"
+msgstr "Canton / État"
+
+msgid "Postal Code"
+msgstr "NPA"
+
+msgid "Country"
+msgstr "Pays"
+
+msgid "Switzerland"
+msgstr "Suisse"
+
+msgid "This field is required."
+msgstr "Ce champ est obligatoire."
+
+msgid "Please enter a valid email address."
+msgstr "Veuillez saisir une adresse e-mail valide."
+
+msgid "Please enter a valid number."
+msgstr "Veuillez saisir un nombre valide."
+
+msgid "Please enter a valid URL."
+msgstr "Veuillez saisir une URL valide."
+
+msgid "The number must be positive."
+msgstr "Le nombre doit être positif."
+
+msgid "Amount must be at least %s."
+msgstr "Le montant doit être d'au moins %s."
+
+msgid "Field values do not match."
+msgstr "Les valeurs ne correspondent pas."
+
+msgid "Please enter a valid phone number."
+msgstr "Veuillez saisir un numéro de téléphone valide."
+
+msgid "File type is not allowed."
+msgstr "Ce type de fichier n'est pas autorisé."
+
+msgid "File size exceeds allowed limit."
+msgstr "Le fichier est trop volumineux."
+
+msgid "Character limit exceeded."
+msgstr "Limite de caractères dépassée."
+
+msgid "Did you mean {suggestion}?"
+msgstr "Voulez-vous dire {suggestion} ?"
+
+msgid "District of Columbia"
+msgstr "District de Colombie"
+
+msgid "New Hampshire"
+msgstr "Nouveau-Hampshire"
+
+msgid "New Mexico"
+msgstr "Nouveau-Mexique"
+
+msgid "New York"
+msgstr "État de New York"
+
+msgid "North Carolina"
+msgstr "Caroline du Nord"
+
+msgid "North Dakota"
+msgstr "Dakota du Nord"
+
+msgid "South Carolina"
+msgstr "Caroline du Sud"
+
+msgid "South Dakota"
+msgstr "Dakota du Sud"
+
+msgid "West Virginia"
+msgstr "Virginie-Occidentale"
+
+msgid "Åland Islands"
+msgstr "Îles d'Åland"
+
+msgid "Albania"
+msgstr "Albanie"
+
+msgid "Algeria"
+msgstr "Algérie"
+
+msgid "American Samoa"
+msgstr "Samoa américaines"
+
+msgid "Antarctica"
+msgstr "Antarctique"
+
+msgid "Antigua and Barbuda"
+msgstr "Antigua-et-Barbuda"
+
+msgid "Armenia"
+msgstr "Arménie"
+
+msgid "Australia"
+msgstr "Australie"
+
+msgid "Austria"
+msgstr "Autriche"
+
+msgid "Azerbaijan"
+msgstr "Azerbaïdjan"
+
+msgid "Belarus"
+msgstr "Biélorussie"
+
+msgid "Belgium"
+msgstr "Belgique"
+
+msgid "Bermuda"
+msgstr "Bermudes"
+
+msgid "Bhutan"
+msgstr "Bhoutan"
+
+msgid "Bolivia (Plurinational State of)"
+msgstr "Bolivie"
+
+msgid "Bonaire, Saint Eustatius and Saba"
+msgstr "Bonaire, Saint-Eustache et Saba"
+
+msgid "Bosnia and Herzegovina"
+msgstr "Bosnie-Herzégovine"
+
+msgid "Bouvet Island"
+msgstr "Île Bouvet"
+
+msgid "Brazil"
+msgstr "Brésil"
+
+msgid "British Indian Ocean Territory"
+msgstr "Territoire britannique de l'océan Indien"
+
+msgid "Bulgaria"
+msgstr "Bulgarie"
+
+msgid "Cambodia"
+msgstr "Cambodge"
+
+msgid "Cameroon"
+msgstr "Cameroun"
+
+msgid "Cayman Islands"
+msgstr "Îles Caïmans"
+
+msgid "Central African Republic"
+msgstr "République centrafricaine"
+
+msgid "Christmas Island"
+msgstr "Île Christmas"
+
+msgid "Cocos (Keeling) Islands"
+msgstr "Îles Cocos"
+
+msgid "Colombia"
+msgstr "Colombie"
+
+msgid "Comoros"
+msgstr "Comores"
+
+msgid "Congo (Democratic Republic of the)"
+msgstr "République démocratique du Congo"
+
+msgid "Cook Islands"
+msgstr "Îles Cook"
+
+msgid "Croatia"
+msgstr "Croatie"
+
+msgid "Cyprus"
+msgstr "Chypre"
+
+msgid "Czech Republic"
+msgstr "République tchèque"
+
+msgid "Denmark"
+msgstr "Danemark"
+
+msgid "Dominican Republic"
+msgstr "République dominicaine"
+
+msgid "Egypt"
+msgstr "Égypte"
+
+msgid "Equatorial Guinea"
+msgstr "Guinée équatoriale"
+
+msgid "Eritrea"
+msgstr "Érythrée"
+
+msgid "Estonia"
+msgstr "Estonie"
+
+msgid "Ethiopia"
+msgstr "Éthiopie"
+
+msgid "Falkland Islands (Malvinas)"
+msgstr "Îles Malouines"
+
+msgid "Faroe Islands"
+msgstr "Îles Féroé"
+
+msgid "Finland"
+msgstr "Finlande"
+
+msgid "French Guiana"
+msgstr "Guyane française"
+
+msgid "French Polynesia"
+msgstr "Polynésie française"
+
+msgid "French Southern Territories"
+msgstr "Terres australes françaises"
+
+msgid "Gambia"
+msgstr "Gambie"
+
+msgid "Germany"
+msgstr "Allemagne"
+
+msgid "Greece"
+msgstr "Grèce"
+
+msgid "Greenland"
+msgstr "Groenland"
+
+msgid "Grenada"
+msgstr "Grenade"
+
+msgid "Guatemala"
+msgstr "Guatémala"
+
+msgid "Guinea-Bissau"
+msgstr "Guinée-Bissau"
+
+msgid "Heard Island and McDonald Islands"
+msgstr "Îles Heard-et-MacDonald"
+
+msgid "Hungary"
+msgstr "Hongrie"
+
+msgid "Iceland"
+msgstr "Islande"
+
+msgid "India"
+msgstr "Inde"
+
+msgid "Indonesia"
+msgstr "Indonésie"
+
+msgid "Iran (Islamic Republic of)"
+msgstr "Iran"
+
+msgid "Ireland (Republic of)"
+msgstr "Irlande"
+
+msgid "Isle of Man"
+msgstr "Île de Man"
+
+msgid "Italy"
+msgstr "Italie"
+
+msgid "Jamaica"
+msgstr "Jamaïque"
+
+msgid "Japan"
+msgstr "Japon"
+
+msgid "Jordan"
+msgstr "Jordanie"
+
+msgid "Korea (Democratic People's Republic of)"
+msgstr "Corée du Nord"
+
+msgid "Korea (Republic of)"
+msgstr "Corée du Sud"
+
+msgid "Latvia"
+msgstr "Lettonie"
+
+msgid "Lebanon"
+msgstr "Liban"
+
+msgid "Libya"
+msgstr "Libye"
+
+msgid "Lithuania"
+msgstr "Lituanie"
+
+msgid "North Macedonia (Republic of)"
+msgstr "Macédoine du Nord"
+
+msgid "Malaysia"
+msgstr "Malaisie"
+
+msgid "Marshall Islands"
+msgstr "Îles Marshall"
+
+msgid "Mauritania"
+msgstr "Mauritanie"
+
+msgid "Mauritius"
+msgstr "Maurice"
+
+msgid "Mexico"
+msgstr "Mexique"
+
+msgid "Micronesia (Federated States of)"
+msgstr "Micronésie"
+
+msgid "Moldova (Republic of)"
+msgstr "Moldavie"
+
+msgid "Morocco"
+msgstr "Maroc"
+
+msgid "Netherlands"
+msgstr "Pays-Bas"
+
+msgid "New Caledonia"
+msgstr "Nouvelle-Calédonie"
+
+msgid "New Zealand"
+msgstr "Nouvelle-Zélande"
+
+msgid "Nigeria"
+msgstr "Nigéria"
+
+msgid "Norfolk Island"
+msgstr "Île Norfolk"
+
+msgid "Northern Mariana Islands"
+msgstr "Îles Mariannes du Nord"
+
+msgid "Norway"
+msgstr "Norvège"
+
+msgid "Palestine (State of)"
+msgstr "Palestine"
+
+msgid "Papua New Guinea"
+msgstr "Papouasie-Nouvelle-Guinée"
+
+msgid "Philippines"
+msgstr "Philippines"
+
+msgid "Poland"
+msgstr "Pologne"
+
+msgid "Puerto Rico"
+msgstr "Porto Rico"
+
+msgid "Romania"
+msgstr "Roumanie"
+
+msgid "Russian Federation"
+msgstr "Russie"
+
+msgid "Saint Helena, Ascension and Tristan da Cunha"
+msgstr "Sainte-Hélène, Ascension et Tristan da Cunha"
+
+msgid "Saint Kitts and Nevis"
+msgstr "Saint-Christophe-et-Niévès"
+
+msgid "Saint Lucia"
+msgstr "Sainte-Lucie"
+
+msgid "Saint Martin (French part)"
+msgstr "Saint-Martin"
+
+msgid "Saint Pierre and Miquelon"
+msgstr "Saint-Pierre-et-Miquelon"
+
+msgid "Saint Vincent and the Grenadines"
+msgstr "Saint-Vincent-et-les-Grenadines"
+
+msgid "Sao Tome and Principe"
+msgstr "Sao Tomé-et-Principe"
+
+msgid "Saudi Arabia"
+msgstr "Arabie saoudite"
+
+msgid "Senegal"
+msgstr "Sénégal"
+
+msgid "Serbia"
+msgstr "Serbie"
+
+msgid "Sint Maarten (Dutch part)"
+msgstr "Saint-Martin (partie néerlandaise)"
+
+msgid "Slovakia"
+msgstr "Slovaquie"
+
+msgid "Slovenia"
+msgstr "Slovénie"
+
+msgid "Solomon Islands"
+msgstr "Îles Salomon"
+
+msgid "Somalia"
+msgstr "Somalie"
+
+msgid "South Africa"
+msgstr "Afrique du Sud"
+
+msgid "South Georgia and the South Sandwich Islands"
+msgstr "Géorgie du Sud-et-les Îles Sandwich du Sud"
+
+msgid "South Sudan"
+msgstr "Soudan du Sud"
+
+msgid "Spain"
+msgstr "Espagne"
+
+msgid "Sudan"
+msgstr "Soudan"
+
+msgid "Svalbard and Jan Mayen"
+msgstr "Svalbard et Jan Mayen"
+
+msgid "Eswatini (Kingdom of)"
+msgstr "Eswatini"
+
+msgid "Sweden"
+msgstr "Suède"
+
+msgid "Syrian Arab Republic"
+msgstr "Syrie"
+
+msgid "Taiwan, Republic of China"
+msgstr "Taïwan"
+
+msgid "Tajikistan"
+msgstr "Tadjikistan"
+
+msgid "Tanzania (United Republic of)"
+msgstr "Tanzanie"
+
+msgid "Thailand"
+msgstr "Thaïlande"
+
+msgid "Trinidad and Tobago"
+msgstr "Trinité-et-Tobago"
+
+msgid "Tunisia"
+msgstr "Tunisie"
+
+msgid "Turkmenistan"
+msgstr "Turkménistan"
+
+msgid "Turks and Caicos Islands"
+msgstr "Îles Turques-et-Caïques"
+
+msgid "Ukraine"
+msgstr "Ukraine"
+
+msgid "United Arab Emirates"
+msgstr "Émirats arabes unis"
+
+msgid "United Kingdom of Great Britain and Northern Ireland"
+msgstr "Royaume-Uni"
+
+msgid "United States of America"
+msgstr "États-Unis"
+
+msgid "United States Minor Outlying Islands"
+msgstr "Îles mineures éloignées des États-Unis"
+
+msgid "Uzbekistan"
+msgstr "Ouzbékistan"
+
+msgid "Vatican City State"
+msgstr "Vatican"
+
+msgid "Venezuela (Bolivarian Republic of)"
+msgstr "Venezuela"
+
+msgid "Virgin Islands (British)"
+msgstr "Îles Vierges britanniques"
+
+msgid "Virgin Islands (U.S.)"
+msgstr "Îles Vierges des États-Unis"
+
+msgid "Wallis and Futuna"
+msgstr "Wallis-et-Futuna"
+
+msgid "Western Sahara"
+msgstr "Sahara occidental"
+
+msgid "Argentina"
+msgstr "Argentine"
+
 #~ msgid "Nicolas Borboën"
 #~ msgstr "Nicolas Borboën"
 
