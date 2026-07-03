@@ -262,6 +262,10 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		// And it will run for all fields with the CSS class of set-maximum-amount
 		$fields  = $form_data[ 'fields' ];
 
+		if ( empty( $form_data[ 'payments' ][ $this->slug ] ) ) {
+			return;
+		}
+
 		$payment_settings = $form_data[ 'payments' ][ $this->slug ];
 
 		if ( isset( $payment_settings[ 'is_payment_limited' ] ) && $payment_settings[ 'is_payment_limited' ] ) {
@@ -290,12 +294,17 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	 *
 	 * @link https://wpforms.com/developers/wpforms_process/
 	 */
-	public function wpforms_limit_total_amount( $fields, $entry, $form_data )
-	{
-		$payment_settings = $form_data['payments'][ $this->slug ];
-		if( $payment_settings['is_payment_limited'] ) {
-			foreach ( $fields as $field ) {
+	public function wpforms_limit_total_amount( $fields, $entry, $form_data ) {
 
+		if ( empty( $form_data['payments'][ $this->slug ] ) ) {
+			return;
+		}
+
+		$payment_settings = $form_data['payments'][ $this->slug ];
+
+		if( isset($payment_settings['is_payment_limited']) && $payment_settings['is_payment_limited'] ) {
+
+			foreach ( $fields as $field ) {
 				if ( $field["type"] === "payment-total" ) {
 					$raw_amount = $field[ 'amount_raw' ];
 
