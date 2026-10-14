@@ -57,6 +57,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		add_filter( 'wpforms_forms_submission_prepare_payment_data', array( $this, 'prepare_payment_data' ), 10, 3 );
 		add_filter( 'wpforms_forms_submission_prepare_payment_meta', array( $this, 'prepare_payment_meta' ), 10, 3 );
 		add_filter( 'wpforms_save_form_args', array( $this, 'validate_limit_field_params' ), 10, 2 );
+		add_filter( 'wpforms_save_form_args', array( $this, 'validate_payment_redirect_url_params' ), 10, 2 );
 		add_action( 'init', array( $this, 'check_return_from_saferpay' ) );
 		// add_action( 'wpforms_process_payment_saved', array( $this, 'process_payment_saved' ), 10, 3 );
 
@@ -249,6 +250,27 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		}
 		return $args;
 	}
+
+	/**
+	 * Validate the payment redirect URL in the admin form.
+	 */
+	public function validate_payment_redirect_url_params( $args, $form_data ) {
+			if ( isset( $form_data[ 'payments' ][ $this->slug ] ) ) {
+
+				$payment_settings = $form_data[ 'payments' ][ $this->slug ];
+				if ( ! empty( $payment_settings['payment_success_redirect_url'] ) ) {
+					if ( false === filter_var( $payment_settings['payment_success_redirect_url'], FILTER_VALIDATE_URL ) ) {
+						wp_send_json_error( esc_html__( 'Please enter a valid absolute URL for the SUCCESS redirect (it must include http:// or https://).', 'wpforms-epfl-payonline' ) );
+					}
+				}
+				if ( ! empty( $payment_settings['payment_fail_redirect_url'] ) ) {
+					if ( false === filter_var( $payment_settings['payment_fail_redirect_url'], FILTER_VALIDATE_URL ) ) {
+						wp_send_json_error( esc_html__( 'Please enter a valid absolute URL for the FAIL redirect (it must include http:// or https://).', 'wpforms-epfl-payonline' ) );
+					}
+				}
+			}
+			return $args;
+		}
 
 	/**
 	 * Limit maximum allowed to 'limit_payment_amount' for a field using the class "set-maximum-amount".
@@ -1093,6 +1115,29 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			)
 		);
 		echo '</div>';
+		echo '<br><hr size="1">';
+		wpforms_panel_field(
+			'text',
+			$this->slug,
+			'payment_success_redirect_url',
+			$this->form_data,
+			esc_html__( 'WPForms Redirect URL After SUCCESS', 'wpforms-epfl-payonline' ),
+			array(
+				'parent'  => 'payments',
+				'tooltip' => esc_html__( 'Enter a redirect url for successful payments.', 'wpforms-epfl-payonline' ),
+			)
+		);
+		wpforms_panel_field(
+			'text',
+			$this->slug,
+			'payment_fail_redirect_url',
+			$this->form_data,
+			esc_html__( 'WPForms Redirect URL After FAILURE', 'wpforms-epfl-payonline' ),
+			array(
+				'parent'  => 'payments',
+				'tooltip' => esc_html__( 'Enter a redirect url for failed or cancelled payments.', 'wpforms-epfl-payonline' ),
+			)
+		);
 		echo '</div>';
 	}
 

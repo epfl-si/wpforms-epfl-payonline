@@ -217,6 +217,8 @@ class SaferpayPayment {
 	 * https://saferpay.github.io/jsonapi/#Payment_v1_PaymentPage_Initialize
 	 */
 	public function paymentPageInitialize() {
+		$success_url = ! empty( $this->payment_settings['payment_success_redirect_url'] ) ? $this->payment_settings['payment_success_redirect_url'] : get_site_url();
+		$fail_url = ! empty( $this->payment_settings['payment_fail_redirect_url'] ) ? $this->payment_settings['payment_fail_redirect_url'] : get_site_url();
 
 		// TODO: validate URL ?
 		$amount100 = (string) $this->payment_data['amount'] * 100;
@@ -250,11 +252,11 @@ class SaferpayPayment {
 				'Description' => $this->payment_description,
 			),
 			'ReturnUrl'          => array(
-				'Url' => $this->ensureTrailingSlash(get_site_url()) . '?EPFLPayonline&entry_id=' . $this->padded_entry_id,
+				'Url' => $this->ensureTrailingSlash( $success_url ) . '?EPFLPayonline&entry_id=' . $this->padded_entry_id,
 			),
 			'RedirectNotifyUrls' => array(
-				'Success' => $this->ensureTrailingSlash(get_site_url()) . '?EPFLPayonline&status=Success&entry_id=' . $this->padded_entry_id,
-				'Fail'    => $this->ensureTrailingSlash(get_site_url()) . '?EPFLPayonline&status=Fail&entry_id=' . $this->padded_entry_id,
+				'Success' => $this->ensureTrailingSlash( $success_url ) . '?EPFLPayonline&status=Success&entry_id=' . $this->padded_entry_id,
+				'Fail'    => $this->ensureTrailingSlash( $fail_url ) . '?EPFLPayonline&status=Fail&entry_id=' . $this->padded_entry_id,
 			),
 			// Information about the caller (merchant host)
 			'ClientInfo'         => array(
