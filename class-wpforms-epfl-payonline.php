@@ -1119,23 +1119,12 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		wpforms_panel_field(
 			'text',
 			$this->slug,
-			'payment_success_redirect_url',
+			'payment_redirect_url',
 			$this->form_data,
-			esc_html__( 'WPForms Redirect URL After SUCCESS', 'wpforms-epfl-payonline' ),
+			esc_html__( 'WPForms Redirect URL After Payment', 'wpforms-epfl-payonline' ),
 			array(
 				'parent'  => 'payments',
-				'tooltip' => esc_html__( 'Enter a redirect url for successful payments.', 'wpforms-epfl-payonline' ),
-			)
-		);
-		wpforms_panel_field(
-			'text',
-			$this->slug,
-			'payment_fail_redirect_url',
-			$this->form_data,
-			esc_html__( 'WPForms Redirect URL After FAILURE', 'wpforms-epfl-payonline' ),
-			array(
-				'parent'  => 'payments',
-				'tooltip' => esc_html__( 'Enter a redirect url for failed or cancelled payments.', 'wpforms-epfl-payonline' ),
+				'tooltip' => esc_html__( 'Enter a redirect url for payments.', 'wpforms-epfl-payonline' ),
 			)
 		);
 		echo '</div>';
