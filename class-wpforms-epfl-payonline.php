@@ -255,22 +255,23 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	 * Validate the payment redirect URL in the admin form.
 	 */
 	public function validate_payment_redirect_url_params( $args, $form_data ) {
-			if ( isset( $form_data[ 'payments' ][ $this->slug ] ) ) {
+		if ( isset( $form_data[ 'payments' ][ $this->slug ] ) ) {
 
-				$payment_settings = $form_data[ 'payments' ][ $this->slug ];
-				if ( ! empty( $payment_settings['payment_success_redirect_url'] ) ) {
-					if ( false === filter_var( $payment_settings['payment_success_redirect_url'], FILTER_VALIDATE_URL ) ) {
-						wp_send_json_error( esc_html__( 'Please enter a valid absolute URL for the SUCCESS redirect (it must include http:// or https://).', 'wpforms-epfl-payonline' ) );
-					}
-				}
-				if ( ! empty( $payment_settings['payment_fail_redirect_url'] ) ) {
-					if ( false === filter_var( $payment_settings['payment_fail_redirect_url'], FILTER_VALIDATE_URL ) ) {
-						wp_send_json_error( esc_html__( 'Please enter a valid absolute URL for the FAIL redirect (it must include http:// or https://).', 'wpforms-epfl-payonline' ) );
-					}
+			$payment_settings = $form_data[ 'payments' ][ $this->slug ];
+
+			if ( ! empty( $payment_settings['payment_success_redirect_url'] ) ) {
+				if ( false === filter_var( $payment_settings['payment_success_redirect_url'], FILTER_VALIDATE_URL ) ) {
+					wp_send_json_error( esc_html__( 'Please enter a valid absolute URL for the successful redirect after payment (it must include http:// or https://).', 'wpforms-epfl-payonline' ) );
 				}
 			}
-			return $args;
+			if ( ! empty( $payment_settings['payment_failed_redirect_url'] ) ) {
+				if ( false === filter_var( $payment_settings['payment_failed_redirect_url'], FILTER_VALIDATE_URL ) ) {
+					wp_send_json_error( esc_html__( 'Please enter a valid absolute URL for the  failed redirect after payment (it must include http:// or https://).', 'wpforms-epfl-payonline' ) );
+				}
+			}
 		}
+		return $args;
+	}
 
 	/**
 	 * Limit maximum allowed to 'limit_payment_amount' for a field using the class "set-maximum-amount".
@@ -543,6 +544,20 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 	}
 
 	/**
+	 * Force a clean redirection
+	 */
+	private function force_safe_redirect( $url ) {
+		$final_url = esc_url_raw( $url );
+		if ( ! headers_sent() ) {
+			wp_redirect( $final_url );
+		} else {
+			echo '<script type="text/javascript">window.location.href="' . $final_url . '";</script>';
+			echo '<noscript><meta http-equiv="refresh" content="0;url=' . $final_url . '" /></noscript>';
+		}
+		exit;
+	}
+
+	/**
 	 * Handle the POSTed data from payonline
 	 *
 	 * See https://www.openldap.org/faq/data/cache/347.html
@@ -588,6 +603,13 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 		$saferpay_payment = new SaferpayPayment( /*settings*/$payment_settings, /*data, total and user info*/null, null );
 		$assert           = $saferpay_payment->paymentPageAssert( $entry_meta['wordline_specifics']['Token'], $entry_meta['wordline_specifics']['ResponseHeader']['RequestId'] );
+
+		if ( ! $assert ) {
+			$this->update_payment( $payment->id, array( 'status' => 'failed' ) );
+
+			$fail_redirect_url = ! empty( $payment_settings['payment_fail_redirect_url'] ) ? $payment_settings['payment_fail_redirect_url'] : home_url();
+			$this->force_safe_redirect( $fail_redirect_url );
+		}
 
 		error_log( "\n\nASSERT\n" );
 		error_log( var_export( $assert, true ) );
@@ -637,7 +659,8 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 
 			$this->update_payment( $payment->id, array( 'status' => 'failed' ) );
 
-			return;
+			$fail_redirect_url = ! empty( $payment_settings['payment_fail_redirect_url'] ) ? $payment_settings['payment_fail_redirect_url'] : home_url();
+			$this->force_safe_redirect( $fail_redirect_url );
 		}
 
 		if ( $assert && $assert->Transaction->Type === 'PAYMENT' && $assert->Transaction->Status === 'AUTHORIZED' ) {
@@ -673,7 +696,8 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 				),
 			);
 			$this->update_payment( $payment->id, array( 'status' => 'completed' ) );
-			return;
+			$success_redirect_url = ! empty( $payment_settings['payment_success_redirect_url'] ) ? $payment_settings['payment_success_redirect_url'] : home_url();
+			$this->force_safe_redirect( $success_redirect_url );
 		}
 
 		// CAPTURE PAYMENT — actual money
@@ -706,7 +730,8 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			// $this->debug( $entry_meta, "XXXentry_meta" );
 			$this->update_payment( $payment->id, array( 'status' => 'failed' ) );
 
-			return;
+			$fail_redirect_url = ! empty( $payment_settings['payment_fail_redirect_url'] ) ? $payment_settings['payment_fail_redirect_url'] : home_url();
+			$this->force_safe_redirect( $fail_redirect_url );
 		}
 
 		// TODO check $capture->ResponseHeader->RequestId
@@ -769,6 +794,11 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		// $this->debug( $_POST, 'check_return_from_saferpay: POST:' );
 		// $this->debug( $_GET, 'check_return_from_saferpay: GET:' );
 		// $this->debug( $_SERVER, 'check_return_from_saferpay: SERVER:' );
+
+		if ( $capture && $capture->Status === 'CAPTURED' ) {
+			$success_redirect_url = ! empty( $payment_settings['payment_success_redirect_url'] ) ? $payment_settings['payment_success_redirect_url'] : home_url();
+			$this->force_safe_redirect( $success_redirect_url );
+		}
 
 		return;
 		// die();
@@ -916,7 +946,7 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 			sprintf(
 				wp_kses(
 					/* translators: %s - Addons page URL in admin area. */
-					__( 'This addon allows to use <a href="%1$s">EPFL WordLine SaferPay</a> with the <a href="%2$s">WPForms plugin</a>. Please read <a href="%3$s">XXX Help</a> in order to create a payment instance.', 'wpforms-epfl-payonline' ),
+					__( 'This addon allows to use <a href="%1$s">EPFL WordLine SaferPay</a> with the <a href="%2$s">WPForms plugin</a>. Please read <a href="https://payonline.epfl.ch">Help</a> in order to create a payment instance.', 'wpforms-epfl-payonline' ),
 					array(
 						'a' => array(
 							'href' => array(),
@@ -1119,12 +1149,23 @@ class WPForms_EPFL_Payonline extends WPForms_Payment {
 		wpforms_panel_field(
 			'text',
 			$this->slug,
-			'payment_redirect_url',
+			'payment_success_redirect_url',
 			$this->form_data,
-			esc_html__( 'WPForms Redirect URL After Payment', 'wpforms-epfl-payonline' ),
+			esc_html__( 'WPForms Redirect URL After Successful Payment', 'wpforms-epfl-payonline' ),
 			array(
 				'parent'  => 'payments',
-				'tooltip' => esc_html__( 'Enter a redirect url for payments.', 'wpforms-epfl-payonline' ),
+				'tooltip' => esc_html__( 'Enter a redirect URL for successful payments.', 'wpforms-epfl-payonline' ),
+			)
+		);
+		wpforms_panel_field(
+			'text',
+			$this->slug,
+			'payment_fail_redirect_url',
+			$this->form_data,
+			esc_html__( 'WPForms Redirect URL After Failed Payment', 'wpforms-epfl-payonline' ),
+			array(
+				'parent'  => 'payments',
+				'tooltip' => esc_html__( 'Enter a redirect URL for failed payments.', 'wpforms-epfl-payonline' ),
 			)
 		);
 		echo '</div>';

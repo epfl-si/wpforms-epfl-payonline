@@ -162,15 +162,9 @@ class SaferpayPayment {
 			// Something went wrong!
 			error_log( 'Error posting data!' );
 		}
-		echo "<h3>Error</h3>";
-		echo "	<b>Sorry, an unexpected error occurred while processing your request.</b><br><br>";
-		echo "	<div>We regret to inform you that an unforeseen error occurred during the processing of your request.
-								<br>Kindly bring this matter to the attention of the form owner
-								(<a href=\"mailto:" . $this->merchantEmails[0] . ",1234@epfl.ch?subject=Payment error on ".site_url()."&body=Please provide site URL and Error details.\">" . $this->merchantEmails[0] . "</a>)
-								so that they can take appropriate measures to address and resolve the issue.<br>
-								We apologize for any inconvenience this may have caused and appreciate your understanding.
-		</div><br><br>";
-		echo "Error message: <i>$errors_msg</i>";
+		if ($errors_msg != '') {
+			error_log( 'Unexpected error: ' . $errors_msg );
+		}
 		return false;
 	}
 
