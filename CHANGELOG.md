@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.12.0
+* Add parameter for custom redirect URL after payment.
+
 ## v2.11.*
 * Customize GDPR checkbox text and defaults to comply with EPFL data protection requirements.
 * Full French translation support for all form elements (Field labels, descriptions sub-label, 
